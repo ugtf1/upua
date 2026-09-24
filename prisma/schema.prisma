@@ -1,0 +1,100 @@
+// Prisma Schema for Urhobo Progress Union America (UPUA)
+// Local database using SQLite, ready for seamless migration to Google Cloud SQL (PostgreSQL)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String
+  role         String    // "admin" | "chapter" | "member"
+  chapterId    String?
+  phone        String?
+  title        String?
+  avatar       String?
+  passwordHash String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Chapter {
+  id           String    @id
+  name         String
+  code         String    @unique
+  region       String
+  president    String
+  contactEmail String
+  memberCount  Int       @default(0)
+  website      String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  members      Member[]
+  payments     Payment[]
+}
+
+model Member {
+  id           String    @id @default(cuid())
+  chapterId    String
+  chapter      Chapter   @relation(fields: [chapterId], references: [id])
+  name         String
+  email        String    @unique
+  phone        String?
+  status       String    @default("Active") // "Active" | "Pending" | "Lapsed"
+  duesStatus   String    @default("Paid")   // "Paid" | "Outstanding" | "Exempt"
+  role         String    @default("Member") // "Member" | "Executive" | "Youth" | "Patron"
+  joinedDate   String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  payments     Payment[]
+}
+
+model Payment {
+  id                    String   @id @default(cuid())
+  chapterId             String
+  chapter               Chapter  @relation(fields: [chapterId], references: [id])
+  memberId              String?
+  member                Member?  @relation(fields: [memberId], references: [id])
+  memberName            String
+  category              String   // "monthly_dues" | "donation" | "ticket" | "merchandise"
+  amount                Float
+  date                  String   // ISO YYYY-MM-DD
+  description           String
+  paymentMethod         String   @default("stripe") // "stripe" | "card" | "bank_transfer"
+  stripePaymentIntentId String?
+  status                String   @default("completed") // "completed" | "pending" | "failed"
+  createdAt             DateTime @default(now())
+}
+
+model Expense {
+  id          String   @id @default(cuid())
+  category    String   // "Humanitarian Aid" | "Medical Supplies" | "STEM & AI Lab" | "Convention Logistics" | "Administrative" | "Youth Programs"
+  amount      Float
+  date        String   // ISO YYYY-MM-DD
+  description String
+  approvedBy  String
+  vendor      String
+  status      String   @default("Approved") // "Approved" | "Paid" | "Pending"
+  createdAt   DateTime @default(now())
+}
+
+model Meeting {
+  id           String   @id @default(cuid())
+  title        String
+  date         String   // ISO YYYY-MM-DD
+  chapterId    String?  // null indicates National General Assembly
+  duration     String
+  recordedBy   String
+  audioBlobUrl String?
+  transcript   String   // Full transcription text
+  summary      String   // Executive AI summary
+  keyDecisions String   // JSON string of string[]
+  actionItems  String   // JSON string of { task, owner, deadline }[]
+  createdAt    DateTime @default(now())
+}

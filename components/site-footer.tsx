@@ -1,4 +1,5 @@
 import { ArrowRight, Heart } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function SiteFooter() {
@@ -36,7 +37,10 @@ export default function SiteFooter() {
 
       <footer className="upua-main-footer">
         <div className="upua-footer-bar">
-          <strong>UPUA</strong>
+          <Link href="/" className="footer-brand" style={{ display: "flex", alignItems: "center", gap: "8px", textDecoration: "none", color: "inherit" }}>
+            <Image src="/upua-logo.png" alt="UPUA Emblem" width={32} height={32} />
+            <strong>UPUA</strong>
+          </Link>
           <nav aria-label="Footer navigation">
             {navItems.map((item) => (
               <Link href={navLinks[item] ?? "#"} key={item}>

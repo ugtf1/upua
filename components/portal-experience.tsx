@@ -109,11 +109,11 @@ function LandingPage({ onLogin }: { onLogin: (role: Role) => void }) {
   return (
     <section className="figma-landing-page" aria-label="UPUA landing page">
       <LandingHeader onLogin={onLogin} onOpenDonation={() => setDonationOpen(true)} />
-      <LandingHero onOpenDonation={() => setDonationOpen(true)} />
+      <LandingHero />
       <ProblemSolution />
-      <LandingWork onOpenDonation={() => setDonationOpen(true)} />
+      <LandingWork />
       <LandingBlog />
-      <WorldwideLandingFooter onOpenDonation={() => setDonationOpen(true)} />
+      <WorldwideLandingFooter />
       <DonationModal isOpen={donationOpen} onClose={() => setDonationOpen(false)} />
     </section>
   );
@@ -169,9 +169,9 @@ function LandingHeader({
         >
           Donate <Heart size={14} fill="currentColor" />
         </button>
-        <button type="button" onClick={() => onLogin("admin")}>
+        <Link href="/portal" className="header-signin-btn">
           Sign in
-        </button>
+        </Link>
       </div>
 
       {/* Extreme Right: Mobile Hamburger */}
@@ -334,7 +334,10 @@ function WorldwideLandingFooter() {
       </div>
       <footer className="upua-main-footer">
         <div className="upua-footer-bar">
-          <strong>UPUA</strong>
+          <Link href="/" className="footer-brand" style={{ display: "flex", alignItems: "center", gap: "8px", textDecoration: "none", color: "inherit" }}>
+            <Image src="/upua-logo.png" alt="UPUA Emblem" width={32} height={32} />
+            <strong>UPUA</strong>
+          </Link>
           <nav aria-label="Footer navigation">
             {navItems.map((item) => {
               const hrefMap: Record<string, string> = {

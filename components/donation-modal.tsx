@@ -88,7 +88,7 @@ export default function DonationModal({
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape" && isOpen) {
-        onClose();
+        handleClose();
       }
     }
     if (isOpen) {
