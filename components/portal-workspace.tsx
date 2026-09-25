@@ -49,6 +49,7 @@ import {
   Ticket,
 } from "lucide-react";
 import DonationModal from "@/components/donation-modal";
+import DuesModal from "@/components/dues-modal";
 import { ChapterData, PaymentRecord, ExpenseRecord, MeetingRecord, MemberRecord } from "@/lib/data-service";
 
 export type Role = "admin" | "chapter" | "member";
@@ -117,6 +118,7 @@ export default function PortalWorkspace() {
   const [isNewPaymentOpen, setIsNewPaymentOpen] = useState(false);
   const [isNewExpenseOpen, setIsNewExpenseOpen] = useState(false);
   const [donationModalOpen, setDonationModalOpen] = useState(false);
+  const [duesModalOpen, setDuesModalOpen] = useState(false);
 
   // Form Fields
   const [chapterForm, setChapterForm] = useState({ name: "", code: "", region: "", president: "", contactEmail: "", memberCount: 50 });
@@ -1857,7 +1859,7 @@ export default function PortalWorkspace() {
                     <button
                       type="button"
                       className="btn-orgflo-white"
-                      onClick={() => setDonationModalOpen(true)}
+                      onClick={() => setDuesModalOpen(true)}
                     >
                       <CreditCard size={16} /> Pay Chapter Dues
                     </button>
@@ -1963,7 +1965,7 @@ export default function PortalWorkspace() {
                   <button
                     type="button"
                     className="btn-orgflo-white"
-                    onClick={() => setDonationModalOpen(true)}
+                    onClick={() => setDuesModalOpen(true)}
                   >
                     <CreditCard size={16} /> Pay Dues / View Ledger
                   </button>
@@ -2042,10 +2044,10 @@ export default function PortalWorkspace() {
 
                     <div style={{ background: "#f4f8f5", borderRadius: "14px", padding: "16px", border: "1px solid #dce8df", marginBottom: "20px" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-                        <span style={{ fontWeight: 700, fontSize: "0.85rem", color: "#0e3d26" }}>Current Monthly Dues</span>
-                        <span style={{ fontWeight: 800, fontSize: "1rem", color: "#137333" }}>$100.00 / month</span>
+                        <span style={{ fontWeight: 700, fontSize: "0.85rem", color: "#0e3d26" }}>Quarterly & Annual Dues</span>
+                        <span style={{ fontWeight: 800, fontSize: "1rem", color: "#137333" }}>$75–$150/qtr · $250+/yr</span>
                       </div>
-                      <small style={{ color: "#526359" }}>Covers chapter operational levy and national union contribution.</small>
+                      <small style={{ color: "#526359" }}>Covers chapter operational levy and national union contribution via Stripe.</small>
                     </div>
                   </div>
 
@@ -2054,9 +2056,9 @@ export default function PortalWorkspace() {
                       type="button"
                       className="btn-orgflo-white"
                       style={{ background: "#0e3d26", color: "#ffffff", flex: 1, justifyContent: "center" }}
-                      onClick={() => setDonationModalOpen(true)}
+                      onClick={() => setDuesModalOpen(true)}
                     >
-                      <CreditCard size={16} /> Pay Monthly Dues
+                      <CreditCard size={16} /> Pay Membership Dues
                     </button>
                     <button
                       type="button"
@@ -3219,6 +3221,13 @@ export default function PortalWorkspace() {
       <DonationModal
         isOpen={donationModalOpen}
         onClose={() => setDonationModalOpen(false)}
+      />
+
+      {/* STRIPE DUES PAYMENT MODAL */}
+      <DuesModal
+        isOpen={duesModalOpen}
+        onClose={() => setDuesModalOpen(false)}
+        defaultChapter={user?.chapterName}
       />
     </div>
   );
