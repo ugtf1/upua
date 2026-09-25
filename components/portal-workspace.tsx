@@ -55,7 +55,7 @@ interface AuthUser {
 export default function PortalWorkspace() {
   // Authentication State
   const [user, setUser] = useState<AuthUser | null>(null);
-  const [activeTab, setActiveTab] = useState<"overview" | "chapters" | "ledger" | "meetings" | "my_chapter" | "my_membership">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "chapters" | "ledger" | "meetings" | "my_chapter" | "my_membership" | "balances">("overview");
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [meetingsSubmenuOpen, setMeetingsSubmenuOpen] = useState(true);
 
@@ -73,6 +73,10 @@ export default function PortalWorkspace() {
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [selectedMeeting, setSelectedMeeting] = useState<MeetingRecord | null>(null);
   const [ledgerSubTab, setLedgerSubTab] = useState<"income" | "expenses">("income");
+
+  // Balances Page State
+  const [balanceSelectedChapterId, setBalanceSelectedChapterId] = useState<string>("");
+  const [balancePayModal, setBalancePayModal] = useState<{ open: boolean; chapterName: string; category: string; amount: number; payAmount: number } | null>(null);
 
   // Admin CRUD Modal States
   const [isNewChapterOpen, setIsNewChapterOpen] = useState(false);
@@ -641,6 +645,17 @@ export default function PortalWorkspace() {
                     </div>
                   )}
                 </div>
+
+                <button
+                  type="button"
+                  className={`app-sidebar-link ${activeTab === "balances" ? "active" : ""}`}
+                  onClick={() => {
+                    setActiveTab("balances");
+                    setMobileNavOpen(false);
+                  }}
+                >
+                  <CreditCard size={18} /> Chapter Balances
+                </button>
               </>
             )}
 
@@ -689,6 +704,17 @@ export default function PortalWorkspace() {
                 >
                   <FileText size={18} /> National Meetings & AI
                 </button>
+
+                <button
+                  type="button"
+                  className={`app-sidebar-link ${activeTab === "balances" ? "active" : ""}`}
+                  onClick={() => {
+                    setActiveTab("balances");
+                    setMobileNavOpen(false);
+                  }}
+                >
+                  <CreditCard size={18} /> Chapter Balances
+                </button>
               </>
             )}
 
@@ -714,6 +740,17 @@ export default function PortalWorkspace() {
                   }}
                 >
                   <FileText size={18} /> Meeting Intelligence
+                </button>
+
+                <button
+                  type="button"
+                  className={`app-sidebar-link ${activeTab === "balances" ? "active" : ""}`}
+                  onClick={() => {
+                    setActiveTab("balances");
+                    setMobileNavOpen(false);
+                  }}
+                >
+                  <CreditCard size={18} /> Chapter Balances
                 </button>
               </>
             )}
@@ -1932,8 +1969,347 @@ export default function PortalWorkspace() {
               </div>
             </div>
           )}
+
+          {/* ============================================================
+              TAB: CHAPTER BALANCES
+              Admin → chapter selector dropdown, then cards + full table
+              Chapter → auto-loaded own chapter cards + full table
+              Member → chapter selector dropdown, then cards + full table
+          ============================================================ */}
+          {activeTab === "balances" && (() => {
+            // Build balance data from chapters using actual ChapterData fields
+            const balanceData = chapters.map((ch) => {
+              const pb = ch.paymentsBreakdown;
+              // Expected annual amounts per member · UPUA standard rates
+              const expectedDues = ch.memberCount * 150;       // $150/member/yr dues
+              const expectedInsurance = ch.memberCount * 50;   // $50/member/yr insurance
+              const expectedDonations = ch.memberCount * 100;  // $100/member/yr donation pledge
+              const expectedTickets = ch.memberCount * 200;    // $200/member convention ticket
+              return {
+                id: ch.id,
+                name: ch.name,
+                region: ch.region,
+                duesBal: Math.max(0, expectedDues - pb.monthlyDues),
+                insuranceBal: Math.max(0, expectedInsurance - Math.round(pb.monthlyDues * 0.28)),
+                donationBal: Math.max(0, expectedDonations - pb.donations),
+                ticketBal: Math.max(0, expectedTickets - pb.tickets),
+              };
+            });
+
+            // Determine which chapter to show in the cards section
+            const chapterForCards: typeof balanceData[0] | undefined =
+              user.role === "chapter"
+                ? balanceData.find((b) => b.id === user.chapterId) ?? balanceData[0]
+                : balanceData.find((b) => b.id === balanceSelectedChapterId) ?? balanceData[0];
+
+            const cardCategories = [
+              { key: "duesBal", label: "Dues Balance", icon: "💳", color: "#1a73e8", lightBg: "#e8f0fe" },
+              { key: "insuranceBal", label: "Insurance Balance", icon: "🛡️", color: "#c5221f", lightBg: "#fce8e6" },
+              { key: "donationBal", label: "Donation Balance", icon: "🤝", color: "#137459", lightBg: "#e6f4ea" },
+              { key: "ticketBal", label: "Convention Ticket Bal.", icon: "🎫", color: "#e37400", lightBg: "#fef3e2" },
+            ] as const;
+
+            return (
+              <div>
+                {/* Page Welcome Banner */}
+                <div className="dash-welcome-banner" style={{ marginBottom: "28px" }}>
+                  <div style={{ zIndex: 1 }}>
+                    <div style={{ fontSize: "0.78rem", color: "#a7d6b6", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "6px" }}>
+                      CHAPTER FINANCIAL STATUS
+                    </div>
+                    <h2 style={{ fontFamily: "var(--font-heading)", fontSize: "1.7rem", fontWeight: 800, margin: "0 0 6px" }}>
+                      Chapter Balances & Payments
+                    </h2>
+                    <p style={{ color: "#c3ded0", fontSize: "0.95rem", margin: 0 }}>
+                      View outstanding dues, insurance, donations, and convention ticket balances per chapter.
+                      {(user.role === "chapter" || user.role === "member") && " Click a card to make a payment."}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Chapter Selector — admin & member only */}
+                {(user.role === "admin" || user.role === "member") && (
+                  <div className="orgflo-card" style={{ marginBottom: "28px", padding: "20px 24px" }}>
+                    <label style={{ fontWeight: 700, color: "#0e3d26", fontSize: "0.9rem", marginRight: "14px" }}>
+                      <Building size={16} style={{ display: "inline", verticalAlign: "middle", marginRight: "6px" }} />
+                      Select Chapter to View:
+                    </label>
+                    <select
+                      value={balanceSelectedChapterId}
+                      onChange={(e) => setBalanceSelectedChapterId(e.target.value)}
+                      className="donation-input"
+                      style={{ display: "inline-block", width: "auto", minWidth: "220px", padding: "8px 14px" }}
+                    >
+                      {balanceData.map((b) => (
+                        <option key={b.id} value={b.id}>{b.name} — {b.region}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
+                {/* Balance Cards */}
+                {chapterForCards && (
+                  <div style={{ marginBottom: "32px" }}>
+                    <div style={{ fontWeight: 800, fontSize: "1.05rem", color: "#0e3d26", marginBottom: "16px", fontFamily: "var(--font-heading)" }}>
+                      📊 {chapterForCards.name} — Outstanding Balances
+                    </div>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "18px" }}>
+                      {cardCategories.map((cat) => {
+                        const amount = chapterForCards[cat.key as keyof typeof chapterForCards] as number;
+                        const isClickable = user.role === "chapter" || user.role === "member";
+                        return (
+                          <div
+                            key={cat.key}
+                            onClick={() => {
+                              if (isClickable) {
+                                setBalancePayModal({
+                                  open: true,
+                                  chapterName: chapterForCards.name,
+                                  category: cat.label,
+                                  amount,
+                                  payAmount: amount,
+                                });
+                              }
+                            }}
+                            style={{
+                              background: "#ffffff",
+                              borderRadius: "16px",
+                              padding: "24px 22px",
+                              boxShadow: "0 2px 12px rgba(0,0,0,0.07)",
+                              border: `2px solid ${isClickable ? cat.lightBg : "#f0f2f1"}`,
+                              cursor: isClickable ? "pointer" : "default",
+                              transition: "all 0.2s ease",
+                              position: "relative",
+                              overflow: "hidden",
+                            }}
+                            onMouseEnter={(e) => { if (isClickable) (e.currentTarget as HTMLDivElement).style.transform = "translateY(-3px)"; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 8px 28px rgba(0,0,0,0.13)"; }}
+                            onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)"; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 2px 12px rgba(0,0,0,0.07)"; }}
+                          >
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
+                              <span style={{ fontSize: "2rem" }}>{cat.icon}</span>
+                              {isClickable && (
+                                <span style={{ background: cat.lightBg, color: cat.color, fontSize: "0.72rem", fontWeight: 800, padding: "4px 10px", borderRadius: "9999px", letterSpacing: "0.04em" }}>
+                                  PAY NOW
+                                </span>
+                              )}
+                              {user.role === "admin" && (
+                                <span style={{ background: "#f0f2f1", color: "#5f6368", fontSize: "0.72rem", fontWeight: 700, padding: "4px 10px", borderRadius: "9999px" }}>
+                                  VIEW ONLY
+                                </span>
+                              )}
+                            </div>
+                            <div style={{ fontSize: "1.9rem", fontWeight: 900, color: amount > 0 ? "#c5221f" : "#137459", fontFamily: "var(--font-heading)", lineHeight: 1.1, marginBottom: "6px" }}>
+                              ${amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                            </div>
+                            <div style={{ fontSize: "0.88rem", fontWeight: 700, color: "#3c4043" }}>{cat.label}</div>
+                            <div style={{ fontSize: "0.78rem", color: "#80868b", marginTop: "4px" }}>
+                              {amount > 0 ? "Outstanding — payment required" : "✓ Fully settled"}
+                            </div>
+                            {/* Decorative stripe */}
+                            <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "4px", background: cat.color, borderRadius: "0 0 14px 14px" }} />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* All Chapters Balance Table */}
+                <div className="orgflo-card">
+                  <div className="orgflo-card-header">
+                    <h3 style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "1.05rem", color: "#0e3d26", margin: 0 }}>
+                      All Chapter Outstanding Balances
+                    </h3>
+                    <span className="badge badge-active">National Overview</span>
+                  </div>
+                  <div style={{ overflowX: "auto" }}>
+                    <table className="orgflo-table" style={{ minWidth: "700px" }}>
+                      <thead>
+                        <tr>
+                          <th>Chapter</th>
+                          <th>City</th>
+                          <th style={{ color: "#1a73e8" }}>💳 Dues Bal.</th>
+                          <th style={{ color: "#c5221f" }}>🛡️ Insurance Bal.</th>
+                          <th style={{ color: "#137459" }}>🤝 Donation Bal.</th>
+                          <th style={{ color: "#e37400" }}>🎫 Ticket Bal.</th>
+                          <th>Total Owed</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {balanceData.map((b) => {
+                          const total = b.duesBal + b.insuranceBal + b.donationBal + b.ticketBal;
+                          return (
+                            <tr key={b.id} style={{ fontWeight: b.id === chapterForCards?.id ? 700 : 400 }}>
+                              <td>
+                                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                  <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: total > 0 ? "#c5221f" : "#137459", flexShrink: 0 }} />
+                                  {b.name}
+                                </div>
+                              </td>
+                              <td style={{ color: "#5f6368", fontSize: "0.88rem" }}>{b.region}</td>
+                              <td style={{ color: b.duesBal > 0 ? "#c5221f" : "#137459", fontWeight: 700 }}>
+                                {b.duesBal > 0 ? `$${b.duesBal.toLocaleString("en-US", { minimumFractionDigits: 2 })}` : "—"}
+                              </td>
+                              <td style={{ color: b.insuranceBal > 0 ? "#c5221f" : "#137459", fontWeight: 700 }}>
+                                {b.insuranceBal > 0 ? `$${b.insuranceBal.toLocaleString("en-US", { minimumFractionDigits: 2 })}` : "—"}
+                              </td>
+                              <td style={{ color: b.donationBal > 0 ? "#c5221f" : "#137459", fontWeight: 700 }}>
+                                {b.donationBal > 0 ? `$${b.donationBal.toLocaleString("en-US", { minimumFractionDigits: 2 })}` : "—"}
+                              </td>
+                              <td style={{ color: b.ticketBal > 0 ? "#c5221f" : "#137459", fontWeight: 700 }}>
+                                {b.ticketBal > 0 ? `$${b.ticketBal.toLocaleString("en-US", { minimumFractionDigits: 2 })}` : "—"}
+                              </td>
+                              <td style={{ fontWeight: 900, fontSize: "1rem", color: total > 0 ? "#c5221f" : "#137459" }}>
+                                {total > 0 ? `$${total.toLocaleString("en-US", { minimumFractionDigits: 2 })}` : "✓ Clear"}
+                              </td>
+                              <td>
+                                <span className={`badge ${total > 0 ? "badge-overdue" : "badge-active"}`}>
+                                  {total > 0 ? "Outstanding" : "Settled"}
+                                </span>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                      <tfoot>
+                        <tr style={{ background: "#f0f8f3", fontWeight: 900 }}>
+                          <td colSpan={2} style={{ color: "#0e3d26", fontFamily: "var(--font-heading)" }}>NATIONAL TOTAL</td>
+                          <td style={{ color: "#1a73e8" }}>${balanceData.reduce((s, b) => s + b.duesBal, 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                          <td style={{ color: "#c5221f" }}>${balanceData.reduce((s, b) => s + b.insuranceBal, 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                          <td style={{ color: "#137459" }}>${balanceData.reduce((s, b) => s + b.donationBal, 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                          <td style={{ color: "#e37400" }}>${balanceData.reduce((s, b) => s + b.ticketBal, 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                          <td style={{ color: "#c5221f", fontSize: "1.05rem" }}>${balanceData.reduce((s, b) => s + b.duesBal + b.insuranceBal + b.donationBal + b.ticketBal, 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                          <td />
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
         </main>
       </div>
+
+      {/* ============================================================
+          BALANCE PAYMENT MODAL — opens when a balance card is clicked
+      ============================================================ */}
+      {balancePayModal?.open && (
+        <div
+          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)", zIndex: 2000, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" }}
+          onClick={() => setBalancePayModal(null)}
+        >
+          <div
+            style={{ background: "#ffffff", borderRadius: "20px", maxWidth: "480px", width: "100%", overflow: "hidden", boxShadow: "0 25px 60px rgba(0,0,0,0.3)" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div style={{ background: "linear-gradient(135deg, #0e3d26 0%, #165637 100%)", color: "#ffffff", padding: "28px 32px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                <span style={{ background: "rgba(255,255,255,0.2)", color: "#ffffff", fontSize: "0.72rem", fontWeight: 800, padding: "4px 12px", borderRadius: "9999px", letterSpacing: "0.06em" }}>
+                  CHAPTER PAYMENT
+                </span>
+                <button type="button" onClick={() => setBalancePayModal(null)} style={{ background: "transparent", border: "none", color: "#ffffff", cursor: "pointer" }}>
+                  <X size={20} />
+                </button>
+              </div>
+              <h3 style={{ fontFamily: "var(--font-heading)", fontSize: "1.4rem", fontWeight: 800, margin: "0 0 6px" }}>
+                {balancePayModal.category}
+              </h3>
+              <p style={{ color: "#c3ded0", fontSize: "0.9rem", margin: 0 }}>
+                {balancePayModal.chapterName} · Outstanding Payment
+              </p>
+            </div>
+
+            {/* Modal Form */}
+            <div style={{ padding: "28px 32px" }}>
+
+              {/* Outstanding Balance Info Bar */}
+              <div style={{ background: "#f0f8f3", border: "1px solid #c8e6c9", borderRadius: "12px", padding: "14px 18px", marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div>
+                  <div style={{ fontSize: "0.75rem", color: "#137459", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: "2px" }}>
+                    Total Outstanding
+                  </div>
+                  <div style={{ fontSize: "1.6rem", fontWeight: 900, color: "#0e3d26", fontFamily: "var(--font-heading)" }}>
+                    ${balancePayModal.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                  </div>
+                </div>
+                <span style={{ background: "#c8e6c9", color: "#137459", fontSize: "0.72rem", fontWeight: 800, padding: "4px 10px", borderRadius: "9999px" }}>
+                  BALANCE DUE
+                </span>
+              </div>
+
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const paid = balancePayModal.payAmount;
+                  if (!paid || paid <= 0) return;
+                  alert(`Payment of $${paid.toFixed(2)} for ${balancePayModal.category} (${balancePayModal.chapterName}) submitted successfully.\n\nStripe integration coming soon.`);
+                  setBalancePayModal(null);
+                }}
+              >
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                  <input type="text" placeholder="Payer Full Name" required className="donation-input" />
+                  <input type="email" placeholder="Email Address" required className="donation-input" />
+
+                  {/* Editable Payment Amount */}
+                  <div>
+                    <label style={{ fontSize: "0.8rem", fontWeight: 700, color: "#3c4043", display: "block", marginBottom: "6px" }}>
+                      Amount to Pay (USD) <span style={{ color: "#c5221f" }}>*</span>
+                    </label>
+                    <div style={{ position: "relative" }}>
+                      <span style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", fontWeight: 800, color: "#0e3d26", fontSize: "1rem" }}>$</span>
+                      <input
+                        type="number"
+                        required
+                        min={1}
+                        max={balancePayModal.amount > 0 ? balancePayModal.amount : undefined}
+                        step="0.01"
+                        placeholder="Enter amount"
+                        value={balancePayModal.payAmount || ""}
+                        onChange={(e) =>
+                          setBalancePayModal({ ...balancePayModal, payAmount: Number(e.target.value) })
+                        }
+                        className="donation-input"
+                        style={{ paddingLeft: "28px", fontWeight: 700, fontSize: "1.1rem" }}
+                      />
+                    </div>
+                    {balancePayModal.amount > 0 && balancePayModal.payAmount > 0 && balancePayModal.payAmount < balancePayModal.amount && (
+                      <div style={{ fontSize: "0.78rem", color: "#e37400", marginTop: "5px", fontWeight: 600 }}>
+                        ⚠ Partial payment — remaining balance will be ${(balancePayModal.amount - balancePayModal.payAmount).toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                      </div>
+                    )}
+                    {balancePayModal.amount > 0 && balancePayModal.payAmount >= balancePayModal.amount && (
+                      <div style={{ fontSize: "0.78rem", color: "#137459", marginTop: "5px", fontWeight: 600 }}>
+                        ✓ Full balance will be cleared
+                      </div>
+                    )}
+                  </div>
+
+                  <input type="text" placeholder="Card Number (Stripe)" className="donation-input" disabled style={{ background: "#f8f9fa", color: "#9aa0a6" }} defaultValue="Stripe Payment — Coming Soon" />
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                    <input type="text" placeholder="MM / YY" className="donation-input" disabled style={{ background: "#f8f9fa", color: "#9aa0a6" }} />
+                    <input type="text" placeholder="CVV" className="donation-input" disabled style={{ background: "#f8f9fa", color: "#9aa0a6" }} />
+                  </div>
+
+                  <div style={{ display: "flex", gap: "10px", marginTop: "6px" }}>
+                    <button type="submit" className="btn-orgflo-gold" style={{ flex: 1, justifyContent: "center", padding: "14px 0" }}>
+                      <CreditCard size={17} />
+                      {balancePayModal.payAmount > 0
+                        ? `Pay $${balancePayModal.payAmount.toLocaleString("en-US", { minimumFractionDigits: 2 })}`
+                        : "Enter Amount to Pay"}
+                    </button>
+                    <button type="button" onClick={() => setBalancePayModal(null)} style={{ background: "#f0f2f1", border: 0, padding: "14px 20px", borderRadius: "10px", cursor: "pointer", fontWeight: 600, color: "#3c4043" }}>
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* MEETING INTELLIGENCE DETAIL MODAL */}
       {selectedMeeting && (
