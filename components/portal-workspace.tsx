@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -64,7 +64,7 @@ interface AuthUser {
 export default function PortalWorkspace() {
   // Authentication State
   const [user, setUser] = useState<AuthUser | null>(null);
-  const [activeTab, setActiveTab] = useState<"overview" | "chapters" | "ledger" | "meetings" | "my_chapter" | "my_membership" | "balances" | "shop">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "chapters" | "ledger" | "meetings" | "my_chapter" | "my_membership" | "balances" | "shop" | "reports">("overview");
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [meetingsSubmenuOpen, setMeetingsSubmenuOpen] = useState(true);
 
@@ -101,6 +101,15 @@ export default function PortalWorkspace() {
     { id: "ORD-003", buyerName: "Dr. Bernard Rerri", buyerEmail: "chicago@upuamerica.org", chapterName: "UPU Chicagoland", items: [{ product: { id: "p5", name: "Group Health Insurance Plan", category: "insurance", price: 350, emoji: "🛡️", description: "", stock: 999 }, qty: 3 }], total: 1050, date: "2025-09-15", status: "pending" },
     { id: "ORD-004", buyerName: "Mr. Felix Agbabune", buyerEmail: "socal@upuamerica.org", chapterName: "UPU SoCal", items: [{ product: { id: "p7", name: "UPUA Branded Cap", category: "merchandise", price: 35, emoji: "🧢", description: "", stock: 200 }, qty: 4 }], total: 140, date: "2025-09-18", status: "confirmed" },
   ]);
+
+  // QuickBooks Reports State
+  const [qbConnected, setQbConnected] = useState(false);
+  const [qbLoading, setQbLoading] = useState(false);
+  const [qbReport, setQbReport] = useState<"ProfitAndLoss" | "BalanceSheet" | "TransactionList" | "CashFlow">("ProfitAndLoss");
+  const [qbDateMacro, setQbDateMacro] = useState("This Year");
+  const [qbData, setQbData] = useState<any | null>(null);
+  const [qbError, setQbError] = useState<string | null>(null);
+  const [qbRealmId, setQbRealmId] = useState<string | null>(null);
 
   // Admin CRUD Modal States
   const [isNewChapterOpen, setIsNewChapterOpen] = useState(false);
@@ -688,6 +697,14 @@ export default function PortalWorkspace() {
                 >
                   <ShoppingCart size={18} /> Shop & Orders
                 </button>
+
+                <button
+                  type="button"
+                  className={`app-sidebar-link ${activeTab === "reports" ? "active" : ""}`}
+                  onClick={() => { setActiveTab("reports"); setMobileNavOpen(false); }}
+                >
+                  <TrendingUp size={18} /> QB Reports
+                </button>
               </>
             )}
 
@@ -791,6 +808,14 @@ export default function PortalWorkspace() {
                   onClick={() => { setActiveTab("shop"); setMobileNavOpen(false); }}
                 >
                   <ShoppingCart size={18} /> Shop
+                </button>
+
+                <button
+                  type="button"
+                  className={`app-sidebar-link ${activeTab === "reports" ? "active" : ""}`}
+                  onClick={() => { setActiveTab("reports"); setMobileNavOpen(false); }}
+                >
+                  <TrendingUp size={18} /> QB Reports
                 </button>
               </>
             )}
@@ -2475,6 +2500,170 @@ export default function PortalWorkspace() {
                           <button onClick={() => setShopCart([])} style={{ width: "100%", background: "transparent", border: "none", color: "#c5221f", fontWeight: 700, fontSize: "0.84rem", cursor: "pointer", padding: "9px 0", marginTop: "4px" }}>Clear Cart</button>
                         </div>
                       )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+
+          {/* TAB: QB REPORTS */}
+          {activeTab === "reports" && (() => {
+            const checkStatus = async () => {
+              try { const res = await fetch("/api/quickbooks/reports?action=status"); const json = await res.json(); setQbConnected(json.connected ?? false); setQbRealmId(json.realmId ?? null); } catch { /* not configured */ }
+            };
+            const fetchReport = async () => {
+              setQbLoading(true); setQbError(null); setQbData(null);
+              try {
+                const p = new URLSearchParams({ report: qbReport, date_macro: qbDateMacro });
+                const res = await fetch(`/api/quickbooks/reports?${p}`);
+                const json = await res.json();
+                if (!res.ok) setQbError(json.error ?? "Failed to fetch report."); else setQbData(json.report);
+              } catch (e) { setQbError(String(e)); }
+              setQbLoading(false);
+            };
+            const disconnect = async () => { await fetch("/api/quickbooks/reports?action=disconnect"); setQbConnected(false); setQbRealmId(null); setQbData(null); };
+
+            const renderRows = (rows: any[], depth = 0): React.ReactNode =>
+              rows?.map((row: any, i: number) => {
+                if (row.type === "Section") return (
+                  <React.Fragment key={i}>
+                    {row.Header && (<tr style={{ background: depth === 0 ? "#f0f8f3" : "#f8faf8" }}><td colSpan={10} style={{ fontWeight: 800, fontFamily: "var(--font-heading)", color: "#0e3d26", padding: "10px 16px", paddingLeft: `${16 + depth * 20}px`, fontSize: `${0.92 - depth * 0.03}rem` }}>{row.Header.ColData?.[0]?.value}</td></tr>)}
+                    {row.Rows?.Row && renderRows(row.Rows.Row, depth + 1)}
+                    {row.Summary && (<tr style={{ background: depth === 0 ? "#e6f4ea" : "#f0f8f3", borderTop: "1.5px solid #c8e6c9" }}>{row.Summary.ColData?.map((col: any, ci: number) => (<td key={ci} style={{ fontWeight: 800, color: "#0e3d26", padding: "8px 16px", paddingLeft: ci === 0 ? `${16 + depth * 20}px` : "16px", textAlign: ci > 0 ? "right" : "left", fontSize: "0.87rem" }}>{col.value}</td>))}</tr>)}
+                  </React.Fragment>
+                );
+                if (row.type === "Data") return (<tr key={i} style={{ borderBottom: "1px solid #f0f2f1" }}>{row.ColData?.map((col: any, ci: number) => (<td key={ci} style={{ padding: "7px 16px", paddingLeft: ci === 0 ? `${20 + depth * 18}px` : "16px", fontSize: "0.84rem", color: "#3c4043", textAlign: ci > 0 ? "right" : "left" }}>{col.value}</td>))}</tr>);
+                return null;
+              });
+
+            const rLabels: Record<string, { icon: string; title: string; desc: string }> = {
+              ProfitAndLoss: { icon: "📈", title: "Profit & Loss", desc: "Income, expenses, and net profit/loss for the selected period." },
+              BalanceSheet:  { icon: "⚖️", title: "Balance Sheet",  desc: "Assets, liabilities, and equity at a point in time." },
+              TransactionList: { icon: "🧾", title: "Transaction List", desc: "Full audit receipt trail of all financial transactions." },
+              CashFlow: { icon: "💰", title: "Cash Flow", desc: "Operating, investing, and financing cash movements." },
+            };
+            const demoRows = [
+              { label: "INCOME", section: true }, { label: "Monthly Dues", value: "$182,400.00", indent: 1 }, { label: "Donations Received", value: "$143,500.00", indent: 1 }, { label: "Convention Ticket Sales", value: "$67,250.00", indent: 1 }, { label: "Merchandise Sales", value: "$18,950.00", indent: 1 }, { label: "Total Income", value: "$412,100.00", summary: true },
+              { label: "EXPENSES", section: true }, { label: "Humanitarian Aid", value: "$85,000.00", indent: 1 }, { label: "Convention Logistics", value: "$42,500.00", indent: 1 }, { label: "Administrative", value: "$18,200.00", indent: 1 }, { label: "Youth Programs", value: "$12,600.00", indent: 1 }, { label: "Medical Supplies", value: "$9,800.00", indent: 1 }, { label: "Total Expenses", value: "$168,100.00", summary: true },
+              { label: "NET INCOME", value: "$244,000.00", summary: true },
+            ];
+
+            return (
+              <div>
+                {/* Banner */}
+                <div className="dash-welcome-banner" style={{ marginBottom: "28px" }}>
+                  <div style={{ zIndex: 1 }}>
+                    <div style={{ fontSize: "0.78rem", color: "#a7d6b6", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "6px" }}>FINANCIAL AUDIT CENTER</div>
+                    <h2 style={{ fontFamily: "var(--font-heading)", fontSize: "1.7rem", fontWeight: 800, margin: "0 0 6px" }}>QuickBooks Reports</h2>
+                    <p style={{ color: "#c3ded0", fontSize: "0.95rem", margin: 0 }}>Live P&L, Balance Sheet, Transaction receipts & Cash Flow — powered by QuickBooks Online.</p>
+                  </div>
+                </div>
+
+                {/* QB Connection Card */}
+                <div className="orgflo-card" style={{ marginBottom: "28px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                      <div style={{ width: "52px", height: "52px", background: "#2ca01c", borderRadius: "14px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: "1.6rem" }}>📗</div>
+                      <div>
+                        <div style={{ fontWeight: 800, fontSize: "1rem", color: "#14211a", fontFamily: "var(--font-heading)" }}>QuickBooks Online</div>
+                        {qbConnected
+                          ? <div style={{ fontSize: "0.84rem", color: "#137459", fontWeight: 600, marginTop: "3px" }}>✓ Connected · Company ID: <code style={{ background: "#e6f4ea", padding: "2px 7px", borderRadius: "6px" }}>{qbRealmId}</code></div>
+                          : <div style={{ fontSize: "0.84rem", color: "#80868b", marginTop: "3px" }}>{user.role === "admin" ? "Not connected — click Connect to link your QuickBooks company." : "Admin will connect QuickBooks to enable live reports."}</div>}
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", gap: "10px" }}>
+                      <button onClick={checkStatus} style={{ background: "#f0f2f1", border: "none", borderRadius: "10px", padding: "9px 16px", fontWeight: 600, fontSize: "0.85rem", cursor: "pointer" }}>Refresh</button>
+                      {user.role === "admin" && !qbConnected && (<a href="/api/quickbooks/auth" className="btn-orgflo-gold" style={{ textDecoration: "none", padding: "10px 20px", display: "inline-flex", alignItems: "center", gap: "8px", borderRadius: "10px" }}><TrendingUp size={16} /> Connect QuickBooks</a>)}
+                      {user.role === "admin" && qbConnected && (<button onClick={disconnect} style={{ background: "#f8e8e8", color: "#c5221f", border: "none", borderRadius: "10px", padding: "9px 16px", fontWeight: 700, fontSize: "0.85rem", cursor: "pointer" }}>Disconnect</button>)}
+                    </div>
+                  </div>
+                  {!qbConnected && (
+                    <div style={{ marginTop: "20px", background: "#fffbf0", border: "1.5px solid #fce8a3", borderRadius: "12px", padding: "16px 20px" }}>
+                      <div style={{ fontWeight: 800, fontSize: "0.88rem", color: "#854d0e", marginBottom: "10px" }}>⚙️ Admin Setup Steps:</div>
+                      <ol style={{ margin: 0, paddingLeft: "20px", color: "#78350f", fontSize: "0.84rem", lineHeight: "1.85" }}>
+                        <li>Go to <strong>developer.intuit.com</strong> → My Apps → Create App → <strong>QuickBooks Online Accounting</strong></li>
+                        <li>Copy <strong>Client ID</strong> & <strong>Client Secret</strong> from Keys & Credentials</li>
+                        <li>Add to <code style={{ background: "#fef3c7", padding: "1px 6px", borderRadius: "5px" }}>.env.local</code> and Netlify env: <code>QB_CLIENT_ID</code>, <code>QB_CLIENT_SECRET</code>, <code>QB_REDIRECT_URI</code>, <code>QB_ENVIRONMENT</code></li>
+                        <li>Set Redirect URI in Intuit app → <code style={{ background: "#fef3c7", padding: "1px 6px", borderRadius: "5px" }}>https://your-site.netlify.app/api/quickbooks/callback</code></li>
+                        <li>Click <strong>Connect QuickBooks</strong> → authorize UPUA → reports go live</li>
+                      </ol>
+                    </div>
+                  )}
+                </div>
+
+                {/* Report Selector */}
+                <div className="orgflo-card" style={{ marginBottom: "28px" }}>
+                  <div className="orgflo-card-header"><h3 style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "1rem", color: "#0e3d26", margin: 0 }}>Select Report</h3></div>
+                  <div style={{ display: "flex", gap: "14px", flexWrap: "wrap", alignItems: "flex-end" }}>
+                    <div>
+                      <div style={{ fontSize: "0.74rem", fontWeight: 700, color: "#5f6368", marginBottom: "8px", textTransform: "uppercase" }}>Report Type</div>
+                      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                        {(["ProfitAndLoss", "BalanceSheet", "TransactionList", "CashFlow"] as const).map(r => (
+                          <button key={r} onClick={() => setQbReport(r)} style={{ padding: "8px 15px", borderRadius: "10px", border: `2px solid ${qbReport === r ? "#0e3d26" : "#e0e5e2"}`, background: qbReport === r ? "#0e3d26" : "#fff", color: qbReport === r ? "#fff" : "#3c4043", fontWeight: 700, fontSize: "0.83rem", cursor: "pointer" }}>
+                            {rLabels[r].icon} {rLabels[r].title}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: "0.74rem", fontWeight: 700, color: "#5f6368", marginBottom: "8px", textTransform: "uppercase" }}>Period</div>
+                      <select value={qbDateMacro} onChange={e => setQbDateMacro(e.target.value)} className="donation-input" style={{ margin: 0, minWidth: "180px", padding: "8px 14px" }}>
+                        <option>This Year</option><option>This Year-to-Last-Month</option><option>Last Year</option><option>This Quarter</option><option>Last Quarter</option><option>This Month</option><option>Last Month</option><option>Last 90 Days</option>
+                      </select>
+                    </div>
+                    <button onClick={fetchReport} disabled={!qbConnected || qbLoading} className="btn-orgflo-gold" style={{ padding: "11px 24px", opacity: !qbConnected ? 0.5 : 1, cursor: !qbConnected ? "not-allowed" : "pointer" }}>
+                      {qbLoading ? "⏳ Loading..." : <><TrendingUp size={16} /> Fetch Report</>}
+                    </button>
+                  </div>
+                  <div style={{ marginTop: "14px", background: "#f0f8f3", borderRadius: "10px", padding: "10px 16px", fontSize: "0.84rem", color: "#137459", fontWeight: 600 }}>
+                    {rLabels[qbReport].icon} <strong>{rLabels[qbReport].title}:</strong> {rLabels[qbReport].desc}
+                  </div>
+                </div>
+
+                {qbError && <div style={{ background: "#fce8e6", border: "1.5px solid #f4b8b5", borderRadius: "12px", padding: "14px 20px", marginBottom: "22px", color: "#c5221f", fontWeight: 600 }}>⚠ {qbError}</div>}
+
+                {/* Demo report (not connected) */}
+                {!qbConnected && !qbData && (
+                  <div className="orgflo-card">
+                    <div className="orgflo-card-header">
+                      <h3 style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "1rem", color: "#0e3d26", margin: 0 }}>📈 Sample Profit & Loss — Preview Mode</h3>
+                      <span className="badge badge-pending">Demo Data</span>
+                    </div>
+                    <div style={{ overflowX: "auto" }}>
+                      <table className="orgflo-table">
+                        <thead><tr><th style={{ width: "65%" }}>Account</th><th style={{ textAlign: "right" }}>This Year</th></tr></thead>
+                        <tbody>
+                          {demoRows.map((row: any, i) =>
+                            row.section ? (<tr key={i} style={{ background: "#f0f8f3" }}><td colSpan={2} style={{ fontWeight: 800, padding: "10px 16px", color: "#0e3d26", fontFamily: "var(--font-heading)" }}>{row.label}</td></tr>)
+                            : row.summary ? (<tr key={i} style={{ background: "#e6f4ea", borderTop: "1.5px solid #c8e6c9" }}><td style={{ fontWeight: 800, padding: "9px 16px", paddingLeft: `${16 + (row.indent ?? 0) * 18}px`, color: "#0e3d26" }}>{row.label}</td><td style={{ fontWeight: 900, textAlign: "right", padding: "9px 16px", color: "#0e3d26", fontSize: "1rem" }}>{row.value}</td></tr>)
+                            : (<tr key={i} style={{ borderBottom: "1px solid #f0f2f1" }}><td style={{ padding: "7px 16px", paddingLeft: `${16 + (row.indent ?? 0) * 18}px`, fontSize: "0.85rem", color: "#3c4043" }}>{row.label}</td><td style={{ padding: "7px 16px", textAlign: "right", fontSize: "0.85rem", color: "#3c4043" }}>{row.value}</td></tr>)
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                    <div style={{ padding: "12px 20px", fontSize: "0.77rem", color: "#9aa0a6", textAlign: "center" }}>📌 Preview only — connect QuickBooks above for live figures.</div>
+                  </div>
+                )}
+
+                {/* Live QB Report */}
+                {qbData && (
+                  <div className="orgflo-card">
+                    <div className="orgflo-card-header">
+                      <div>
+                        <h3 style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "1.05rem", color: "#0e3d26", margin: "0 0 4px" }}>{rLabels[qbReport].icon} {qbData.Header?.ReportName ?? rLabels[qbReport].title}</h3>
+                        <div style={{ fontSize: "0.8rem", color: "#5f6368" }}>Period: <strong>{qbData.Header?.StartPeriod} → {qbData.Header?.EndPeriod}</strong>{qbData.Header?.Currency && <> · {qbData.Header.Currency}</>} · {qbData.Header?.Time ? new Date(qbData.Header.Time).toLocaleString() : ""}</div>
+                      </div>
+                      <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                        <span className="badge badge-active">Live QB Data</span>
+                        <button onClick={() => window.print()} style={{ background: "#f0f2f1", border: "none", borderRadius: "8px", padding: "6px 14px", fontWeight: 700, fontSize: "0.8rem", cursor: "pointer" }}>🖨 Print / PDF</button>
+                      </div>
+                    </div>
+                    <div style={{ overflowX: "auto" }}>
+                      <table className="orgflo-table">
+                        <thead><tr>{qbData.Columns?.Column?.map((col: any, i: number) => (<th key={i} style={{ textAlign: i > 0 ? "right" : "left" }}>{col.ColTitle || "Account"}</th>))}</tr></thead>
+                        <tbody>{renderRows(qbData.Rows?.Row ?? [])}</tbody>
+                      </table>
                     </div>
                   </div>
                 )}
