@@ -113,12 +113,12 @@ export default function PortalWorkspace() {
 
         // Populate sample chapter members for chapter view
         setMembers([
-          { id: "m-1", name: "Chief Godspower Oniovosa", email: "g.oniovosa@upua.org", phone: "+1 713-555-0192", chapterId: "c-houston", duesStatus: "Paid", role: "Chapter President" },
-          { id: "m-2", name: "Oghenefejiro Okagbare", email: "member.ogaga@upuamerica.org", phone: "+1 832-555-4819", chapterId: "c-houston", duesStatus: "Paid", role: "General Member" },
-          { id: "m-3", name: "Dr. Eseoghene Akpodiete", email: "e.akpodiete@upua.org", phone: "+1 281-555-7362", chapterId: "c-houston", duesStatus: "Paid", role: "Treasurer" },
-          { id: "m-4", name: "Mrs. Onome Edewor", email: "onome.edewor@gmail.com", phone: "+1 713-555-9014", chapterId: "c-houston", duesStatus: "Pending", role: "General Member" },
-          { id: "m-5", name: "Engr. Victor Urhobojor", email: "victor.u@houstontech.com", phone: "+1 832-555-1129", chapterId: "c-houston", duesStatus: "Paid", role: "Youth Liaison" },
-          { id: "m-6", name: "Okiemute Dafinone", email: "okiemute@dafinone.com", phone: "+1 281-555-3341", chapterId: "c-houston", duesStatus: "Paid", role: "General Member" },
+          { id: "m-1", name: "Chief Godspower Oniovosa", email: "g.oniovosa@upua.org", phone: "+1 713-555-0192", chapterId: "c-houston", chapterName: "UPA Houston", status: "Active", duesStatus: "Paid", role: "Chapter President", joinedDate: "2008-04-12" },
+          { id: "m-2", name: "Oghenefejiro Okagbare", email: "member.ogaga@upuamerica.org", phone: "+1 832-555-4819", chapterId: "c-houston", chapterName: "UPA Houston", status: "Active", duesStatus: "Paid", role: "General Member", joinedDate: "2021-06-20" },
+          { id: "m-3", name: "Dr. Eseoghene Akpodiete", email: "e.akpodiete@upua.org", phone: "+1 281-555-7362", chapterId: "c-houston", chapterName: "UPA Houston", status: "Active", duesStatus: "Paid", role: "Treasurer", joinedDate: "2015-09-14" },
+          { id: "m-4", name: "Mrs. Onome Edewor", email: "onome.edewor@gmail.com", phone: "+1 713-555-9014", chapterId: "c-houston", chapterName: "UPA Houston", status: "Pending", duesStatus: "Outstanding", role: "General Member", joinedDate: "2024-01-10" },
+          { id: "m-5", name: "Engr. Victor Urhobojor", email: "victor.u@houstontech.com", phone: "+1 832-555-1129", chapterId: "c-houston", chapterName: "UPA Houston", status: "Active", duesStatus: "Paid", role: "Youth Liaison", joinedDate: "2019-03-22" },
+          { id: "m-6", name: "Okiemute Dafinone", email: "okiemute@dafinone.com", phone: "+1 281-555-3341", chapterId: "c-houston", chapterName: "UPA Houston", status: "Active", duesStatus: "Paid", role: "General Member", joinedDate: "2022-08-05" },
         ]);
       } catch (err) {
         console.error("Failed to load portal data", err);
