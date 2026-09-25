@@ -37,6 +37,15 @@ import {
   ArrowUpRight,
   Sparkle,
   Award,
+  ShoppingCart,
+  Package,
+  Tag,
+  Truck,
+  CheckSquare,
+  Star,
+  BadgeCheck,
+  ClipboardList,
+  Minus,
 } from "lucide-react";
 import DonationModal from "@/components/donation-modal";
 import { ChapterData, PaymentRecord, ExpenseRecord, MeetingRecord, MemberRecord } from "@/lib/data-service";
@@ -55,7 +64,7 @@ interface AuthUser {
 export default function PortalWorkspace() {
   // Authentication State
   const [user, setUser] = useState<AuthUser | null>(null);
-  const [activeTab, setActiveTab] = useState<"overview" | "chapters" | "ledger" | "meetings" | "my_chapter" | "my_membership" | "balances">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "chapters" | "ledger" | "meetings" | "my_chapter" | "my_membership" | "balances" | "shop">("overview");
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [meetingsSubmenuOpen, setMeetingsSubmenuOpen] = useState(true);
 
@@ -77,6 +86,21 @@ export default function PortalWorkspace() {
   // Balances Page State
   const [balanceSelectedChapterId, setBalanceSelectedChapterId] = useState<string>("");
   const [balancePayModal, setBalancePayModal] = useState<{ open: boolean; chapterName: string; category: string; amount: number; payAmount: number } | null>(null);
+
+  // Shop State
+  type ShopProduct = { id: string; name: string; category: string; price: number; emoji: string; description: string; badge?: string; stock: number };
+  type CartItem = { product: ShopProduct; qty: number };
+  type ShopOrder = { id: string; buyerName: string; buyerEmail: string; items: CartItem[]; total: number; date: string; status: "pending" | "confirmed" | "shipped" | "cancelled"; chapterName: string };
+  const [shopCart, setShopCart] = useState<CartItem[]>([]);
+  const [shopCartOpen, setShopCartOpen] = useState(false);
+  const [shopCheckoutOpen, setShopCheckoutOpen] = useState(false);
+  const [shopCategoryFilter, setShopCategoryFilter] = useState("all");
+  const [shopOrders, setShopOrders] = useState<ShopOrder[]>([
+    { id: "ORD-001", buyerName: "Chief Godspower Oniovosa", buyerEmail: "g.oniovosa@upua.org", chapterName: "UPA Houston", items: [{ product: { id: "p1", name: "2025 Convention Ticket", category: "tickets", price: 250, emoji: "🎫", description: "", stock: 100 }, qty: 2 }], total: 500, date: "2025-09-10", status: "confirmed" },
+    { id: "ORD-002", buyerName: "Mrs. Onome Edewor", buyerEmail: "onome.edewor@gmail.com", chapterName: "UPA Houston", items: [{ product: { id: "p3", name: "Urhobo Aso-Oke Wrapper (Blue)", category: "wrapper", price: 120, emoji: "👘", description: "", stock: 50 }, qty: 1 }], total: 120, date: "2025-09-12", status: "shipped" },
+    { id: "ORD-003", buyerName: "Dr. Bernard Rerri", buyerEmail: "chicago@upuamerica.org", chapterName: "UPU Chicagoland", items: [{ product: { id: "p5", name: "Group Health Insurance Plan", category: "insurance", price: 350, emoji: "🛡️", description: "", stock: 999 }, qty: 3 }], total: 1050, date: "2025-09-15", status: "pending" },
+    { id: "ORD-004", buyerName: "Mr. Felix Agbabune", buyerEmail: "socal@upuamerica.org", chapterName: "UPU SoCal", items: [{ product: { id: "p7", name: "UPUA Branded Cap", category: "merchandise", price: 35, emoji: "🧢", description: "", stock: 200 }, qty: 4 }], total: 140, date: "2025-09-18", status: "confirmed" },
+  ]);
 
   // Admin CRUD Modal States
   const [isNewChapterOpen, setIsNewChapterOpen] = useState(false);
@@ -656,6 +680,14 @@ export default function PortalWorkspace() {
                 >
                   <CreditCard size={18} /> Chapter Balances
                 </button>
+
+                <button
+                  type="button"
+                  className={`app-sidebar-link ${activeTab === "shop" ? "active" : ""}`}
+                  onClick={() => { setActiveTab("shop"); setMobileNavOpen(false); }}
+                >
+                  <ShoppingCart size={18} /> Shop & Orders
+                </button>
               </>
             )}
 
@@ -751,6 +783,14 @@ export default function PortalWorkspace() {
                   }}
                 >
                   <CreditCard size={18} /> Chapter Balances
+                </button>
+
+                <button
+                  type="button"
+                  className={`app-sidebar-link ${activeTab === "shop" ? "active" : ""}`}
+                  onClick={() => { setActiveTab("shop"); setMobileNavOpen(false); }}
+                >
+                  <ShoppingCart size={18} /> Shop
                 </button>
               </>
             )}
@@ -2189,8 +2229,343 @@ export default function PortalWorkspace() {
               </div>
             );
           })()}
+
+          {/* ============================================================
+              TAB: SHOP
+          ============================================================ */}
+          {activeTab === "shop" && (() => {
+            const shopProducts = [
+              { id: "p1", category: "tickets", emoji: "🎫", name: "2025 UPUA Convention Ticket", price: 250, description: "Full access to the annual UPUA National Convention — gala, workshops & cultural night.", badge: "HOT", stock: 48 },
+              { id: "p2", category: "tickets", emoji: "🎟️", name: "UPUA Youth Summit Ticket", price: 75, description: "Urhobo Youth in America leadership summit. Networking, career panels & mentorship.", badge: "", stock: 120 },
+              { id: "p3", category: "wrapper", emoji: "👘", name: "Urhobo Aso-Oke Wrapper (Blue)", price: 120, description: "Premium hand-woven Urhobo Aso-Oke fabric in royal blue. 6 yards, suitable for men & women.", badge: "BESTSELLER", stock: 34 },
+              { id: "p4", category: "wrapper", emoji: "🧣", name: "Urhobo Aso-Oke Wrapper (Gold)", price: 120, description: "Premium hand-woven Urhobo Aso-Oke fabric in gold. Perfect for UPUA events.", badge: "", stock: 22 },
+              { id: "p4b", category: "wrapper", emoji: "🪡", name: "Urhobo George Fabric (5 yards)", price: 85, description: "Traditional George fabric in Urhobo ceremonial patterns. Rich cotton-blend.", badge: "NEW", stock: 60 },
+              { id: "p5", category: "insurance", emoji: "🛡️", name: "UPUA Group Health Plan (Individual)", price: 350, description: "Annual group health insurance for individual members. Covers basic health & emergency.", badge: "", stock: 999 },
+              { id: "p6", category: "insurance", emoji: "🏥", name: "UPUA Group Health Plan (Family)", price: 850, description: "Annual family health plan for up to 4 dependants. Comprehensive UPUA community coverage.", badge: "POPULAR", stock: 999 },
+              { id: "p6b", category: "insurance", emoji: "✈️", name: "Travel Insurance (Annual)", price: 150, description: "International travel insurance for UPUA members visiting Nigeria and West Africa.", badge: "", stock: 999 },
+              { id: "p7", category: "merchandise", emoji: "🧢", name: "UPUA Branded Cap", price: 35, description: "Embroidered UPUA logo cap in forest green. One size fits all.", badge: "", stock: 200 },
+              { id: "p8", category: "merchandise", emoji: "👕", name: "UPUA Classic T-Shirt", price: 45, description: "100% cotton UPUA T-shirt with Urhobo Pride print. Sizes S–3XL.", badge: "NEW", stock: 150 },
+              { id: "p9", category: "merchandise", emoji: "📿", name: "Urhobo Beaded Bracelet", price: 25, description: "Handcrafted traditional Urhobo beaded bracelet. Unisex, one-size.", badge: "", stock: 85 },
+              { id: "p10", category: "merchandise", emoji: "📖", name: "Urhobo History Book (Vol. 2)", price: 55, description: "The definitive illustrated history of the Urhobo people in America. 320 pages.", badge: "", stock: 40 },
+            ];
+            const categories = [
+              { id: "all", label: "All Items", icon: "🛍️" },
+              { id: "tickets", label: "Convention Tickets", icon: "🎫" },
+              { id: "wrapper", label: "Wrapper & Fabric", icon: "👘" },
+              { id: "insurance", label: "Insurance Plans", icon: "🛡️" },
+              { id: "merchandise", label: "Merchandise", icon: "🛒" },
+            ];
+            const filteredProducts = shopCategoryFilter === "all" ? shopProducts : shopProducts.filter(p => p.category === shopCategoryFilter);
+            const cartTotal = shopCart.reduce((s, c) => s + c.product.price * c.qty, 0);
+            const cartCount = shopCart.reduce((s, c) => s + c.qty, 0);
+            const addToCart = (product: typeof shopProducts[0]) => {
+              setShopCart(prev => {
+                const ex = prev.find(c => c.product.id === product.id);
+                if (ex) return prev.map(c => c.product.id === product.id ? { ...c, qty: c.qty + 1 } : c);
+                return [...prev, { product, qty: 1 }];
+              });
+            };
+            const updateQty = (productId: string, delta: number) =>
+              setShopCart(prev => prev.map(c => c.product.id === productId ? { ...c, qty: Math.max(1, c.qty + delta) } : c).filter(c => c.qty > 0));
+            const removeFromCart = (productId: string) => setShopCart(prev => prev.filter(c => c.product.id !== productId));
+            const badgeColor: Record<string, { background: string; color: string }> = {
+              HOT: { background: "#c5221f", color: "#fff" },
+              BESTSELLER: { background: "#137459", color: "#fff" },
+              POPULAR: { background: "#1a73e8", color: "#fff" },
+              NEW: { background: "#e37400", color: "#fff" },
+            };
+            return (
+              <div>
+                {/* Banner */}
+                <div className="dash-welcome-banner" style={{ marginBottom: "28px" }}>
+                  <div style={{ zIndex: 1 }}>
+                    <div style={{ fontSize: "0.78rem", color: "#a7d6b6", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "6px" }}>UPUA MEMBER STORE</div>
+                    <h2 style={{ fontFamily: "var(--font-heading)", fontSize: "1.7rem", fontWeight: 800, margin: "0 0 6px" }}>Shop & Purchase</h2>
+                    <p style={{ color: "#c3ded0", fontSize: "0.95rem", margin: "0 0 18px" }}>
+                      Convention tickets, traditional wrappers, insurance plans & Urhobo merchandise.
+                    </p>
+                    <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                      {cartCount > 0 && (
+                        <button className="btn-orgflo-gold" onClick={() => setShopCartOpen(true)} style={{ padding: "10px 20px" }}>
+                          <ShoppingCart size={16} /> Cart ({cartCount}) · ${cartTotal.toFixed(2)}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Admin Orders Table */}
+                {user.role === "admin" && (
+                  <div className="orgflo-card" style={{ marginBottom: "32px" }}>
+                    <div className="orgflo-card-header">
+                      <h3 style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "1.05rem", color: "#0e3d26", margin: 0 }}>
+                        <ClipboardList size={18} style={{ display: "inline", verticalAlign: "middle", marginRight: "8px" }} />
+                        All Shop Orders
+                      </h3>
+                      <div style={{ display: "flex", gap: "8px" }}>
+                        <span className="badge badge-active">{shopOrders.filter(o => o.status === "confirmed" || o.status === "shipped").length} Confirmed / Shipped</span>
+                        <span className="badge badge-pending">{shopOrders.filter(o => o.status === "pending").length} Pending</span>
+                      </div>
+                    </div>
+                    <div style={{ overflowX: "auto" }}>
+                      <table className="orgflo-table" style={{ minWidth: "750px" }}>
+                        <thead>
+                          <tr>
+                            <th>Order ID</th><th>Buyer</th><th>Chapter</th><th>Items</th><th>Total</th><th>Date</th><th>Status</th><th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {shopOrders.map(order => (
+                            <tr key={order.id}>
+                              <td style={{ fontWeight: 700, color: "#0e3d26" }}>{order.id}</td>
+                              <td>
+                                <div style={{ fontWeight: 600 }}>{order.buyerName}</div>
+                                <div style={{ fontSize: "0.78rem", color: "#80868b" }}>{order.buyerEmail}</div>
+                              </td>
+                              <td style={{ fontSize: "0.88rem", color: "#5f6368" }}>{order.chapterName}</td>
+                              <td>
+                                {order.items.map((item, i) => (
+                                  <div key={i} style={{ fontSize: "0.83rem" }}>{item.product.emoji} {item.product.name} × {item.qty}</div>
+                                ))}
+                              </td>
+                              <td style={{ fontWeight: 800, color: "#0e3d26" }}>${order.total.toFixed(2)}</td>
+                              <td style={{ fontSize: "0.85rem", color: "#5f6368" }}>{order.date}</td>
+                              <td>
+                                <span className={`badge ${order.status === "confirmed" ? "badge-active" : order.status === "shipped" ? "badge-alumni" : order.status === "cancelled" ? "badge-overdue" : "badge-pending"}`}>
+                                  {order.status === "confirmed" ? "✓ Confirmed" : order.status === "shipped" ? "🚚 Shipped" : order.status === "cancelled" ? "✗ Cancelled" : "⏳ Pending"}
+                                </span>
+                              </td>
+                              <td>
+                                <div style={{ display: "flex", gap: "6px" }}>
+                                  {order.status === "pending" && (
+                                    <button onClick={() => setShopOrders(prev => prev.map(o => o.id === order.id ? { ...o, status: "confirmed" as const } : o))}
+                                      style={{ background: "#137459", color: "#fff", border: "none", borderRadius: "8px", padding: "5px 10px", fontSize: "0.78rem", fontWeight: 700, cursor: "pointer" }}>
+                                      <BadgeCheck size={13} style={{ display: "inline", verticalAlign: "middle", marginRight: "3px" }} />Confirm
+                                    </button>
+                                  )}
+                                  {order.status === "confirmed" && (
+                                    <button onClick={() => setShopOrders(prev => prev.map(o => o.id === order.id ? { ...o, status: "shipped" as const } : o))}
+                                      style={{ background: "#1a73e8", color: "#fff", border: "none", borderRadius: "8px", padding: "5px 10px", fontSize: "0.78rem", fontWeight: 700, cursor: "pointer" }}>
+                                      <Truck size={13} style={{ display: "inline", verticalAlign: "middle", marginRight: "3px" }} />Ship
+                                    </button>
+                                  )}
+                                  {(order.status === "pending") && (
+                                    <button onClick={() => setShopOrders(prev => prev.map(o => o.id === order.id ? { ...o, status: "cancelled" as const } : o))}
+                                      style={{ background: "#f8e8e8", color: "#c5221f", border: "none", borderRadius: "8px", padding: "5px 10px", fontSize: "0.78rem", fontWeight: 700, cursor: "pointer" }}>
+                                      Cancel
+                                    </button>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* Category Filter */}
+                <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginBottom: "24px" }}>
+                  {categories.map(cat => (
+                    <button key={cat.id} onClick={() => setShopCategoryFilter(cat.id)}
+                      style={{ padding: "8px 18px", borderRadius: "9999px", border: `2px solid ${shopCategoryFilter === cat.id ? "#0e3d26" : "#e0e5e2"}`, background: shopCategoryFilter === cat.id ? "#0e3d26" : "#ffffff", color: shopCategoryFilter === cat.id ? "#ffffff" : "#3c4043", fontWeight: 700, fontSize: "0.85rem", cursor: "pointer", transition: "all 0.18s ease" }}>
+                      {cat.icon} {cat.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Product Grid */}
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "20px" }}>
+                  {filteredProducts.map(product => {
+                    const inCart = shopCart.find(c => c.product.id === product.id);
+                    return (
+                      <div key={product.id}
+                        style={{ background: "#fff", borderRadius: "18px", overflow: "hidden", boxShadow: "0 2px 14px rgba(0,0,0,0.07)", border: "1.5px solid #f0f2f1", display: "flex", flexDirection: "column", transition: "transform 0.2s, box-shadow 0.2s" }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = "translateY(-3px)"; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 10px 32px rgba(0,0,0,0.12)"; }}
+                        onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = "none"; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 2px 14px rgba(0,0,0,0.07)"; }}
+                      >
+                        <div style={{ background: "linear-gradient(135deg, #f0f8f3 0%, #e8f0fe 100%)", padding: "32px 20px", textAlign: "center", position: "relative" }}>
+                          <div style={{ fontSize: "3.5rem", lineHeight: 1 }}>{product.emoji}</div>
+                          {product.badge && (
+                            <span style={{ ...badgeColor[product.badge], position: "absolute", top: "12px", right: "12px", fontSize: "0.68rem", fontWeight: 900, padding: "3px 10px", borderRadius: "9999px" }}>
+                              {product.badge}
+                            </span>
+                          )}
+                          <div style={{ position: "absolute", bottom: "10px", left: "12px", fontSize: "0.72rem", color: "#80868b", fontWeight: 600 }}>
+                            {product.stock < 50 ? `⚠ ${product.stock} left` : "✓ In stock"}
+                          </div>
+                        </div>
+                        <div style={{ padding: "18px 20px", flex: 1, display: "flex", flexDirection: "column", gap: "8px" }}>
+                          <div style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.07em", color: "#80868b" }}>
+                            {categories.find(c => c.id === product.category)?.label}
+                          </div>
+                          <div style={{ fontWeight: 800, fontSize: "0.98rem", color: "#14211a", lineHeight: 1.3, fontFamily: "var(--font-heading)" }}>{product.name}</div>
+                          <div style={{ fontSize: "0.82rem", color: "#5f6368", lineHeight: 1.5, flex: 1 }}>{product.description}</div>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "10px" }}>
+                            <div style={{ fontSize: "1.5rem", fontWeight: 900, color: "#0e3d26", fontFamily: "var(--font-heading)" }}>${product.price}</div>
+                            {inCart ? (
+                              <div style={{ display: "flex", alignItems: "center", gap: "8px", background: "#f0f8f3", borderRadius: "10px", padding: "6px 10px" }}>
+                                <button onClick={() => updateQty(product.id, -1)} style={{ background: "#e0f0e8", border: "none", borderRadius: "6px", width: "28px", height: "28px", cursor: "pointer", color: "#0e3d26", fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                  <Minus size={14} />
+                                </button>
+                                <span style={{ fontWeight: 800, fontSize: "1rem", color: "#0e3d26", minWidth: "20px", textAlign: "center" }}>{inCart.qty}</span>
+                                <button onClick={() => updateQty(product.id, 1)} style={{ background: "#0e3d26", border: "none", borderRadius: "6px", width: "28px", height: "28px", cursor: "pointer", color: "#fff", fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                  <Plus size={14} />
+                                </button>
+                              </div>
+                            ) : (
+                              <button onClick={() => addToCart(product)}
+                                style={{ background: "#0e3d26", color: "#fff", border: "none", borderRadius: "10px", padding: "9px 16px", fontWeight: 700, fontSize: "0.85rem", cursor: "pointer", display: "flex", alignItems: "center", gap: "6px" }}>
+                                <ShoppingCart size={14} /> Add to Cart
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Cart Drawer */}
+                {shopCartOpen && (
+                  <div style={{ position: "fixed", inset: 0, zIndex: 1900, display: "flex" }} onClick={() => setShopCartOpen(false)}>
+                    <div style={{ flex: 1 }} />
+                    <div style={{ width: "min(420px,100vw)", background: "#fff", boxShadow: "-8px 0 40px rgba(0,0,0,0.18)", display: "flex", flexDirection: "column", height: "100vh" }} onClick={e => e.stopPropagation()}>
+                      <div style={{ background: "linear-gradient(135deg,#0e3d26,#165637)", color: "#fff", padding: "22px 24px" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                          <h3 style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "1.15rem", margin: 0 }}>
+                            <ShoppingCart size={19} style={{ display: "inline", verticalAlign: "middle", marginRight: "8px" }} />Cart ({cartCount})
+                          </h3>
+                          <button onClick={() => setShopCartOpen(false)} style={{ background: "transparent", border: "none", color: "#fff", cursor: "pointer" }}><X size={22} /></button>
+                        </div>
+                      </div>
+                      <div style={{ flex: 1, overflowY: "auto", padding: "18px 22px", display: "flex", flexDirection: "column", gap: "12px" }}>
+                        {shopCart.length === 0 ? (
+                          <div style={{ textAlign: "center", padding: "60px 20px", color: "#80868b" }}>
+                            <div style={{ fontSize: "2.8rem", marginBottom: "10px" }}>🛒</div>
+                            <div style={{ fontWeight: 700 }}>Cart is empty</div>
+                          </div>
+                        ) : shopCart.map(ci => (
+                          <div key={ci.product.id} style={{ display: "flex", gap: "12px", background: "#f8faf8", borderRadius: "12px", padding: "12px" }}>
+                            <div style={{ fontSize: "2rem", width: "44px", textAlign: "center", flexShrink: 0 }}>{ci.product.emoji}</div>
+                            <div style={{ flex: 1 }}>
+                              <div style={{ fontWeight: 700, fontSize: "0.88rem", color: "#14211a" }}>{ci.product.name}</div>
+                              <div style={{ fontSize: "0.8rem", color: "#5f6368" }}>${ci.product.price} each</div>
+                              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "8px" }}>
+                                <button onClick={() => updateQty(ci.product.id, -1)} style={{ background: "#e0f0e8", border: "none", borderRadius: "6px", width: "26px", height: "26px", cursor: "pointer", fontWeight: 800, color: "#0e3d26" }}>−</button>
+                                <span style={{ fontWeight: 800, minWidth: "18px", textAlign: "center" }}>{ci.qty}</span>
+                                <button onClick={() => updateQty(ci.product.id, 1)} style={{ background: "#0e3d26", border: "none", borderRadius: "6px", width: "26px", height: "26px", cursor: "pointer", color: "#fff", fontWeight: 800 }}>+</button>
+                                <span style={{ marginLeft: "auto", fontWeight: 800, color: "#0e3d26" }}>${(ci.product.price * ci.qty).toFixed(2)}</span>
+                              </div>
+                            </div>
+                            <button onClick={() => removeFromCart(ci.product.id)} style={{ background: "transparent", border: "none", color: "#c5221f", cursor: "pointer", alignSelf: "flex-start" }}><X size={15} /></button>
+                          </div>
+                        ))}
+                      </div>
+                      {shopCart.length > 0 && (
+                        <div style={{ padding: "18px 22px", borderTop: "1.5px solid #f0f2f1" }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "14px" }}>
+                            <span style={{ fontWeight: 700 }}>Total</span>
+                            <span style={{ fontSize: "1.4rem", fontWeight: 900, color: "#0e3d26", fontFamily: "var(--font-heading)" }}>${cartTotal.toFixed(2)}</span>
+                          </div>
+                          <button className="btn-orgflo-gold" style={{ width: "100%", justifyContent: "center", padding: "13px 0" }} onClick={() => { setShopCartOpen(false); setShopCheckoutOpen(true); }}>
+                            <CreditCard size={16} /> Checkout
+                          </button>
+                          <button onClick={() => setShopCart([])} style={{ width: "100%", background: "transparent", border: "none", color: "#c5221f", fontWeight: 700, fontSize: "0.84rem", cursor: "pointer", padding: "9px 0", marginTop: "4px" }}>Clear Cart</button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
         </main>
       </div>
+
+      {/* SHOP CHECKOUT MODAL */}
+      {shopCheckoutOpen && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)", zIndex: 2100, display: "flex", alignItems: "center", justifyContent: "center", padding: "16px" }} onClick={() => setShopCheckoutOpen(false)}>
+          <div style={{ background: "#fff", borderRadius: "20px", maxWidth: "520px", width: "100%", overflow: "hidden", boxShadow: "0 25px 60px rgba(0,0,0,0.3)", maxHeight: "92vh", display: "flex", flexDirection: "column" }} onClick={e => e.stopPropagation()}>
+            <div style={{ background: "linear-gradient(135deg,#0e3d26,#165637)", color: "#fff", padding: "22px 28px", flexShrink: 0 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+                <span style={{ background: "rgba(255,255,255,0.18)", color: "#fff", fontSize: "0.72rem", fontWeight: 800, padding: "4px 12px", borderRadius: "9999px" }}>SECURE CHECKOUT</span>
+                <button onClick={() => setShopCheckoutOpen(false)} style={{ background: "transparent", border: "none", color: "#fff", cursor: "pointer" }}><X size={20} /></button>
+              </div>
+              <h3 style={{ fontFamily: "var(--font-heading)", fontSize: "1.25rem", fontWeight: 800, margin: "0 0 4px" }}>Complete Your Order</h3>
+              <p style={{ color: "#c3ded0", fontSize: "0.87rem", margin: 0 }}>{shopCart.reduce((s, c) => s + c.qty, 0)} item(s) · ${shopCart.reduce((s, c) => s + c.product.price * c.qty, 0).toFixed(2)}</p>
+            </div>
+            <div style={{ padding: "14px 28px", background: "#f8faf8", borderBottom: "1.5px solid #e8ede9", flexShrink: 0 }}>
+              <div style={{ fontSize: "0.75rem", fontWeight: 800, color: "#5f6368", textTransform: "uppercase", marginBottom: "8px" }}>Order Summary</div>
+              {shopCart.map(c => (
+                <div key={c.product.id} style={{ display: "flex", justifyContent: "space-between", fontSize: "0.87rem", marginBottom: "5px" }}>
+                  <span>{c.product.emoji} {c.product.name} × {c.qty}</span>
+                  <span style={{ fontWeight: 700 }}>${(c.product.price * c.qty).toFixed(2)}</span>
+                </div>
+              ))}
+              <div style={{ borderTop: "1px solid #dde8e2", marginTop: "8px", paddingTop: "8px", display: "flex", justifyContent: "space-between", fontWeight: 900, color: "#0e3d26" }}>
+                <span>Total</span><span>${shopCart.reduce((s, c) => s + c.product.price * c.qty, 0).toFixed(2)}</span>
+              </div>
+            </div>
+            <div style={{ padding: "20px 28px", overflowY: "auto", flex: 1 }}>
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                const form = e.currentTarget;
+                const buyerName = (form.elements.namedItem("buyerName") as HTMLInputElement).value;
+                const buyerEmail = (form.elements.namedItem("buyerEmail") as HTMLInputElement).value;
+                const newOrder = {
+                  id: `ORD-${String(shopOrders.length + 1).padStart(3, "0")}`,
+                  buyerName, buyerEmail,
+                  chapterName: user.chapterName ?? "General Member",
+                  items: [...shopCart],
+                  total: shopCart.reduce((s, c) => s + c.product.price * c.qty, 0),
+                  date: new Date().toISOString().slice(0, 10),
+                  status: "pending" as const,
+                };
+                setShopOrders(prev => [newOrder, ...prev]);
+                setShopCart([]);
+                setShopCheckoutOpen(false);
+                alert(`✅ Order ${newOrder.id} placed!\n\nTotal: $${newOrder.total.toFixed(2)}\nStripe payment will be processed once keys are configured.\n\nThank you!`);
+              }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                    <div>
+                      <label style={{ fontSize: "0.77rem", fontWeight: 700, color: "#3c4043", display: "block", marginBottom: "5px" }}>Full Name *</label>
+                      <input name="buyerName" type="text" required placeholder="Your full name" className="donation-input" style={{ margin: 0 }} defaultValue={user.name} />
+                    </div>
+                    <div>
+                      <label style={{ fontSize: "0.77rem", fontWeight: 700, color: "#3c4043", display: "block", marginBottom: "5px" }}>Email *</label>
+                      <input name="buyerEmail" type="email" required placeholder="email@example.com" className="donation-input" style={{ margin: 0 }} defaultValue={user.email} />
+                    </div>
+                  </div>
+                  <div>
+                    <label style={{ fontSize: "0.77rem", fontWeight: 700, color: "#3c4043", display: "block", marginBottom: "5px" }}>Shipping Address</label>
+                    <input type="text" placeholder="Street, City, State, ZIP" className="donation-input" style={{ margin: 0 }} />
+                  </div>
+                  <div style={{ background: "#f0f8f3", border: "1.5px solid #c8e6c9", borderRadius: "12px", padding: "14px 16px" }}>
+                    <div style={{ fontSize: "0.76rem", fontWeight: 800, color: "#137459", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "10px", display: "flex", alignItems: "center", gap: "6px" }}>
+                      <Shield size={13} /> Stripe Secure Payment
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "9px" }}>
+                      <input type="text" placeholder="Card Number" className="donation-input" disabled style={{ background: "#f8f9fa", color: "#9aa0a6", margin: 0 }} defaultValue="•••• •••• •••• ···· (Stripe coming soon)" />
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "9px" }}>
+                        <input type="text" placeholder="MM/YY" className="donation-input" disabled style={{ background: "#f8f9fa", color: "#9aa0a6", margin: 0 }} />
+                        <input type="text" placeholder="CVV" className="donation-input" disabled style={{ background: "#f8f9fa", color: "#9aa0a6", margin: 0 }} />
+                        <input type="text" placeholder="ZIP" className="donation-input" style={{ margin: 0 }} />
+                      </div>
+                    </div>
+                  </div>
+                  <button type="submit" className="btn-orgflo-gold" style={{ justifyContent: "center", padding: "14px 0", marginTop: "4px" }}>
+                    <CheckSquare size={17} /> Place Order · ${shopCart.reduce((s, c) => s + c.product.price * c.qty, 0).toFixed(2)}
+                  </button>
+                  <p style={{ fontSize: "0.74rem", color: "#9aa0a6", textAlign: "center", margin: 0 }}>🔒 Payments processed securely via Stripe. Admin will confirm your order.</p>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ============================================================
           BALANCE PAYMENT MODAL — opens when a balance card is clicked
