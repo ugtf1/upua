@@ -36,6 +36,7 @@ import {
   Bell,
   ArrowUpRight,
   Sparkle,
+  Award,
 } from "lucide-react";
 import DonationModal from "@/components/donation-modal";
 import { ChapterData, PaymentRecord, ExpenseRecord, MeetingRecord, MemberRecord } from "@/lib/data-service";
