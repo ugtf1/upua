@@ -23,6 +23,21 @@ const PROGRAMS = [
   "Cultural & Language Preservation",
 ];
 
+const DEFAULT_CHAPTERS = [
+  "Urhobo Progressive Association (UPA), Houston",
+  "UPU of DC, Maryland & Virginia (UPUDMV)",
+  "UPU Chicagoland (UPUC)",
+  "UPU of Southern California (UPUSC)",
+  "Urhobo Association of Georgia (UAG)",
+  "UPU Delaware Valley (PA, DE, NJ)",
+  "UPU New York / Tri-State",
+  "UPU Northern California",
+  "UPU Dallas-Fort Worth",
+  "UPU Minnesota",
+  "UPU New England",
+  "UPU Florida",
+];
+
 export function openDonationModal(options?: { amount?: number; program?: string }) {
   if (typeof window !== "undefined") {
     window.dispatchEvent(new CustomEvent("open-donation-modal", { detail: options }));
@@ -43,6 +58,8 @@ export default function DonationModal({
   const [isCustom, setIsCustom] = useState<boolean>(false);
   const [frequency, setFrequency] = useState<"one-time" | "monthly">("one-time");
   const [program, setProgram] = useState<string>(defaultProgram || PROGRAMS[0]);
+  const [selectedChapter, setSelectedChapter] = useState<string>("");
+  const [chapterOptions, setChapterOptions] = useState<string[]>(DEFAULT_CHAPTERS);
   const [fullName, setFullName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
@@ -52,6 +69,17 @@ export default function DonationModal({
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
+
+  useEffect(() => {
+    fetch("/api/chapters")
+      .then((r) => r.json())
+      .then((res) => {
+        if (res.success && Array.isArray(res.data) && res.data.length > 0) {
+          setChapterOptions(res.data.map((c: any) => c.name));
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     function handleGlobalOpen(e: Event) {
@@ -150,6 +178,7 @@ export default function DonationModal({
     setFullName("");
     setEmail("");
     setPhone("");
+    setSelectedChapter("");
     setCardNumber("");
     setCardExpiry("");
     setCardCvc("");
@@ -185,6 +214,11 @@ export default function DonationModal({
               <div>
                 <span>Receipt sent to:</span> <strong>{email}</strong>
               </div>
+              {selectedChapter && (
+                <div>
+                  <span>Chapter Credited:</span> <strong>{selectedChapter}</strong>
+                </div>
+              )}
               <div>
                 <span>Reference ID:</span> <strong>UPUA-ST-{Math.floor(100000 + Math.random() * 900000)}</strong>
               </div>
@@ -227,7 +261,7 @@ export default function DonationModal({
                   className={frequency === "monthly" ? "active" : ""}
                   onClick={() => setFrequency("monthly")}
                 >
-                  Monthly Partner ❤️
+                  Monthly Partner
                 </button>
               </div>
 
@@ -285,6 +319,29 @@ export default function DonationModal({
                     </option>
                   ))}
                 </select>
+              </div>
+
+              {/* Chapter Affiliation (Optional) */}
+              <div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                  <label className="donation-label" style={{ margin: 0 }}>Chapter Affiliation</label>
+                  <span style={{ fontSize: "11px", color: "#667085", fontWeight: 600 }}>Optional</span>
+                </div>
+                <select
+                  value={selectedChapter}
+                  onChange={(e) => setSelectedChapter(e.target.value)}
+                  className="donation-input"
+                >
+                  <option value="">-- No Specific Chapter / General Contributor --</option>
+                  {chapterOptions.map((ch) => (
+                    <option key={ch} value={ch}>
+                      {ch}
+                    </option>
+                  ))}
+                </select>
+                <small style={{ display: "block", color: "#667085", fontSize: "11px", marginTop: "4px" }}>
+                  Crediting your contribution helps your chapter meet its annual fundraising target.
+                </small>
               </div>
 
               {/* Donor Information */}
@@ -369,7 +426,7 @@ export default function DonationModal({
                   <span>Processing Payment via Stripe...</span>
                 ) : (
                   <span>
-                    Donate ${currentAmount > 0 ? currentAmount : 50} {frequency === "monthly" ? "/ month" : "Now"} <Heart size={16} fill="currentColor" style={{ marginLeft: 6 }} />
+                    Donate ${currentAmount > 0 ? currentAmount : 50} {frequency === "monthly" ? "/ month" : "Now"}
                   </span>
                 )}
               </button>

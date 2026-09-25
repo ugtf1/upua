@@ -46,6 +46,7 @@ import {
   BadgeCheck,
   ClipboardList,
   Minus,
+  Ticket,
 } from "lucide-react";
 import DonationModal from "@/components/donation-modal";
 import { ChapterData, PaymentRecord, ExpenseRecord, MeetingRecord, MemberRecord } from "@/lib/data-service";
@@ -88,7 +89,7 @@ export default function PortalWorkspace() {
   const [balancePayModal, setBalancePayModal] = useState<{ open: boolean; chapterName: string; category: string; amount: number; payAmount: number } | null>(null);
 
   // Shop State
-  type ShopProduct = { id: string; name: string; category: string; price: number; emoji: string; description: string; badge?: string; stock: number };
+  type ShopProduct = { id: string; name: string; category: string; price: number; emoji?: string; description: string; badge?: string; stock: number };
   type CartItem = { product: ShopProduct; qty: number };
   type ShopOrder = { id: string; buyerName: string; buyerEmail: string; items: CartItem[]; total: number; date: string; status: "pending" | "confirmed" | "shipped" | "cancelled"; chapterName: string };
   const [shopCart, setShopCart] = useState<CartItem[]>([]);
@@ -96,10 +97,10 @@ export default function PortalWorkspace() {
   const [shopCheckoutOpen, setShopCheckoutOpen] = useState(false);
   const [shopCategoryFilter, setShopCategoryFilter] = useState("all");
   const [shopOrders, setShopOrders] = useState<ShopOrder[]>([
-    { id: "ORD-001", buyerName: "Chief Godspower Oniovosa", buyerEmail: "g.oniovosa@upua.org", chapterName: "UPA Houston", items: [{ product: { id: "p1", name: "2025 Convention Ticket", category: "tickets", price: 250, emoji: "🎫", description: "", stock: 100 }, qty: 2 }], total: 500, date: "2025-09-10", status: "confirmed" },
-    { id: "ORD-002", buyerName: "Mrs. Onome Edewor", buyerEmail: "onome.edewor@gmail.com", chapterName: "UPA Houston", items: [{ product: { id: "p3", name: "Urhobo Aso-Oke Wrapper (Blue)", category: "wrapper", price: 120, emoji: "👘", description: "", stock: 50 }, qty: 1 }], total: 120, date: "2025-09-12", status: "shipped" },
-    { id: "ORD-003", buyerName: "Dr. Bernard Rerri", buyerEmail: "chicago@upuamerica.org", chapterName: "UPU Chicagoland", items: [{ product: { id: "p5", name: "Group Health Insurance Plan", category: "insurance", price: 350, emoji: "🛡️", description: "", stock: 999 }, qty: 3 }], total: 1050, date: "2025-09-15", status: "pending" },
-    { id: "ORD-004", buyerName: "Mr. Felix Agbabune", buyerEmail: "socal@upuamerica.org", chapterName: "UPU SoCal", items: [{ product: { id: "p7", name: "UPUA Branded Cap", category: "merchandise", price: 35, emoji: "🧢", description: "", stock: 200 }, qty: 4 }], total: 140, date: "2025-09-18", status: "confirmed" },
+    { id: "ORD-001", buyerName: "Chief Godspower Oniovosa", buyerEmail: "g.oniovosa@upua.org", chapterName: "UPA Houston", items: [{ product: { id: "p1", name: "2025 Convention Ticket", category: "tickets", price: 250, description: "", stock: 100 }, qty: 2 }], total: 500, date: "2025-09-10", status: "confirmed" },
+    { id: "ORD-002", buyerName: "Mrs. Onome Edewor", buyerEmail: "onome.edewor@gmail.com", chapterName: "UPA Houston", items: [{ product: { id: "p3", name: "Urhobo Aso-Oke Wrapper (Blue)", category: "wrapper", price: 120, description: "", stock: 50 }, qty: 1 }], total: 120, date: "2025-09-12", status: "shipped" },
+    { id: "ORD-003", buyerName: "Dr. Bernard Rerri", buyerEmail: "chicago@upuamerica.org", chapterName: "UPU Chicagoland", items: [{ product: { id: "p5", name: "Group Health Insurance Plan", category: "insurance", price: 350, description: "", stock: 999 }, qty: 3 }], total: 1050, date: "2025-09-15", status: "pending" },
+    { id: "ORD-004", buyerName: "Mr. Felix Agbabune", buyerEmail: "socal@upuamerica.org", chapterName: "UPU SoCal", items: [{ product: { id: "p7", name: "UPUA Branded Cap", category: "merchandise", price: 35, description: "", stock: 200 }, qty: 4 }], total: 140, date: "2025-09-18", status: "confirmed" },
   ]);
 
   // QuickBooks Reports State
@@ -782,6 +783,17 @@ export default function PortalWorkspace() {
 
                 <button
                   type="button"
+                  className={`app-sidebar-link ${activeTab === "my_chapter" ? "active" : ""}`}
+                  onClick={() => {
+                    setActiveTab("my_chapter");
+                    setMobileNavOpen(false);
+                  }}
+                >
+                  <Building size={18} /> Chapter Detail
+                </button>
+
+                <button
+                  type="button"
                   className={`app-sidebar-link ${activeTab === "meetings" ? "active" : ""}`}
                   onClick={() => {
                     setActiveTab("meetings");
@@ -1228,7 +1240,7 @@ export default function PortalWorkspace() {
                     </button>
                   </div>
                   <div className="orgflo-table-wrap">
-                    <table className="orgflo-table">
+                    <table className="orgflo-table orgflo-table-collapse">
                       <thead>
                         <tr>
                           <th>Chapter</th>
@@ -1240,12 +1252,12 @@ export default function PortalWorkspace() {
                       <tbody>
                         {chapters.slice(0, 4).map((ch) => (
                           <tr key={ch.id}>
-                            <td style={{ fontWeight: 700, color: "#0e3d26" }}>{ch.name}</td>
-                            <td style={{ color: "#526359" }}>{ch.region}</td>
-                            <td>
+                            <td data-label="Chapter" style={{ fontWeight: 700, color: "#0e3d26" }}>{ch.name}</td>
+                            <td data-label="Region" style={{ color: "#526359" }}>{ch.region}</td>
+                            <td data-label="Members">
                               <span className="badge badge-active">{ch.memberCount}</span>
                             </td>
-                            <td style={{ textAlign: "right", fontWeight: 700, color: "#137333" }}>
+                            <td data-label="Total Dues" style={{ textAlign: "right", fontWeight: 700, color: "#137333" }}>
                               ${ch.paymentsBreakdown.monthlyDues.toLocaleString()}
                             </td>
                           </tr>
@@ -1323,7 +1335,7 @@ export default function PortalWorkspace() {
               </div>
 
               <div className="orgflo-table-wrap">
-                <table className="orgflo-table">
+                <table className="orgflo-table orgflo-table-collapse">
                   <thead>
                     <tr>
                       <th>Chapter Name</th>
@@ -1340,29 +1352,29 @@ export default function PortalWorkspace() {
                   <tbody>
                     {chapters.map((ch) => (
                       <tr key={ch.id}>
-                        <td style={{ fontWeight: 700, color: "#0e3d26" }}>
+                        <td data-label="Chapter Name" style={{ fontWeight: 700, color: "#0e3d26" }}>
                           {ch.name}
                           <small style={{ display: "block", color: "#526359", fontWeight: 400 }}>{ch.contactEmail}</small>
                         </td>
-                        <td style={{ color: "#526359" }}>{ch.region}</td>
-                        <td style={{ color: "#14211a", fontWeight: 500 }}>{ch.president}</td>
-                        <td>
+                        <td data-label="Region" style={{ color: "#526359" }}>{ch.region}</td>
+                        <td data-label="President" style={{ color: "#14211a", fontWeight: 500 }}>{ch.president}</td>
+                        <td data-label="Members">
                           <span className="badge badge-active">{ch.memberCount} members</span>
                         </td>
-                        <td style={{ color: "#0e3d26", fontWeight: 700 }}>
+                        <td data-label="Monthly Dues" style={{ color: "#0e3d26", fontWeight: 700 }}>
                           ${ch.paymentsBreakdown.monthlyDues.toLocaleString()}
                         </td>
-                        <td style={{ color: "#137459", fontWeight: 700 }}>
+                        <td data-label="Donations" style={{ color: "#137459", fontWeight: 700 }}>
                           ${ch.paymentsBreakdown.donations.toLocaleString()}
                         </td>
-                        <td style={{ color: "#003e53", fontWeight: 700 }}>
+                        <td data-label="Tickets" style={{ color: "#003e53", fontWeight: 700 }}>
                           ${ch.paymentsBreakdown.tickets.toLocaleString()}
                         </td>
-                        <td style={{ color: "#b08000", fontWeight: 700 }}>
+                        <td data-label="Merchandise" style={{ color: "#b08000", fontWeight: 700 }}>
                           ${ch.paymentsBreakdown.merchandise.toLocaleString()}
                         </td>
                         {user.role === "admin" && (
-                          <td style={{ textAlign: "right" }}>
+                          <td data-label="Actions" style={{ textAlign: "right" }}>
                             <button
                               type="button"
                               onClick={() => handleDeleteChapter(ch.id)}
@@ -1513,7 +1525,7 @@ export default function PortalWorkspace() {
               {ledgerSubTab === "income" && (
                 <div className="orgflo-card">
                   <div className="orgflo-table-wrap">
-                    <table className="orgflo-table">
+                    <table className="orgflo-table orgflo-table-collapse">
                       <thead>
                         <tr>
                           <th>Date</th>
@@ -1529,23 +1541,23 @@ export default function PortalWorkspace() {
                       <tbody>
                         {filteredPayments.map((p) => (
                           <tr key={p.id}>
-                            <td style={{ color: "#526359", whiteSpace: "nowrap" }}>{p.date}</td>
-                            <td style={{ fontWeight: 700, color: "#14211a" }}>{p.memberName}</td>
-                            <td style={{ color: "#526359" }}>{p.chapterName}</td>
-                            <td>
+                            <td data-label="Date" style={{ color: "#526359", whiteSpace: "nowrap" }}>{p.date}</td>
+                            <td data-label="Donor / Member" style={{ fontWeight: 700, color: "#14211a" }}>{p.memberName}</td>
+                            <td data-label="Chapter" style={{ color: "#526359" }}>{p.chapterName}</td>
+                            <td data-label="Category">
                               <span className="badge badge-active">{p.category.replace("_", " ")}</span>
                             </td>
-                            <td style={{ color: "#526359" }}>{p.description}</td>
-                            <td>
+                            <td data-label="Description" style={{ color: "#526359" }}>{p.description}</td>
+                            <td data-label="Gateway">
                               <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "#137459", display: "inline-flex", alignItems: "center", gap: "4px" }}>
                                 <CreditCard size={13} /> Stripe Active
                               </span>
                             </td>
-                            <td style={{ textAlign: "right", fontWeight: 800, color: "#137333", fontSize: "0.95rem" }}>
+                            <td data-label="Amount" style={{ textAlign: "right", fontWeight: 800, color: "#137333", fontSize: "0.95rem" }}>
                               +${p.amount.toLocaleString()}
                             </td>
                             {user.role === "admin" && (
-                              <td style={{ textAlign: "right" }}>
+                              <td data-label="Actions" style={{ textAlign: "right" }}>
                                 <button
                                   type="button"
                                   onClick={() => handleDeletePayment(p.id)}
@@ -1568,7 +1580,7 @@ export default function PortalWorkspace() {
               {ledgerSubTab === "expenses" && (
                 <div className="orgflo-card">
                   <div className="orgflo-table-wrap">
-                    <table className="orgflo-table">
+                    <table className="orgflo-table orgflo-table-collapse">
                       <thead>
                         <tr>
                           <th>Date</th>
@@ -1583,16 +1595,16 @@ export default function PortalWorkspace() {
                       <tbody>
                         {filteredExpenses.map((exp) => (
                           <tr key={exp.id}>
-                            <td style={{ color: "#526359", whiteSpace: "nowrap" }}>{exp.date}</td>
-                            <td style={{ fontWeight: 700, color: "#003e53" }}>{exp.category}</td>
-                            <td style={{ color: "#526359" }}>{exp.description}</td>
-                            <td style={{ color: "#526359" }}>{exp.vendor}</td>
-                            <td style={{ color: "#14211a", fontWeight: 600 }}>{exp.approvedBy}</td>
-                            <td style={{ textAlign: "right", fontWeight: 800, color: "#c5221f", fontSize: "0.95rem" }}>
+                            <td data-label="Date" style={{ color: "#526359", whiteSpace: "nowrap" }}>{exp.date}</td>
+                            <td data-label="Category" style={{ fontWeight: 700, color: "#003e53" }}>{exp.category}</td>
+                            <td data-label="Description" style={{ color: "#526359" }}>{exp.description}</td>
+                            <td data-label="Vendor" style={{ color: "#526359" }}>{exp.vendor}</td>
+                            <td data-label="Approved By" style={{ color: "#14211a", fontWeight: 600 }}>{exp.approvedBy}</td>
+                            <td data-label="Amount" style={{ textAlign: "right", fontWeight: 800, color: "#c5221f", fontSize: "0.95rem" }}>
                               -${exp.amount.toLocaleString()}
                             </td>
                             {user.role === "admin" && (
-                              <td style={{ textAlign: "right" }}>
+                              <td data-label="Actions" style={{ textAlign: "right" }}>
                                 <button
                                   type="button"
                                   onClick={() => handleDeleteExpense(exp.id)}
@@ -1802,108 +1814,133 @@ export default function PortalWorkspace() {
             </div>
           )}
 
-          {/* TAB 5: CHAPTER DASHBOARD (FOR CHAPTER LEADER) */}
-          {activeTab === "my_chapter" && (
-            <div>
-              {/* OrgFlo Welcome Banner for Chapter */}
-              <div className="dash-welcome-banner" style={{ marginBottom: "28px" }}>
-                <div>
-                  <div style={{ fontSize: "0.78rem", color: "#a7d6b6", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "6px" }}>
-                    CHAPTER LEADERSHIP CONSOLE
+          {/* TAB 5: CHAPTER DETAIL (FOR CHAPTER LEADER & GENERAL MEMBERS) */}
+          {activeTab === "my_chapter" && (() => {
+            const currentChapter =
+              chapters.find((c) => c.id === user.chapterId || c.name === user.chapterName) ||
+              chapters[0] || {
+                id: "c-houston",
+                name: user.chapterName || "Urhobo Progressive Association (UPA), Houston",
+                code: "HOUSTON",
+                region: "Texas / South",
+                president: "Chief Godspower Oniovosa",
+                contactEmail: "houston@upuamerica.org",
+                memberCount: 245,
+                paymentsBreakdown: { monthlyDues: 29400, donations: 18500, tickets: 12250, merchandise: 3400, total: 63550 },
+              };
+
+            const chapterMembers = members.filter(
+              (m) =>
+                m.chapterId === currentChapter.id ||
+                m.chapterName === currentChapter.name ||
+                m.chapterName?.toLowerCase().includes(currentChapter.code?.toLowerCase() || "") ||
+                !m.chapterId
+            );
+
+            return (
+              <div>
+                {/* Chapter Banner */}
+                <div className="dash-welcome-banner" style={{ marginBottom: "28px" }}>
+                  <div>
+                    <div style={{ fontSize: "0.78rem", color: "#a7d6b6", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "6px" }}>
+                      CHAPTER DETAILS & DIRECTORY
+                    </div>
+                    <h2 style={{ fontFamily: "var(--font-heading)", fontSize: "1.85rem", fontWeight: 800, margin: "0 0 6px" }}>
+                      {currentChapter.name}
+                    </h2>
+                    <p style={{ color: "rgba(255, 255, 255, 0.88)", fontSize: "0.92rem", margin: 0 }}>
+                      Region: {currentChapter.region} · President: {currentChapter.president} · Contact: {currentChapter.contactEmail}
+                    </p>
                   </div>
-                  <h2 style={{ fontFamily: "var(--font-heading)", fontSize: "1.85rem", fontWeight: 800, margin: "0 0 6px" }}>
-                    {user.chapterName || "Houston Chapter"} Dashboard
-                  </h2>
-                  <p style={{ color: "rgba(255, 255, 255, 0.88)", fontSize: "0.92rem", margin: 0 }}>
-                    Track active members, monthly dues status, and local fundraising initiatives in real-time.
-                  </p>
-                </div>
 
-                <div className="dash-banner-actions">
-                  <button
-                    type="button"
-                    className="btn-orgflo-white"
-                    onClick={() => setDonationModalOpen(true)}
-                  >
-                    <CreditCard size={16} /> Pay Chapter Dues
-                  </button>
-                </div>
-              </div>
-
-              {/* Chapter Stat Cards */}
-              <div className="dash-metrics-grid" style={{ marginBottom: "28px" }}>
-                <div className="orgflo-metric-card">
-                  <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase" }}>Chapter Members</span>
-                  <div style={{ fontFamily: "var(--font-heading)", fontSize: "1.85rem", fontWeight: 800, color: "#0e3d26", margin: "8px 0 4px" }}>
-                    245 Active
+                  <div className="dash-banner-actions">
+                    <button
+                      type="button"
+                      className="btn-orgflo-white"
+                      onClick={() => setDonationModalOpen(true)}
+                    >
+                      <CreditCard size={16} /> Pay Chapter Dues
+                    </button>
                   </div>
-                  <span className="badge badge-active">89% Dues Compliance</span>
                 </div>
 
-                <div className="orgflo-metric-card">
-                  <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase" }}>Monthly Dues Raised</span>
-                  <div style={{ fontFamily: "var(--font-heading)", fontSize: "1.85rem", fontWeight: 800, color: "#137333", margin: "8px 0 4px" }}>
-                    $29,400
+                {/* Chapter Detail Cards */}
+                <div className="dash-metrics-grid" style={{ marginBottom: "28px" }}>
+                  <div className="orgflo-metric-card">
+                    <span style={{ fontSize: "0.76rem", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase" }}>Chapter Members</span>
+                    <div style={{ fontFamily: "var(--font-heading)", fontSize: "1.85rem", fontWeight: 800, color: "#0e3d26", margin: "8px 0 4px" }}>
+                      {currentChapter.memberCount} Active
+                    </div>
+                    <span className="badge badge-active">Good Standing</span>
                   </div>
-                  <span className="badge badge-active">FY 2024 to Date</span>
-                </div>
 
-                <div className="orgflo-metric-card">
-                  <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase" }}>Chapter Donations</span>
-                  <div style={{ fontFamily: "var(--font-heading)", fontSize: "1.85rem", fontWeight: 800, color: "#003e53", margin: "8px 0 4px" }}>
-                    $18,500
+                  <div className="orgflo-metric-card">
+                    <span style={{ fontSize: "0.76rem", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase" }}>Monthly Dues Raised</span>
+                    <div style={{ fontFamily: "var(--font-heading)", fontSize: "1.85rem", fontWeight: 800, color: "#137333", margin: "8px 0 4px" }}>
+                      ${currentChapter.paymentsBreakdown?.monthlyDues ? currentChapter.paymentsBreakdown.monthlyDues.toLocaleString() : "29,400"}
+                    </div>
+                    <span className="badge badge-active">Annual Quota Met</span>
                   </div>
-                  <span className="badge badge-active">Shelters & Okuama</span>
-                </div>
 
-                <div className="orgflo-metric-card">
-                  <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase" }}>Convention Tickets</span>
-                  <div style={{ fontFamily: "var(--font-heading)", fontSize: "1.85rem", fontWeight: 800, color: "#b08000", margin: "8px 0 4px" }}>
-                    $12,250
+                  <div className="orgflo-metric-card">
+                    <span style={{ fontSize: "0.76rem", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase" }}>Chapter Donations</span>
+                    <div style={{ fontFamily: "var(--font-heading)", fontSize: "1.85rem", fontWeight: 800, color: "#003e53", margin: "8px 0 4px" }}>
+                      ${currentChapter.paymentsBreakdown?.donations ? currentChapter.paymentsBreakdown.donations.toLocaleString() : "18,500"}
+                    </div>
+                    <span className="badge badge-active">Shelters & Relief</span>
                   </div>
-                  <span className="badge badge-pending">Registered Delegates</span>
-                </div>
-              </div>
 
-              {/* Chapter Members Table */}
-              <div className="orgflo-card">
-                <div className="orgflo-card-header">
-                  <h3 style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: "1.2rem", fontWeight: 800, color: "var(--primary)" }}>
-                    Verified Chapter Members
-                  </h3>
-                  <span className="badge badge-active">{members.length} Members Enrolled</span>
+                  <div className="orgflo-metric-card">
+                    <span style={{ fontSize: "0.76rem", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase" }}>Convention Tickets</span>
+                    <div style={{ fontFamily: "var(--font-heading)", fontSize: "1.85rem", fontWeight: 800, color: "#b08000", margin: "8px 0 4px" }}>
+                      ${currentChapter.paymentsBreakdown?.tickets ? currentChapter.paymentsBreakdown.tickets.toLocaleString() : "12,250"}
+                    </div>
+                    <span className="badge badge-pending">Registered Delegates</span>
+                  </div>
                 </div>
-                <div className="orgflo-table-wrap">
-                  <table className="orgflo-table">
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Dues Status</th>
-                        <th>Role</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {members.map((m) => (
-                        <tr key={m.id}>
-                          <td style={{ fontWeight: 700, color: "#14211a" }}>{m.name}</td>
-                          <td style={{ color: "#526359" }}>{m.email}</td>
-                          <td style={{ color: "#526359" }}>{m.phone}</td>
-                          <td>
-                            <span className={`badge ${m.duesStatus === "Paid" ? "badge-active" : "badge-overdue"}`}>
-                              {m.duesStatus}
-                            </span>
-                          </td>
-                          <td style={{ color: "#003e53", fontWeight: 600 }}>{m.role}</td>
+
+                {/* Chapter Members Table */}
+                <div className="orgflo-card">
+                  <div className="orgflo-card-header">
+                    <h3 style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: "1.15rem", fontWeight: 800, color: "var(--primary)" }}>
+                      Chapter Member Directory
+                    </h3>
+                    <span className="badge badge-active">{chapterMembers.length} Members Listed</span>
+                  </div>
+                  <div className="orgflo-table-wrap">
+                    <table className="orgflo-table orgflo-table-collapse">
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Role</th>
+                          <th>Email</th>
+                          <th>Phone</th>
+                          <th>Dues Status</th>
+                          <th>Joined Date</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {chapterMembers.map((m) => (
+                          <tr key={m.id}>
+                            <td data-label="Name" style={{ fontWeight: 700, color: "#14211a" }}>{m.name}</td>
+                            <td data-label="Role" style={{ color: "#003e53", fontWeight: 600 }}>{m.role}</td>
+                            <td data-label="Email" style={{ color: "#526359" }}>{m.email}</td>
+                            <td data-label="Phone" style={{ color: "#526359" }}>{m.phone}</td>
+                            <td data-label="Dues Status">
+                              <span className={`badge ${m.duesStatus === "Paid" ? "badge-active" : "badge-overdue"}`}>
+                                {m.duesStatus}
+                              </span>
+                            </td>
+                            <td data-label="Joined Date" style={{ color: "#526359" }}>{m.joinedDate}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
 
           {/* TAB 6: MY MEMBERSHIP (GENERAL MEMBER) */}
           {activeTab === "my_membership" && (
@@ -2068,10 +2105,10 @@ export default function PortalWorkspace() {
                 : balanceData.find((b) => b.id === balanceSelectedChapterId) ?? balanceData[0];
 
             const cardCategories = [
-              { key: "duesBal", label: "Dues Balance", icon: "💳", color: "#1a73e8", lightBg: "#e8f0fe" },
-              { key: "insuranceBal", label: "Insurance Balance", icon: "🛡️", color: "#c5221f", lightBg: "#fce8e6" },
-              { key: "donationBal", label: "Donation Balance", icon: "🤝", color: "#137459", lightBg: "#e6f4ea" },
-              { key: "ticketBal", label: "Convention Ticket Bal.", icon: "🎫", color: "#e37400", lightBg: "#fef3e2" },
+              { key: "duesBal", label: "Dues Balance", icon: <CreditCard size={22} color="#1a73e8" />, color: "#1a73e8", lightBg: "#e8f0fe" },
+              { key: "insuranceBal", label: "Insurance Balance", icon: <Shield size={22} color="#c5221f" />, color: "#c5221f", lightBg: "#fce8e6" },
+              { key: "donationBal", label: "Donation Balance", icon: <Heart size={22} color="#137459" />, color: "#137459", lightBg: "#e6f4ea" },
+              { key: "ticketBal", label: "Convention Ticket Bal.", icon: <Ticket size={22} color="#e37400" />, color: "#e37400", lightBg: "#fef3e2" },
             ] as const;
 
             return (
@@ -2116,7 +2153,7 @@ export default function PortalWorkspace() {
                 {chapterForCards && (
                   <div style={{ marginBottom: "32px" }}>
                     <div style={{ fontWeight: 800, fontSize: "1.05rem", color: "#0e3d26", marginBottom: "16px", fontFamily: "var(--font-heading)" }}>
-                      📊 {chapterForCards.name} — Outstanding Balances
+                      {chapterForCards.name} — Outstanding Balances
                     </div>
                     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "18px" }}>
                       {cardCategories.map((cat) => {
@@ -2151,7 +2188,9 @@ export default function PortalWorkspace() {
                             onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)"; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 2px 12px rgba(0,0,0,0.07)"; }}
                           >
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
-                              <span style={{ fontSize: "2rem" }}>{cat.icon}</span>
+                              <div style={{ width: "42px", height: "42px", borderRadius: "10px", background: cat.lightBg, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                {cat.icon}
+                              </div>
                               {isClickable && (
                                 <span style={{ background: cat.lightBg, color: cat.color, fontSize: "0.72rem", fontWeight: 800, padding: "4px 10px", borderRadius: "9999px", letterSpacing: "0.04em" }}>
                                   PAY NOW
@@ -2168,7 +2207,7 @@ export default function PortalWorkspace() {
                             </div>
                             <div style={{ fontSize: "0.88rem", fontWeight: 700, color: "#3c4043" }}>{cat.label}</div>
                             <div style={{ fontSize: "0.78rem", color: "#80868b", marginTop: "4px" }}>
-                              {amount > 0 ? "Outstanding — payment required" : "✓ Fully settled"}
+                              {amount > 0 ? "Outstanding balance" : "Fully settled"}
                             </div>
                             {/* Decorative stripe */}
                             <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "4px", background: cat.color, borderRadius: "0 0 14px 14px" }} />
@@ -2187,16 +2226,16 @@ export default function PortalWorkspace() {
                     </h3>
                     <span className="badge badge-active">National Overview</span>
                   </div>
-                  <div style={{ overflowX: "auto" }}>
-                    <table className="orgflo-table" style={{ minWidth: "700px" }}>
+                  <div className="orgflo-table-wrap">
+                    <table className="orgflo-table orgflo-table-collapse">
                       <thead>
                         <tr>
                           <th>Chapter</th>
-                          <th>City</th>
-                          <th style={{ color: "#1a73e8" }}>💳 Dues Bal.</th>
-                          <th style={{ color: "#c5221f" }}>🛡️ Insurance Bal.</th>
-                          <th style={{ color: "#137459" }}>🤝 Donation Bal.</th>
-                          <th style={{ color: "#e37400" }}>🎫 Ticket Bal.</th>
+                          <th>Region</th>
+                          <th style={{ color: "#1a73e8" }}>Dues Bal.</th>
+                          <th style={{ color: "#c5221f" }}>Insurance Bal.</th>
+                          <th style={{ color: "#137459" }}>Donation Bal.</th>
+                          <th style={{ color: "#e37400" }}>Ticket Bal.</th>
                           <th>Total Owed</th>
                           <th>Status</th>
                         </tr>
@@ -2206,29 +2245,29 @@ export default function PortalWorkspace() {
                           const total = b.duesBal + b.insuranceBal + b.donationBal + b.ticketBal;
                           return (
                             <tr key={b.id} style={{ fontWeight: b.id === chapterForCards?.id ? 700 : 400 }}>
-                              <td>
+                              <td data-label="Chapter">
                                 <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                                   <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: total > 0 ? "#c5221f" : "#137459", flexShrink: 0 }} />
                                   {b.name}
                                 </div>
                               </td>
-                              <td style={{ color: "#5f6368", fontSize: "0.88rem" }}>{b.region}</td>
-                              <td style={{ color: b.duesBal > 0 ? "#c5221f" : "#137459", fontWeight: 700 }}>
+                              <td data-label="Region" style={{ color: "#5f6368", fontSize: "0.88rem" }}>{b.region}</td>
+                              <td data-label="Dues Bal." style={{ color: b.duesBal > 0 ? "#c5221f" : "#137459", fontWeight: 700 }}>
                                 {b.duesBal > 0 ? `$${b.duesBal.toLocaleString("en-US", { minimumFractionDigits: 2 })}` : "—"}
                               </td>
-                              <td style={{ color: b.insuranceBal > 0 ? "#c5221f" : "#137459", fontWeight: 700 }}>
+                              <td data-label="Insurance Bal." style={{ color: b.insuranceBal > 0 ? "#c5221f" : "#137459", fontWeight: 700 }}>
                                 {b.insuranceBal > 0 ? `$${b.insuranceBal.toLocaleString("en-US", { minimumFractionDigits: 2 })}` : "—"}
                               </td>
-                              <td style={{ color: b.donationBal > 0 ? "#c5221f" : "#137459", fontWeight: 700 }}>
+                              <td data-label="Donation Bal." style={{ color: b.donationBal > 0 ? "#c5221f" : "#137459", fontWeight: 700 }}>
                                 {b.donationBal > 0 ? `$${b.donationBal.toLocaleString("en-US", { minimumFractionDigits: 2 })}` : "—"}
                               </td>
-                              <td style={{ color: b.ticketBal > 0 ? "#c5221f" : "#137459", fontWeight: 700 }}>
+                              <td data-label="Ticket Bal." style={{ color: b.ticketBal > 0 ? "#c5221f" : "#137459", fontWeight: 700 }}>
                                 {b.ticketBal > 0 ? `$${b.ticketBal.toLocaleString("en-US", { minimumFractionDigits: 2 })}` : "—"}
                               </td>
-                              <td style={{ fontWeight: 900, fontSize: "1rem", color: total > 0 ? "#c5221f" : "#137459" }}>
-                                {total > 0 ? `$${total.toLocaleString("en-US", { minimumFractionDigits: 2 })}` : "✓ Clear"}
+                              <td data-label="Total Owed" style={{ fontWeight: 900, fontSize: "1rem", color: total > 0 ? "#c5221f" : "#137459" }}>
+                                {total > 0 ? `$${total.toLocaleString("en-US", { minimumFractionDigits: 2 })}` : "$0.00"}
                               </td>
-                              <td>
+                              <td data-label="Status">
                                 <span className={`badge ${total > 0 ? "badge-overdue" : "badge-active"}`}>
                                   {total > 0 ? "Outstanding" : "Settled"}
                                 </span>
@@ -2239,13 +2278,13 @@ export default function PortalWorkspace() {
                       </tbody>
                       <tfoot>
                         <tr style={{ background: "#f0f8f3", fontWeight: 900 }}>
-                          <td colSpan={2} style={{ color: "#0e3d26", fontFamily: "var(--font-heading)" }}>NATIONAL TOTAL</td>
-                          <td style={{ color: "#1a73e8" }}>${balanceData.reduce((s, b) => s + b.duesBal, 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
-                          <td style={{ color: "#c5221f" }}>${balanceData.reduce((s, b) => s + b.insuranceBal, 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
-                          <td style={{ color: "#137459" }}>${balanceData.reduce((s, b) => s + b.donationBal, 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
-                          <td style={{ color: "#e37400" }}>${balanceData.reduce((s, b) => s + b.ticketBal, 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
-                          <td style={{ color: "#c5221f", fontSize: "1.05rem" }}>${balanceData.reduce((s, b) => s + b.duesBal + b.insuranceBal + b.donationBal + b.ticketBal, 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
-                          <td />
+                          <td data-label="Summary" colSpan={2} style={{ color: "#0e3d26", fontFamily: "var(--font-heading)" }}>NATIONAL TOTAL</td>
+                          <td data-label="Total Dues Bal." style={{ color: "#1a73e8" }}>${balanceData.reduce((s, b) => s + b.duesBal, 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                          <td data-label="Total Insurance Bal." style={{ color: "#c5221f" }}>${balanceData.reduce((s, b) => s + b.insuranceBal, 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                          <td data-label="Total Donation Bal." style={{ color: "#137459" }}>${balanceData.reduce((s, b) => s + b.donationBal, 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                          <td data-label="Total Ticket Bal." style={{ color: "#e37400" }}>${balanceData.reduce((s, b) => s + b.ticketBal, 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                          <td data-label="Grand Total Owed" style={{ color: "#c5221f", fontSize: "1.05rem" }}>${balanceData.reduce((s, b) => s + b.duesBal + b.insuranceBal + b.donationBal + b.ticketBal, 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                          <td data-label="" />
                         </tr>
                       </tfoot>
                     </table>
@@ -2260,25 +2299,25 @@ export default function PortalWorkspace() {
           ============================================================ */}
           {activeTab === "shop" && (() => {
             const shopProducts = [
-              { id: "p1", category: "tickets", emoji: "🎫", name: "2025 UPUA Convention Ticket", price: 250, description: "Full access to the annual UPUA National Convention — gala, workshops & cultural night.", badge: "HOT", stock: 48 },
-              { id: "p2", category: "tickets", emoji: "🎟️", name: "UPUA Youth Summit Ticket", price: 75, description: "Urhobo Youth in America leadership summit. Networking, career panels & mentorship.", badge: "", stock: 120 },
-              { id: "p3", category: "wrapper", emoji: "👘", name: "Urhobo Aso-Oke Wrapper (Blue)", price: 120, description: "Premium hand-woven Urhobo Aso-Oke fabric in royal blue. 6 yards, suitable for men & women.", badge: "BESTSELLER", stock: 34 },
-              { id: "p4", category: "wrapper", emoji: "🧣", name: "Urhobo Aso-Oke Wrapper (Gold)", price: 120, description: "Premium hand-woven Urhobo Aso-Oke fabric in gold. Perfect for UPUA events.", badge: "", stock: 22 },
-              { id: "p4b", category: "wrapper", emoji: "🪡", name: "Urhobo George Fabric (5 yards)", price: 85, description: "Traditional George fabric in Urhobo ceremonial patterns. Rich cotton-blend.", badge: "NEW", stock: 60 },
-              { id: "p5", category: "insurance", emoji: "🛡️", name: "UPUA Group Health Plan (Individual)", price: 350, description: "Annual group health insurance for individual members. Covers basic health & emergency.", badge: "", stock: 999 },
-              { id: "p6", category: "insurance", emoji: "🏥", name: "UPUA Group Health Plan (Family)", price: 850, description: "Annual family health plan for up to 4 dependants. Comprehensive UPUA community coverage.", badge: "POPULAR", stock: 999 },
-              { id: "p6b", category: "insurance", emoji: "✈️", name: "Travel Insurance (Annual)", price: 150, description: "International travel insurance for UPUA members visiting Nigeria and West Africa.", badge: "", stock: 999 },
-              { id: "p7", category: "merchandise", emoji: "🧢", name: "UPUA Branded Cap", price: 35, description: "Embroidered UPUA logo cap in forest green. One size fits all.", badge: "", stock: 200 },
-              { id: "p8", category: "merchandise", emoji: "👕", name: "UPUA Classic T-Shirt", price: 45, description: "100% cotton UPUA T-shirt with Urhobo Pride print. Sizes S–3XL.", badge: "NEW", stock: 150 },
-              { id: "p9", category: "merchandise", emoji: "📿", name: "Urhobo Beaded Bracelet", price: 25, description: "Handcrafted traditional Urhobo beaded bracelet. Unisex, one-size.", badge: "", stock: 85 },
-              { id: "p10", category: "merchandise", emoji: "📖", name: "Urhobo History Book (Vol. 2)", price: 55, description: "The definitive illustrated history of the Urhobo people in America. 320 pages.", badge: "", stock: 40 },
+              { id: "p1", category: "tickets", name: "2025 UPUA Convention Ticket", price: 250, description: "Full access to the annual UPUA National Convention — gala, workshops & cultural night.", badge: "HOT", stock: 48 },
+              { id: "p2", category: "tickets", name: "UPUA Youth Summit Ticket", price: 75, description: "Urhobo Youth in America leadership summit. Networking, career panels & mentorship.", badge: "", stock: 120 },
+              { id: "p3", category: "wrapper", name: "Urhobo Aso-Oke Wrapper (Blue)", price: 120, description: "Premium hand-woven Urhobo Aso-Oke fabric in royal blue. 6 yards, suitable for men & women.", badge: "BESTSELLER", stock: 34 },
+              { id: "p4", category: "wrapper", name: "Urhobo Aso-Oke Wrapper (Gold)", price: 120, description: "Premium hand-woven Urhobo Aso-Oke fabric in gold. Perfect for UPUA events.", badge: "", stock: 22 },
+              { id: "p4b", category: "wrapper", name: "Urhobo George Fabric (5 yards)", price: 85, description: "Traditional George fabric in Urhobo ceremonial patterns. Rich cotton-blend.", badge: "NEW", stock: 60 },
+              { id: "p5", category: "insurance", name: "UPUA Group Health Plan (Individual)", price: 350, description: "Annual group health insurance for individual members. Covers basic health & emergency.", badge: "", stock: 999 },
+              { id: "p6", category: "insurance", name: "UPUA Group Health Plan (Family)", price: 850, description: "Annual family health plan for up to 4 dependants. Comprehensive UPUA community coverage.", badge: "POPULAR", stock: 999 },
+              { id: "p6b", category: "insurance", name: "Travel Insurance (Annual)", price: 150, description: "International travel insurance for UPUA members visiting Nigeria and West Africa.", badge: "", stock: 999 },
+              { id: "p7", category: "merchandise", name: "UPUA Branded Cap", price: 35, description: "Embroidered UPUA logo cap in forest green. One size fits all.", badge: "", stock: 200 },
+              { id: "p8", category: "merchandise", name: "UPUA Classic T-Shirt", price: 45, description: "100% cotton UPUA T-shirt with Urhobo Pride print. Sizes S–3XL.", badge: "NEW", stock: 150 },
+              { id: "p9", category: "merchandise", name: "Urhobo Beaded Bracelet", price: 25, description: "Handcrafted traditional Urhobo beaded bracelet. Unisex, one-size.", badge: "", stock: 85 },
+              { id: "p10", category: "merchandise", name: "Urhobo History Book (Vol. 2)", price: 55, description: "The definitive illustrated history of the Urhobo people in America. 320 pages.", badge: "", stock: 40 },
             ];
             const categories = [
-              { id: "all", label: "All Items", icon: "🛍️" },
-              { id: "tickets", label: "Convention Tickets", icon: "🎫" },
-              { id: "wrapper", label: "Wrapper & Fabric", icon: "👘" },
-              { id: "insurance", label: "Insurance Plans", icon: "🛡️" },
-              { id: "merchandise", label: "Merchandise", icon: "🛒" },
+              { id: "all", label: "All Items" },
+              { id: "tickets", label: "Convention Tickets" },
+              { id: "wrapper", label: "Wrapper & Fabric" },
+              { id: "insurance", label: "Insurance Plans" },
+              { id: "merchandise", label: "Merchandise" },
             ];
             const filteredProducts = shopCategoryFilter === "all" ? shopProducts : shopProducts.filter(p => p.category === shopCategoryFilter);
             const cartTotal = shopCart.reduce((s, c) => s + c.product.price * c.qty, 0);
@@ -2332,8 +2371,8 @@ export default function PortalWorkspace() {
                         <span className="badge badge-pending">{shopOrders.filter(o => o.status === "pending").length} Pending</span>
                       </div>
                     </div>
-                    <div style={{ overflowX: "auto" }}>
-                      <table className="orgflo-table" style={{ minWidth: "750px" }}>
+                    <div className="orgflo-table-wrap">
+                      <table className="orgflo-table orgflo-table-collapse">
                         <thead>
                           <tr>
                             <th>Order ID</th><th>Buyer</th><th>Chapter</th><th>Items</th><th>Total</th><th>Date</th><th>Status</th><th>Action</th>
@@ -2342,25 +2381,25 @@ export default function PortalWorkspace() {
                         <tbody>
                           {shopOrders.map(order => (
                             <tr key={order.id}>
-                              <td style={{ fontWeight: 700, color: "#0e3d26" }}>{order.id}</td>
-                              <td>
+                              <td data-label="Order ID" style={{ fontWeight: 700, color: "#0e3d26" }}>{order.id}</td>
+                              <td data-label="Buyer">
                                 <div style={{ fontWeight: 600 }}>{order.buyerName}</div>
                                 <div style={{ fontSize: "0.78rem", color: "#80868b" }}>{order.buyerEmail}</div>
                               </td>
-                              <td style={{ fontSize: "0.88rem", color: "#5f6368" }}>{order.chapterName}</td>
-                              <td>
+                              <td data-label="Chapter" style={{ fontSize: "0.88rem", color: "#5f6368" }}>{order.chapterName}</td>
+                              <td data-label="Items">
                                 {order.items.map((item, i) => (
-                                  <div key={i} style={{ fontSize: "0.83rem" }}>{item.product.emoji} {item.product.name} × {item.qty}</div>
+                                  <div key={i} style={{ fontSize: "0.83rem" }}>{item.product.name} × {item.qty}</div>
                                 ))}
                               </td>
-                              <td style={{ fontWeight: 800, color: "#0e3d26" }}>${order.total.toFixed(2)}</td>
-                              <td style={{ fontSize: "0.85rem", color: "#5f6368" }}>{order.date}</td>
-                              <td>
+                              <td data-label="Total" style={{ fontWeight: 800, color: "#0e3d26" }}>${order.total.toFixed(2)}</td>
+                              <td data-label="Date" style={{ fontSize: "0.85rem", color: "#5f6368" }}>{order.date}</td>
+                              <td data-label="Status">
                                 <span className={`badge ${order.status === "confirmed" ? "badge-active" : order.status === "shipped" ? "badge-alumni" : order.status === "cancelled" ? "badge-overdue" : "badge-pending"}`}>
-                                  {order.status === "confirmed" ? "✓ Confirmed" : order.status === "shipped" ? "🚚 Shipped" : order.status === "cancelled" ? "✗ Cancelled" : "⏳ Pending"}
+                                  {order.status === "confirmed" ? "Confirmed" : order.status === "shipped" ? "Shipped" : order.status === "cancelled" ? "Cancelled" : "Pending"}
                                 </span>
                               </td>
-                              <td>
+                              <td data-label="Action">
                                 <div style={{ display: "flex", gap: "6px" }}>
                                   {order.status === "pending" && (
                                     <button onClick={() => setShopOrders(prev => prev.map(o => o.id === order.id ? { ...o, status: "confirmed" as const } : o))}
@@ -2395,7 +2434,7 @@ export default function PortalWorkspace() {
                   {categories.map(cat => (
                     <button key={cat.id} onClick={() => setShopCategoryFilter(cat.id)}
                       style={{ padding: "8px 18px", borderRadius: "9999px", border: `2px solid ${shopCategoryFilter === cat.id ? "#0e3d26" : "#e0e5e2"}`, background: shopCategoryFilter === cat.id ? "#0e3d26" : "#ffffff", color: shopCategoryFilter === cat.id ? "#ffffff" : "#3c4043", fontWeight: 700, fontSize: "0.85rem", cursor: "pointer", transition: "all 0.18s ease" }}>
-                      {cat.icon} {cat.label}
+                      {cat.label}
                     </button>
                   ))}
                 </div>
@@ -2410,15 +2449,20 @@ export default function PortalWorkspace() {
                         onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = "translateY(-3px)"; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 10px 32px rgba(0,0,0,0.12)"; }}
                         onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = "none"; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 2px 14px rgba(0,0,0,0.07)"; }}
                       >
-                        <div style={{ background: "linear-gradient(135deg, #f0f8f3 0%, #e8f0fe 100%)", padding: "32px 20px", textAlign: "center", position: "relative" }}>
-                          <div style={{ fontSize: "3.5rem", lineHeight: 1 }}>{product.emoji}</div>
+                        <div style={{ background: "linear-gradient(135deg, #f0f8f3 0%, #e8f0fe 100%)", padding: "26px 20px", textAlign: "center", position: "relative" }}>
+                          <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: "#ffffff", boxShadow: "0 2px 8px rgba(0,0,0,0.08)", margin: "0 auto 10px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            {product.category === "tickets" && <Ticket size={24} color="#0e3d26" />}
+                            {product.category === "wrapper" && <Tag size={24} color="#0e3d26" />}
+                            {product.category === "insurance" && <Shield size={24} color="#0e3d26" />}
+                            {product.category === "merchandise" && <Package size={24} color="#0e3d26" />}
+                          </div>
                           {product.badge && (
                             <span style={{ ...badgeColor[product.badge], position: "absolute", top: "12px", right: "12px", fontSize: "0.68rem", fontWeight: 900, padding: "3px 10px", borderRadius: "9999px" }}>
                               {product.badge}
                             </span>
                           )}
-                          <div style={{ position: "absolute", bottom: "10px", left: "12px", fontSize: "0.72rem", color: "#80868b", fontWeight: 600 }}>
-                            {product.stock < 50 ? `⚠ ${product.stock} left` : "✓ In stock"}
+                          <div style={{ fontSize: "0.74rem", color: "#5f6368", fontWeight: 600 }}>
+                            {product.stock < 50 ? `Limited: ${product.stock} available` : "In stock"}
                           </div>
                         </div>
                         <div style={{ padding: "18px 20px", flex: 1, display: "flex", flexDirection: "column", gap: "8px" }}>
@@ -2468,12 +2512,14 @@ export default function PortalWorkspace() {
                       <div style={{ flex: 1, overflowY: "auto", padding: "18px 22px", display: "flex", flexDirection: "column", gap: "12px" }}>
                         {shopCart.length === 0 ? (
                           <div style={{ textAlign: "center", padding: "60px 20px", color: "#80868b" }}>
-                            <div style={{ fontSize: "2.8rem", marginBottom: "10px" }}>🛒</div>
-                            <div style={{ fontWeight: 700 }}>Cart is empty</div>
+                            <div style={{ fontWeight: 700, fontSize: "1rem" }}>Your cart is empty</div>
+                            <div style={{ fontSize: "0.85rem", color: "#9aa0a6", marginTop: "4px" }}>Select products above to add them to your cart.</div>
                           </div>
                         ) : shopCart.map(ci => (
                           <div key={ci.product.id} style={{ display: "flex", gap: "12px", background: "#f8faf8", borderRadius: "12px", padding: "12px" }}>
-                            <div style={{ fontSize: "2rem", width: "44px", textAlign: "center", flexShrink: 0 }}>{ci.product.emoji}</div>
+                            <div style={{ width: "36px", height: "36px", borderRadius: "8px", background: "#e8f0fe", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                              <Package size={18} color="#0e3d26" />
+                            </div>
                             <div style={{ flex: 1 }}>
                               <div style={{ fontWeight: 700, fontSize: "0.88rem", color: "#14211a" }}>{ci.product.name}</div>
                               <div style={{ fontSize: "0.8rem", color: "#5f6368" }}>${ci.product.price} each</div>
@@ -2537,11 +2583,11 @@ export default function PortalWorkspace() {
                 return null;
               });
 
-            const rLabels: Record<string, { icon: string; title: string; desc: string }> = {
-              ProfitAndLoss: { icon: "📈", title: "Profit & Loss", desc: "Income, expenses, and net profit/loss for the selected period." },
-              BalanceSheet:  { icon: "⚖️", title: "Balance Sheet",  desc: "Assets, liabilities, and equity at a point in time." },
-              TransactionList: { icon: "🧾", title: "Transaction List", desc: "Full audit receipt trail of all financial transactions." },
-              CashFlow: { icon: "💰", title: "Cash Flow", desc: "Operating, investing, and financing cash movements." },
+            const rLabels: Record<string, { title: string; desc: string }> = {
+              ProfitAndLoss: { title: "Profit & Loss", desc: "Income, expenses, and net profit/loss for the selected period." },
+              BalanceSheet:  { title: "Balance Sheet", desc: "Assets, liabilities, and equity at a point in time." },
+              TransactionList: { title: "Transaction List", desc: "Audit receipt trail of all financial transactions." },
+              CashFlow: { title: "Cash Flow", desc: "Operating, investing, and financing cash movements." },
             };
             const demoRows = [
               { label: "INCOME", section: true }, { label: "Monthly Dues", value: "$182,400.00", indent: 1 }, { label: "Donations Received", value: "$143,500.00", indent: 1 }, { label: "Convention Ticket Sales", value: "$67,250.00", indent: 1 }, { label: "Merchandise Sales", value: "$18,950.00", indent: 1 }, { label: "Total Income", value: "$412,100.00", summary: true },
@@ -2564,11 +2610,13 @@ export default function PortalWorkspace() {
                 <div className="orgflo-card" style={{ marginBottom: "28px" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                      <div style={{ width: "52px", height: "52px", background: "#2ca01c", borderRadius: "14px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: "1.6rem" }}>📗</div>
+                      <div style={{ width: "48px", height: "48px", background: "#2ca01c", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                        <FileText size={22} color="#ffffff" />
+                      </div>
                       <div>
                         <div style={{ fontWeight: 800, fontSize: "1rem", color: "#14211a", fontFamily: "var(--font-heading)" }}>QuickBooks Online</div>
                         {qbConnected
-                          ? <div style={{ fontSize: "0.84rem", color: "#137459", fontWeight: 600, marginTop: "3px" }}>✓ Connected · Company ID: <code style={{ background: "#e6f4ea", padding: "2px 7px", borderRadius: "6px" }}>{qbRealmId}</code></div>
+                          ? <div style={{ fontSize: "0.84rem", color: "#137459", fontWeight: 600, marginTop: "3px" }}>Connected · Company ID: <code style={{ background: "#e6f4ea", padding: "2px 7px", borderRadius: "6px" }}>{qbRealmId}</code></div>
                           : <div style={{ fontSize: "0.84rem", color: "#80868b", marginTop: "3px" }}>{user.role === "admin" ? "Not connected — click Connect to link your QuickBooks company." : "Admin will connect QuickBooks to enable live reports."}</div>}
                       </div>
                     </div>
@@ -2580,7 +2628,7 @@ export default function PortalWorkspace() {
                   </div>
                   {!qbConnected && (
                     <div style={{ marginTop: "20px", background: "#fffbf0", border: "1.5px solid #fce8a3", borderRadius: "12px", padding: "16px 20px" }}>
-                      <div style={{ fontWeight: 800, fontSize: "0.88rem", color: "#854d0e", marginBottom: "10px" }}>⚙️ Admin Setup Steps:</div>
+                      <div style={{ fontWeight: 800, fontSize: "0.88rem", color: "#854d0e", marginBottom: "10px" }}>Admin Setup Steps:</div>
                       <ol style={{ margin: 0, paddingLeft: "20px", color: "#78350f", fontSize: "0.84rem", lineHeight: "1.85" }}>
                         <li>Go to <strong>developer.intuit.com</strong> → My Apps → Create App → <strong>QuickBooks Online Accounting</strong></li>
                         <li>Copy <strong>Client ID</strong> & <strong>Client Secret</strong> from Keys & Credentials</li>
@@ -2601,7 +2649,7 @@ export default function PortalWorkspace() {
                       <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                         {(["ProfitAndLoss", "BalanceSheet", "TransactionList", "CashFlow"] as const).map(r => (
                           <button key={r} onClick={() => setQbReport(r)} style={{ padding: "8px 15px", borderRadius: "10px", border: `2px solid ${qbReport === r ? "#0e3d26" : "#e0e5e2"}`, background: qbReport === r ? "#0e3d26" : "#fff", color: qbReport === r ? "#fff" : "#3c4043", fontWeight: 700, fontSize: "0.83rem", cursor: "pointer" }}>
-                            {rLabels[r].icon} {rLabels[r].title}
+                            {rLabels[r].title}
                           </button>
                         ))}
                       </div>
@@ -2613,36 +2661,36 @@ export default function PortalWorkspace() {
                       </select>
                     </div>
                     <button onClick={fetchReport} disabled={!qbConnected || qbLoading} className="btn-orgflo-gold" style={{ padding: "11px 24px", opacity: !qbConnected ? 0.5 : 1, cursor: !qbConnected ? "not-allowed" : "pointer" }}>
-                      {qbLoading ? "⏳ Loading..." : <><TrendingUp size={16} /> Fetch Report</>}
+                      {qbLoading ? "Loading..." : <><TrendingUp size={16} /> Fetch Report</>}
                     </button>
                   </div>
                   <div style={{ marginTop: "14px", background: "#f0f8f3", borderRadius: "10px", padding: "10px 16px", fontSize: "0.84rem", color: "#137459", fontWeight: 600 }}>
-                    {rLabels[qbReport].icon} <strong>{rLabels[qbReport].title}:</strong> {rLabels[qbReport].desc}
+                    <strong>{rLabels[qbReport].title}:</strong> {rLabels[qbReport].desc}
                   </div>
                 </div>
 
-                {qbError && <div style={{ background: "#fce8e6", border: "1.5px solid #f4b8b5", borderRadius: "12px", padding: "14px 20px", marginBottom: "22px", color: "#c5221f", fontWeight: 600 }}>⚠ {qbError}</div>}
+                {qbError && <div style={{ background: "#fce8e6", border: "1.5px solid #f4b8b5", borderRadius: "12px", padding: "14px 20px", marginBottom: "22px", color: "#c5221f", fontWeight: 600 }}>{qbError}</div>}
 
                 {/* Demo report (not connected) */}
                 {!qbConnected && !qbData && (
                   <div className="orgflo-card">
                     <div className="orgflo-card-header">
-                      <h3 style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "1rem", color: "#0e3d26", margin: 0 }}>📈 Sample Profit & Loss — Preview Mode</h3>
+                      <h3 style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "1rem", color: "#0e3d26", margin: 0 }}>Sample Profit & Loss — Preview Mode</h3>
                       <span className="badge badge-pending">Demo Data</span>
                     </div>
-                    <div style={{ overflowX: "auto" }}>
-                      <table className="orgflo-table">
+                    <div className="orgflo-table-wrap">
+                      <table className="orgflo-table orgflo-table-collapse">
                         <thead><tr><th style={{ width: "65%" }}>Account</th><th style={{ textAlign: "right" }}>This Year</th></tr></thead>
                         <tbody>
                           {demoRows.map((row: any, i) =>
-                            row.section ? (<tr key={i} style={{ background: "#f0f8f3" }}><td colSpan={2} style={{ fontWeight: 800, padding: "10px 16px", color: "#0e3d26", fontFamily: "var(--font-heading)" }}>{row.label}</td></tr>)
-                            : row.summary ? (<tr key={i} style={{ background: "#e6f4ea", borderTop: "1.5px solid #c8e6c9" }}><td style={{ fontWeight: 800, padding: "9px 16px", paddingLeft: `${16 + (row.indent ?? 0) * 18}px`, color: "#0e3d26" }}>{row.label}</td><td style={{ fontWeight: 900, textAlign: "right", padding: "9px 16px", color: "#0e3d26", fontSize: "1rem" }}>{row.value}</td></tr>)
-                            : (<tr key={i} style={{ borderBottom: "1px solid #f0f2f1" }}><td style={{ padding: "7px 16px", paddingLeft: `${16 + (row.indent ?? 0) * 18}px`, fontSize: "0.85rem", color: "#3c4043" }}>{row.label}</td><td style={{ padding: "7px 16px", textAlign: "right", fontSize: "0.85rem", color: "#3c4043" }}>{row.value}</td></tr>)
+                            row.section ? (<tr key={i} style={{ background: "#f0f8f3" }}><td data-label="Section" colSpan={2} style={{ fontWeight: 800, padding: "10px 16px", color: "#0e3d26", fontFamily: "var(--font-heading)" }}>{row.label}</td></tr>)
+                            : row.summary ? (<tr key={i} style={{ background: "#e6f4ea", borderTop: "1.5px solid #c8e6c9" }}><td data-label="Account" style={{ fontWeight: 800, padding: "9px 16px", paddingLeft: `${16 + (row.indent ?? 0) * 18}px`, color: "#0e3d26" }}>{row.label}</td><td data-label="Amount" style={{ fontWeight: 900, textAlign: "right", padding: "9px 16px", color: "#0e3d26", fontSize: "1rem" }}>{row.value}</td></tr>)
+                            : (<tr key={i} style={{ borderBottom: "1px solid #f0f2f1" }}><td data-label="Account" style={{ padding: "7px 16px", paddingLeft: `${16 + (row.indent ?? 0) * 18}px`, fontSize: "0.85rem", color: "#3c4043" }}>{row.label}</td><td data-label="Amount" style={{ padding: "7px 16px", textAlign: "right", fontSize: "0.85rem", color: "#3c4043" }}>{row.value}</td></tr>)
                           )}
                         </tbody>
                       </table>
                     </div>
-                    <div style={{ padding: "12px 20px", fontSize: "0.77rem", color: "#9aa0a6", textAlign: "center" }}>📌 Preview only — connect QuickBooks above for live figures.</div>
+                    <div style={{ padding: "12px 20px", fontSize: "0.77rem", color: "#9aa0a6", textAlign: "center" }}>Preview only — connect QuickBooks above for live figures.</div>
                   </div>
                 )}
 
@@ -2651,16 +2699,16 @@ export default function PortalWorkspace() {
                   <div className="orgflo-card">
                     <div className="orgflo-card-header">
                       <div>
-                        <h3 style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "1.05rem", color: "#0e3d26", margin: "0 0 4px" }}>{rLabels[qbReport].icon} {qbData.Header?.ReportName ?? rLabels[qbReport].title}</h3>
+                        <h3 style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "1.05rem", color: "#0e3d26", margin: "0 0 4px" }}>{qbData.Header?.ReportName ?? rLabels[qbReport].title}</h3>
                         <div style={{ fontSize: "0.8rem", color: "#5f6368" }}>Period: <strong>{qbData.Header?.StartPeriod} → {qbData.Header?.EndPeriod}</strong>{qbData.Header?.Currency && <> · {qbData.Header.Currency}</>} · {qbData.Header?.Time ? new Date(qbData.Header.Time).toLocaleString() : ""}</div>
                       </div>
                       <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
                         <span className="badge badge-active">Live QB Data</span>
-                        <button onClick={() => window.print()} style={{ background: "#f0f2f1", border: "none", borderRadius: "8px", padding: "6px 14px", fontWeight: 700, fontSize: "0.8rem", cursor: "pointer" }}>🖨 Print / PDF</button>
+                        <button onClick={() => window.print()} style={{ background: "#f0f2f1", border: "none", borderRadius: "8px", padding: "6px 14px", fontWeight: 700, fontSize: "0.8rem", cursor: "pointer" }}>Print / PDF</button>
                       </div>
                     </div>
-                    <div style={{ overflowX: "auto" }}>
-                      <table className="orgflo-table">
+                    <div className="orgflo-table-wrap">
+                      <table className="orgflo-table orgflo-table-collapse">
                         <thead><tr>{qbData.Columns?.Column?.map((col: any, i: number) => (<th key={i} style={{ textAlign: i > 0 ? "right" : "left" }}>{col.ColTitle || "Account"}</th>))}</tr></thead>
                         <tbody>{renderRows(qbData.Rows?.Row ?? [])}</tbody>
                       </table>
