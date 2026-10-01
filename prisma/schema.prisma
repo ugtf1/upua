@@ -1,12 +1,12 @@
 // Prisma Schema for Urhobo Progress Union America (UPUA)
-// Local database using SQLite, ready for seamless migration to Google Cloud SQL (PostgreSQL)
+// Configured for PostgreSQL (Cloud SQL / Supabase / Neon / RDS)
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 

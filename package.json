@@ -6,9 +6,11 @@
     "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@prisma/client": "^5.22.0",
     "@types/node": "22.7.4",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
@@ -18,5 +20,8 @@
     "react-dom": "^19.3.0",
     "recharts": "^3.10.1",
     "typescript": "5.6.3"
+  },
+  "devDependencies": {
+    "prisma": "^5.22.0"
   }
 }

@@ -47,9 +47,11 @@ import {
   ClipboardList,
   Minus,
   Ticket,
+  FileSpreadsheet,
 } from "lucide-react";
 import DonationModal from "@/components/donation-modal";
 import DuesModal from "@/components/dues-modal";
+import CSVImportModal, { ImportType } from "@/components/csv-import-modal";
 import { ChapterData, PaymentRecord, ExpenseRecord, MeetingRecord, MemberRecord } from "@/lib/data-service";
 
 export type Role = "admin" | "chapter" | "member";
@@ -132,40 +134,45 @@ export default function PortalWorkspace() {
   const [meetingTitleInput, setMeetingTitleInput] = useState("");
   const recordingTimerRef = useRef<NodeJS.Timeout | null>(null);
 
+  // CSV Importer Modal State
+  const [csvImportModalOpen, setCsvImportModalOpen] = useState(false);
+  const [csvImportType, setCsvImportType] = useState<ImportType>("members");
+
   // Load Data from APIs
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        setIsLoading(true);
-        const [resOverview, resChapters, resPayments, resExpenses, resMeetings] = await Promise.all([
-          fetch("/api/general/overview").then((r) => r.json()),
-          fetch("/api/chapters").then((r) => r.json()),
-          fetch("/api/payments").then((r) => r.json()),
-          fetch("/api/expenses").then((r) => r.json()),
-          fetch("/api/meetings").then((r) => r.json()),
-        ]);
+  async function fetchData() {
+    try {
+      setIsLoading(true);
+      const [resOverview, resChapters, resPayments, resExpenses, resMeetings] = await Promise.all([
+        fetch("/api/general/overview").then((r) => r.json()),
+        fetch("/api/chapters").then((r) => r.json()),
+        fetch("/api/payments").then((r) => r.json()),
+        fetch("/api/expenses").then((r) => r.json()),
+        fetch("/api/meetings").then((r) => r.json()),
+      ]);
 
-        if (resOverview.success) setOverview(resOverview.data);
-        if (resChapters.success) setChapters(resChapters.data);
-        if (resPayments.success) setPayments(resPayments.data);
-        if (resExpenses.success) setExpenses(resExpenses.data);
-        if (resMeetings.success) setMeetings(resMeetings.data);
+      if (resOverview.success) setOverview(resOverview.data);
+      if (resChapters.success) setChapters(resChapters.data);
+      if (resPayments.success) setPayments(resPayments.data);
+      if (resExpenses.success) setExpenses(resExpenses.data);
+      if (resMeetings.success) setMeetings(resMeetings.data);
 
-        // Populate sample chapter members for chapter view
-        setMembers([
-          { id: "m-1", name: "Chief Godspower Oniovosa", email: "g.oniovosa@upua.org", phone: "+1 713-555-0192", chapterId: "c-houston", chapterName: "UPA Houston", status: "Active", duesStatus: "Paid", role: "Chapter President", joinedDate: "2008-04-12" },
-          { id: "m-2", name: "Oghenefejiro Okagbare", email: "member.ogaga@upuamerica.org", phone: "+1 832-555-4819", chapterId: "c-houston", chapterName: "UPA Houston", status: "Active", duesStatus: "Paid", role: "General Member", joinedDate: "2021-06-20" },
-          { id: "m-3", name: "Dr. Eseoghene Akpodiete", email: "e.akpodiete@upua.org", phone: "+1 281-555-7362", chapterId: "c-houston", chapterName: "UPA Houston", status: "Active", duesStatus: "Paid", role: "Treasurer", joinedDate: "2015-09-14" },
-          { id: "m-4", name: "Mrs. Onome Edewor", email: "onome.edewor@gmail.com", phone: "+1 713-555-9014", chapterId: "c-houston", chapterName: "UPA Houston", status: "Pending", duesStatus: "Outstanding", role: "General Member", joinedDate: "2024-01-10" },
-          { id: "m-5", name: "Engr. Victor Urhobojor", email: "victor.u@houstontech.com", phone: "+1 832-555-1129", chapterId: "c-houston", chapterName: "UPA Houston", status: "Active", duesStatus: "Paid", role: "Youth Liaison", joinedDate: "2019-03-22" },
-          { id: "m-6", name: "Okiemute Dafinone", email: "okiemute@dafinone.com", phone: "+1 281-555-3341", chapterId: "c-houston", chapterName: "UPA Houston", status: "Active", duesStatus: "Paid", role: "General Member", joinedDate: "2022-08-05" },
-        ]);
-      } catch (err) {
-        console.error("Failed to load portal data", err);
-      } finally {
-        setIsLoading(false);
-      }
+      // Populate sample chapter members for chapter view
+      setMembers([
+        { id: "m-1", name: "Chief Godspower Oniovosa", email: "g.oniovosa@upua.org", phone: "+1 713-555-0192", chapterId: "c-houston", chapterName: "UPA Houston", status: "Active", duesStatus: "Paid", role: "Chapter President", joinedDate: "2008-04-12" },
+        { id: "m-2", name: "Oghenefejiro Okagbare", email: "member.ogaga@upuamerica.org", phone: "+1 832-555-4819", chapterId: "c-houston", chapterName: "UPA Houston", status: "Active", duesStatus: "Paid", role: "General Member", joinedDate: "2021-06-20" },
+        { id: "m-3", name: "Dr. Eseoghene Akpodiete", email: "e.akpodiete@upua.org", phone: "+1 281-555-7362", chapterId: "c-houston", chapterName: "UPA Houston", status: "Active", duesStatus: "Paid", role: "Treasurer", joinedDate: "2015-09-14" },
+        { id: "m-4", name: "Mrs. Onome Edewor", email: "onome.edewor@gmail.com", phone: "+1 713-555-9014", chapterId: "c-houston", chapterName: "UPA Houston", status: "Pending", duesStatus: "Outstanding", role: "General Member", joinedDate: "2024-01-10" },
+        { id: "m-5", name: "Engr. Victor Urhobojor", email: "victor.u@houstontech.com", phone: "+1 832-555-1129", chapterId: "c-houston", chapterName: "UPA Houston", status: "Active", duesStatus: "Paid", role: "Youth Liaison", joinedDate: "2019-03-22" },
+        { id: "m-6", name: "Okiemute Dafinone", email: "okiemute@dafinone.com", phone: "+1 281-555-3341", chapterId: "c-houston", chapterName: "UPA Houston", status: "Active", duesStatus: "Paid", role: "General Member", joinedDate: "2022-08-05" },
+      ]);
+    } catch (err) {
+      console.error("Failed to load portal data", err);
+    } finally {
+      setIsLoading(false);
     }
+  }
+
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -1025,7 +1032,7 @@ export default function PortalWorkspace() {
                   </p>
                 </div>
 
-                <div className="dash-banner-actions" style={{ zIndex: 1 }}>
+                <div className="dash-banner-actions" style={{ zIndex: 1, display: "flex", gap: "8px", flexWrap: "wrap" }}>
                   <button
                     type="button"
                     className="btn-orgflo-white"
@@ -1040,6 +1047,19 @@ export default function PortalWorkspace() {
                   >
                     <Plus size={16} /> Record Payment
                   </button>
+                  {user?.role === "admin" && (
+                    <button
+                      type="button"
+                      className="btn-orgflo-outline"
+                      onClick={() => {
+                        setCsvImportType("members");
+                        setCsvImportModalOpen(true);
+                      }}
+                      title="Bulk import data from CSV file"
+                    >
+                      <FileSpreadsheet size={16} /> Import CSV
+                    </button>
+                  )}
                 </div>
               </div>
 
@@ -1325,14 +1345,28 @@ export default function PortalWorkspace() {
                   </p>
                 </div>
                 {user.role === "admin" && (
-                  <button
-                    type="button"
-                    className="btn-orgflo-white"
-                    style={{ background: "#0e3d26", color: "#ffffff" }}
-                    onClick={() => setIsNewChapterOpen(true)}
-                  >
-                    <Plus size={16} /> Add New Chapter
-                  </button>
+                  <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                    <button
+                      type="button"
+                      className="btn-orgflo-white"
+                      style={{ background: "#0e3d26", color: "#ffffff" }}
+                      onClick={() => setIsNewChapterOpen(true)}
+                    >
+                      <Plus size={16} /> Add New Chapter
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-orgflo-white"
+                      style={{ border: "1.5px solid #dce8df", color: "#0e3d26" }}
+                      onClick={() => {
+                        setCsvImportType("chapters");
+                        setCsvImportModalOpen(true);
+                      }}
+                      title="Bulk import chapters from CSV"
+                    >
+                      <FileSpreadsheet size={16} /> Import Chapters CSV
+                    </button>
+                  </div>
                 )}
               </div>
 
@@ -1409,7 +1443,7 @@ export default function PortalWorkspace() {
                   </p>
                 </div>
 
-                <div style={{ display: "flex", gap: "10px" }}>
+                <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
                   {user.role === "admin" && (
                     <>
                       <button
@@ -1427,6 +1461,18 @@ export default function PortalWorkspace() {
                         onClick={() => setIsNewExpenseOpen(true)}
                       >
                         <Plus size={16} /> Record Expense
+                      </button>
+                      <button
+                        type="button"
+                        className="btn-orgflo-white"
+                        style={{ border: "1.5px solid #dce8df", color: "#0e3d26" }}
+                        onClick={() => {
+                          setCsvImportType(ledgerSubTab === "income" ? "payments" : "expenses");
+                          setCsvImportModalOpen(true);
+                        }}
+                        title="Bulk import payments or expenses from CSV"
+                      >
+                        <FileSpreadsheet size={16} /> Import {ledgerSubTab === "income" ? "Payments" : "Expenses"} CSV
                       </button>
                     </>
                   )}
@@ -3228,6 +3274,14 @@ export default function PortalWorkspace() {
         isOpen={duesModalOpen}
         onClose={() => setDuesModalOpen(false)}
         defaultChapter={user?.chapterName}
+      />
+
+      {/* ADMIN CSV IMPORT MODAL */}
+      <CSVImportModal
+        isOpen={csvImportModalOpen}
+        onClose={() => setCsvImportModalOpen(false)}
+        initialType={csvImportType}
+        onImportSuccess={() => fetchData()}
       />
     </div>
   );

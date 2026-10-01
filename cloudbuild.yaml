@@ -1,0 +1,45 @@
+# cloudbuild.yaml
+steps:
+  # 1. Build the production container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'us-east1-docker.pkg.dev/$PROJECT_ID/upua/upua-portal:$COMMIT_SHA'
+      - '-t'
+      - 'us-east1-docker.pkg.dev/$PROJECT_ID/upua/upua-portal:latest'
+      - '.'
+
+  # 2. Push the container image to Google Artifact Registry in us-east1
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'us-east1-docker.pkg.dev/$PROJECT_ID/upua/upua-portal:$COMMIT_SHA'
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'us-east1-docker.pkg.dev/$PROJECT_ID/upua/upua-portal:latest'
+
+  # 3. Deploy the container to Google Cloud Run in us-east1
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'upua-portal'
+      - '--image'
+      - 'us-east1-docker.pkg.dev/$PROJECT_ID/upua/upua-portal:$COMMIT_SHA'
+      - '--region'
+      - 'us-east1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--set-env-vars'
+      - 'NODE_ENV=production'
+
+images:
+  - 'us-east1-docker.pkg.dev/$PROJECT_ID/upua/upua-portal:$COMMIT_SHA'
+  - 'us-east1-docker.pkg.dev/$PROJECT_ID/upua/upua-portal:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
