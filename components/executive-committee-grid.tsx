@@ -15,61 +15,61 @@ const OFFICERS: Officer[] = [
     id: "ec-1",
     name: "Chief (Dr.) Mrs. Eunice Eruvwetere",
     role: "National Vice President",
-    image: "/assets/slide2/5.jpeg",
+    image: "/assets/Eruvwetere.jpg",
   },
   {
     id: "ec-2",
     name: "Chief Godwin Ikporo",
     role: "Secretary-General",
-    image: "/assets/slide2/6.jpeg",
+    image: "/assets/ikporo.jpg",
   },
   {
     id: "ec-3",
     name: "Ms. Eguonor Tuoyo",
     role: "Assistant Secretary",
-    image: "/assets/slide2/7.jpeg",
+    image: "/assets/tuoyo.jpg",
   },
   {
     id: "ec-4",
     name: "Mrs. Evelyn Obire-Egbe (Sosime)",
     role: "Director of Membership & Welfare",
-    image: "/assets/slide2/8.jpeg",
+    image: "/assets/Obire-Egbe.jpg",
   },
   {
     id: "ec-5",
     name: "Dr. Abel Okuma",
     role: "Director of Research & Culture",
-    image: "/assets/slide2/10.jpeg",
+    image: "/assets/okuma.jpg",
   },
   {
     id: "ec-6",
     name: "Mr. Efe Shemi",
     role: "National Treasurer",
-    image: "/assets/slide2/12.jpeg",
+    image: "/assets/shemi.jpg",
   },
   {
     id: "ec-7",
     name: "Hon. Oghenetega JohnGold",
     role: "Speaker",
-    image: "/assets/slide2/13.jpeg",
+    image: "/assets/johnGold.jpg",
   },
   {
     id: "ec-8",
     name: "Chief Eric Ogbafedje Okoko",
     role: "Director of Publicity",
-    image: "/assets/slide2/14.jpeg",
+    image: "/assets/okoko.jpg",
   },
   {
     id: "ec-9",
     name: "Mrs. Betty Ajueyitsi",
     role: "Director of Development",
-    image: "/assets/slide2/7.jpeg",
+    image: "/assets/ajueyitsi.jpg",
   },
   {
     id: "ec-10",
     name: "Chief (Dr.) Mrs. Louisa Ukochovwera",
     role: "Deputy BOT Chair / President, UPU Ohio",
-    image: "/assets/slide2/3.jpeg",
+    image: "https://upuamerica.org/wp-content/uploads/2026/06/Ohio-1.jpg",
   },
 ];
 
@@ -77,7 +77,6 @@ export default function ExecutiveCommitteeGrid() {
   return (
     <section className="executive-committee-section" id="executive-committee" aria-labelledby="ec-heading">
       <div className="ec-container">
-        {/* Header */}
         <div className="ec-header">
           <h2 id="ec-heading" className="ec-title">
             Meet The Executive Committee (EC)
@@ -87,7 +86,6 @@ export default function ExecutiveCommitteeGrid() {
           </p>
         </div>
 
-        {/* 10-Officer Grid (Cards with large portraits filling the width of each card) */}
         <div className="ec-grid">
           {OFFICERS.map((officer) => (
             <article className="ec-officer-card" key={officer.id}>
