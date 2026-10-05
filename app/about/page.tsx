@@ -17,14 +17,14 @@ const topLeaders = [
     title: "National President, UPUA",
     tagline: '"Okugbe, Egba, Voyan Robaro" (Unity, Strength and Progress)',
     bio: "Serving as the National President of Urhobo Progress Union America, Chief Samuel Ogaga leads the association with a passion for uniting all Urhobo people across North America and preserving the core cultural values, languages, and development of Urhoboland.",
-    image: "https://upuamerica.org/wp-content/uploads/2026/06/chief-ogaga-webpix-new.jpeg2_.JPGxxxx-768x1067-1.jpg",
+    image: "/assets/president.png",
   },
   {
     name: "Mr. Thomas Uwhubetine",
     title: "Chairman, Board of Trustees (BOT)",
     tagline: "MBA, Accountant, RN (retired), JP · President, Urhobo Association of Georgia",
     bio: '“My mission is to move our union forward as attested by our motto: Okugbe, Egba, Voyan Robaro and in the spirit embedded in our national anthem: Edefa me rh\'akpo, Urhobo me warhe (when I reincarnate, I will come through Urhobo). It is time to move UPUA to its rightful place in the 21st century with its own permanent house, offices, and global impact.”',
-    image: "https://upuamerica.org/wp-content/uploads/2026/06/UPUA-Mr.-Thomas-Uwhubetine-B.O.T-Chair-r067f4n8nnib7zajo7nz4r4dgwrwa4nreq4uzof8yg.jpg",
+    image: "/assets/chairman.png",
   },
 ];
 
@@ -244,14 +244,12 @@ export default function AboutPage() {
           </div>
           <div className="about-values-grid" style={{ gridTemplateColumns: "1fr 1fr" }}>
             <div className="about-value-card" style={{ borderLeft: "4px solid #137459" }}>
-              <span className="about-value-icon">🎯</span>
               <h3>Our Mission</h3>
               <p>
                 To unite people of Urhobo descent and others who identify with the Urhobo people and culture, both abroad and at home, for the promotion of human development and Urhobo culture and ideals. Our nonprofit association promotes charitable, scientific, literary, and educational projects in North America and Nigeria.
               </p>
             </div>
             <div className="about-value-card" style={{ borderLeft: "4px solid #e7c326" }}>
-              <span className="about-value-icon">👁️</span>
               <h3>Our Vision</h3>
               <p>
                 UPU America members value our common ancestry and cultural heritage. Our organization believes in the critical importance of passing on to our children the positive aspects of Urhobo culture and values. As a nonprofit organization, we recognize the importance of giving back to our host communities, Urhoboland, and North America in general.
@@ -317,26 +315,28 @@ export default function AboutPage() {
             <p>Elected officers managing day-to-day administrative and developmental portfolios.</p>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "24px", marginBottom: "56px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(230px, 1fr))", gap: "24px", marginBottom: "56px" }}>
             {executiveTeam.map((exec) => (
               <div
                 key={exec.name}
                 style={{
-                  background: "#f7faf7",
-                  border: "1px solid #e1eae3",
-                  borderRadius: "14px",
-                  padding: "20px 16px",
-                  textAlign: "center",
+                  background: "#edf5f0",
+                  border: "1px solid #d4e7db",
+                  borderRadius: "20px",
+                  overflow: "hidden",
+                  boxShadow: "0 10px 28px rgba(11, 51, 35, 0.06)",
                   display: "flex",
                   flexDirection: "column",
-                  alignItems: "center",
+                  transition: "transform 0.3s ease, box-shadow 0.3s ease",
                 }}
               >
-                <div style={{ width: "96px", height: "96px", borderRadius: "50%", overflow: "hidden", position: "relative", marginBottom: "14px", border: "2px solid #137459" }}>
-                  <Image src={exec.image} alt={exec.name} fill style={{ objectFit: "cover" }} sizes="96px" />
+                <div style={{ width: "100%", height: "240px", position: "relative", overflow: "hidden", background: "#d9e8df" }}>
+                  <Image src={exec.image} alt={exec.name} fill style={{ objectFit: "cover", objectPosition: "top center" }} sizes="(max-width: 640px) 100vw, 240px" />
                 </div>
-                <h4 style={{ color: "#0e3d26", fontSize: "1rem", margin: "0 0 4px", fontWeight: 700 }}>{exec.name}</h4>
-                <span style={{ color: "#137459", fontSize: "12px", fontWeight: 600 }}>{exec.role}</span>
+                <div style={{ padding: "18px 16px", textAlign: "center", display: "flex", flexDirection: "column", flexGrow: 1, justifyContent: "center" }}>
+                  <h4 style={{ color: "#0e3d26", fontSize: "1rem", margin: "0 0 6px", fontWeight: 800, lineHeight: "1.3" }}>{exec.name}</h4>
+                  <span style={{ color: "#15803d", fontSize: "12.5px", fontWeight: 700 }}>{exec.role}</span>
+                </div>
               </div>
             ))}
           </div>
@@ -426,7 +426,7 @@ export default function AboutPage() {
                 }}
               >
                 <div style={{ color: "#137459", fontWeight: 700, fontSize: "13px", marginBottom: "4px" }}>
-                  👑 {k.name}
+                  {k.name}
                 </div>
                 <div style={{ color: "#526359", fontSize: "12.5px", lineHeight: "1.4" }}>
                   {k.king}

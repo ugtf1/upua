@@ -1,30 +1,31 @@
 FROM node:20-alpine AS base
 
-# 1. Install dependencies only when needed
+# Install OpenSSL and libc compatibility for Alpine/Prisma
+RUN apk add --no-cache libc6-compat openssl
+
+# 1. Install dependencies
 FROM base AS deps
-RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Install dependencies based on package.json
 COPY package.json package-lock.json* ./
 COPY prisma ./prisma/
 
-RUN npm ci
+RUN npm install
 
-# 2. Rebuild the source code only when needed
+# 2. Rebuild the source code
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Generate Prisma Client
+# Generate Prisma Client for PostgreSQL
 RUN npx prisma generate
 
-# Build Next.js app
+# Build Next.js
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
-# 3. Production runner, copy all the files and run next
+# 3. Production runner
 FROM base AS runner
 WORKDIR /app
 

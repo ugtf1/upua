@@ -34,6 +34,11 @@ import { Area, AreaChart, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAx
 import { fullMonths, months, seedHostingSchedule, seedMeetings, seedMembers, seedSettings, seedTransactions } from "@/lib/seed-data";
 import type { HostingScheduleItem, MeetingSession, Member, OrgSettings, Role, Transaction, User } from "@/types";
 import DonationModal from "@/components/donation-modal";
+import HeroSlider from "@/components/hero-slider";
+import InfiniteGalleryMarquee from "@/components/infinite-gallery-marquee";
+import LeadersShowcase from "@/components/leaders-showcase";
+import ExecutiveCommitteeGrid from "@/components/executive-committee-grid";
+import LandingUpdatesSection from "@/components/landing-updates-section";
 
 type Panel = "overview" | "members" | "pivot" | "transactions" | "analytics" | "meetings" | "hosting" | "settings" | "member" | "account";
 type RecorderTab = "attendance" | "transcript" | "summary";
@@ -111,8 +116,16 @@ function LandingPage({ onLogin }: { onLogin: (role: Role) => void }) {
       <LandingHeader onLogin={onLogin} onOpenDonation={() => setDonationOpen(true)} />
       <LandingHero />
       <ProblemSolution />
+      {/* Framer-style Glass Sliding Gallery right after Why UPUA exists */}
+      <InfiniteGalleryMarquee />
+      {/* Our Work Section */}
       <LandingWork />
-      <LandingBlog />
+      {/* Leaders who keep the union moving */}
+      <LeadersShowcase />
+      {/* Meet The Executive Committee */}
+      <ExecutiveCommitteeGrid />
+      {/* Updates from UPU America */}
+      <LandingUpdatesSection />
       <WorldwideLandingFooter />
       <DonationModal isOpen={donationOpen} onClose={() => setDonationOpen(false)} />
     </section>
@@ -207,40 +220,54 @@ function LandingHeader({
 
 function LandingHero() {
   return (
-    <section className="public-landing-hero" id="home" aria-labelledby="landing-title">
-      <h1 className="sr-only" id="landing-title">Welcome to Urhobo Progress Union America</h1>
-      <Image
-        src="/upuahero.png"
-        alt="Welcome to Urhobo Progress Union America. We aim to unite and empower the Urhobo community."
-        width={2880}
-        height={1916}
-        priority
-        sizes="100vw"
-        className="public-hero-reference"
-      />
-      <a className="hero-reference-learn" href="#problem" aria-label="Learn more about UPU America" />
+    <section className="association-hero" id="home" aria-labelledby="landing-title">
+      {/* Blended Carousel Slider on Right */}
+      <HeroSlider />
+
+      {/* Hero Writeup on Left */}
+      <div className="association-hero-content">
+        <p className="association-eyebrow">UPU America</p>
+        <h1 id="landing-title">Urhobo Progressive Union America.</h1>
+        <p>
+          Promoting the Urhobo culture, supporting community development, and fostering a strong network of members across the United States.
+        </p>
+        <div className="association-hero-actions">
+          <a className="association-primary-link" href="#join-community">Become a member <ArrowRight size={17} /></a>
+          <a className="association-secondary-link" href="#work">Explore programs</a>
+        </div>
+      </div>
+
+      {/* Hero Stats Panel */}
+      <div className="association-hero-panel" aria-label="UPUA impact highlights">
+        <article><strong>30+</strong><span>Years of service</span></article>
+        <article><strong>23</strong><span>Active chapters</span></article>
+        <article><strong>4</strong><span>Core program areas</span></article>
+      </div>
     </section>
   );
 }
 
 function ProblemSolution() {
   return (
-    <>
-      <section className="problem-section" id="problem" aria-labelledby="problem-title">
-        <div className="mission-copy">
-          <h2 id="problem-title">The Problem</h2>
-          <span className="mission-rule" />
-          <p>Across the Urhobo diaspora, families and communities can feel disconnected from one another and from the support they need. Uneven access to education, healthcare, and reliable community resources can make it harder for people to thrive and preserve the connections that sustain us.</p>
-        </div>
-      </section>
-      <section className="solution-section" aria-labelledby="solution-title">
-        <div className="mission-copy">
-          <h2 id="solution-title">Our Solution</h2>
-          <span className="mission-rule" />
-          <p>UPU America brings people together through a strong network of members and chapters. We turn that connection into practical action: supporting students, expanding medical outreach, strengthening community programs, and keeping Urhobo culture vibrant for the next generation.</p>
-        </div>
-      </section>
-    </>
+    <section className="association-mission" id="problem" aria-labelledby="problem-title">
+      <div>
+        <p className="association-eyebrow">Why UPUA exists</p>
+        <h2 id="problem-title">Community work moves faster when people, records, and resources stay aligned.</h2>
+      </div>
+      <div className="association-mission-copy">
+        <p>
+          Across the Urhobo diaspora, families can feel separated from the support
+          systems that keep culture, service, and opportunity moving. UPUA creates
+          a reliable structure for chapters to coordinate outreach, share updates,
+          and invest in the next generation.
+        </p>
+        <ul>
+          <li><CheckCircle2 size={18} /> Chapter-led collaboration across America</li>
+          <li><CheckCircle2 size={18} /> Practical support for education and health initiatives</li>
+          <li><CheckCircle2 size={18} /> Cultural programs that keep identity visible</li>
+        </ul>
+      </div>
+    </section>
   );
 }
 
@@ -251,21 +278,38 @@ const workItems = [
   { title: "Cultural Programs", icon: "✳", position: "90% 40%" }
 ];
 
+const associationProgramItems = [
+  { title: "Medical Outreach", summary: "Coordinated health support and supplies for communities in need.", icon: Heart, image: "/update-outreach.jpg" },
+  { title: "Scholarships", summary: "Student support that opens paths into leadership, STEM, and service.", icon: Sparkles, image: "/update-stem.jpg" },
+  { title: "Community Support", summary: "Relief programs, chapter giving, and urgent response for families.", icon: Users, image: "/update-news.jpg" },
+  { title: "Cultural Programs", summary: "Events and conventions that keep Urhobo heritage active and shared.", icon: CalendarCheck, image: "/update-convention.jpg" }
+];
+
 function LandingWork() {
   return (
-    <section className="landing-work-section" id="work" aria-labelledby="work-title">
-      <div className="landing-section-heading">
-        <h2 id="work-title">OUR WORK</h2>
-        <p>Creating opportunity and strengthening communities across the Urhobo land.</p>
+    <section className="association-work-section" id="work" aria-labelledby="work-title">
+      <div className="association-section-heading">
+        <p className="association-eyebrow">Our work</p>
+        <h2 id="work-title">Programs built for a living association, not a static directory.</h2>
+        <a className="association-text-link" href="#updates">View recent updates <ArrowRight size={16} /></a>
       </div>
-      <div className="landing-work-grid">
-        {workItems.map((item, index) => (
-          <article className={`landing-work-card work-tone-${index + 1}`} key={item.title} style={{ backgroundPosition: item.position }}>
-            <div className="landing-work-content"><h3>{item.title}</h3><span aria-hidden="true">{item.icon}</span></div>
-          </article>
-        ))}
+      <div className="association-work-grid">
+        {associationProgramItems.map((item) => {
+          const Icon = item.icon;
+          return (
+            <article className="association-work-card" key={item.title}>
+              <div className="association-work-image">
+                <Image src={item.image} alt="" fill sizes="(max-width: 760px) 100vw, 25vw" />
+              </div>
+              <div className="association-work-copy">
+                <span><Icon size={20} /></span>
+                <h3>{item.title}</h3>
+                <p>{item.summary}</p>
+              </div>
+            </article>
+          );
+        })}
       </div>
-      <a className="work-more-link" href="#blog">Explore our impact <ArrowRight size={16} /></a>
     </section>
   );
 }
@@ -279,8 +323,8 @@ const blogItems = [
 
 function LandingBlog() {
   return (
-    <section className="landing-blog-section" id="updates" aria-labelledby="blog-title">
-      <div className="landing-section-heading">
+    <section className="landing-blog-section association-updates-section" id="updates" aria-labelledby="blog-title">
+      <div className="landing-section-heading association-updates-heading">
         <h2 id="blog-title">Updates from UPU America</h2>
         <p>News and blog posts on UPU America and our programs</p>
         <a className="updates-explore-link" href="#updates">Explore more <ArrowRight size={16} /></a>
@@ -303,7 +347,11 @@ function WorldwideLandingFooter() {
   return (
     <section className="upua-world-footer" aria-label="UPUA worldwide community and footer">
       <div className="upua-world-inner">
-        <h2>Urhobo Progress Union is WORLDWIDE!</h2>
+        <div className="association-world-heading">
+          <p className="association-eyebrow">Worldwide network</p>
+          <h2>Urhobo Progress Union is worldwide.</h2>
+          <p>UPUA is part of a broader global community, with members working together across cities, chapters, and generations.</p>
+        </div>
         <div className="upua-map-card">
           <Image className="world-map-art" src="/world-map.svg" alt="Dotted world map showing UPU America community locations" width={980} height={336} unoptimized />
           <div className="upua-map-tooltip">
