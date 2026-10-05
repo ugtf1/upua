@@ -11,6 +11,9 @@ import {
   CreditCard,
   Mic,
   MicOff,
+  Volume2,
+  Copy,
+  Play,
   Sparkles,
   CheckCircle2,
   AlertCircle,
@@ -132,7 +135,14 @@ export default function PortalWorkspace() {
   const [recordingSeconds, setRecordingSeconds] = useState(0);
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [meetingTitleInput, setMeetingTitleInput] = useState("");
+  const [liveTranscript, setLiveTranscript] = useState("");
+  const [micError, setMicError] = useState<string | null>(null);
+  const [copiedMinutes, setCopiedMinutes] = useState(false);
   const recordingTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const audioStreamRef = useRef<MediaStream | null>(null);
+  const speechRecognitionRef = useRef<any>(null);
 
   // CSV Importer Modal State
   const [csvImportModalOpen, setCsvImportModalOpen] = useState(false);
@@ -215,12 +225,81 @@ export default function PortalWorkspace() {
   }
 
   // Mic Recording Handlers
-  function startRecording() {
-    setIsRecording(true);
-    setRecordingSeconds(0);
-    recordingTimerRef.current = setInterval(() => {
-      setRecordingSeconds((prev) => prev + 1);
-    }, 1000);
+  async function startRecording() {
+    setMicError(null);
+    setLiveTranscript("");
+    audioChunksRef.current = [];
+
+    try {
+      if (typeof window === "undefined" || !navigator.mediaDevices?.getUserMedia) {
+        setMicError("Microphone recording is not supported in this browser environment. You can enter meeting notes manually below.");
+        return;
+      }
+
+      // 1. Request microphone access
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      audioStreamRef.current = stream;
+
+      // 2. Setup MediaRecorder for actual voice recording & audio playback
+      try {
+        const mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.ondataavailable = (event) => {
+          if (event.data && event.data.size > 0) {
+            audioChunksRef.current.push(event.data);
+          }
+        };
+        mediaRecorder.start(1000); // 1-second chunks
+        mediaRecorderRef.current = mediaRecorder;
+      } catch (mediaErr) {
+        console.warn("MediaRecorder initialization note:", mediaErr);
+      }
+
+      // 3. Setup real-time speech recognition if supported by browser
+      const SpeechRecognition =
+        (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+
+      if (SpeechRecognition) {
+        try {
+          const recognition = new SpeechRecognition();
+          recognition.continuous = true;
+          recognition.interimResults = true;
+          recognition.lang = "en-US";
+
+          recognition.onresult = (event: any) => {
+            let fullText = "";
+            for (let i = 0; i < event.results.length; i++) {
+              fullText += event.results[i][0].transcript + " ";
+            }
+            if (fullText.trim()) {
+              setLiveTranscript(fullText.trim());
+            }
+          };
+
+          recognition.onerror = (e: any) => {
+            console.warn("Speech recognition notice:", e.error);
+          };
+
+          recognition.start();
+          speechRecognitionRef.current = recognition;
+        } catch (recErr) {
+          console.warn("Speech recognition start note:", recErr);
+        }
+      }
+
+      setIsRecording(true);
+      setRecordingSeconds(0);
+      if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
+      recordingTimerRef.current = setInterval(() => {
+        setRecordingSeconds((prev) => prev + 1);
+      }, 1000);
+    } catch (err: any) {
+      console.error("Microphone access error:", err);
+      setMicError(
+        err?.name === "NotAllowedError" || err?.message?.includes("Permission")
+          ? "Microphone access was denied. Please allow microphone permissions in your browser address bar."
+          : "Unable to access microphone. You can type or paste minutes notes below to generate AI summary."
+      );
+    }
   }
 
   async function stopAndTranscribe() {
@@ -228,27 +307,147 @@ export default function PortalWorkspace() {
     setIsRecording(false);
     setIsTranscribing(true);
 
+    // Stop Speech Recognition
+    if (speechRecognitionRef.current) {
+      try {
+        speechRecognitionRef.current.stop();
+      } catch (e) {}
+      speechRecognitionRef.current = null;
+    }
+
+    // Stop MediaRecorder and create audio Blob URL
+    let audioUrl: string | null = null;
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+      try {
+        await new Promise<void>((resolve) => {
+          if (!mediaRecorderRef.current) return resolve();
+          mediaRecorderRef.current.onstop = () => {
+            if (audioChunksRef.current.length > 0) {
+              const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+              audioUrl = URL.createObjectURL(audioBlob);
+            }
+            resolve();
+          };
+          mediaRecorderRef.current.stop();
+        });
+      } catch (recStopErr) {
+        console.warn("Error stopping media recorder", recStopErr);
+      }
+    }
+
+    // Stop audio tracks to release microphone hardware indicator
+    if (audioStreamRef.current) {
+      audioStreamRef.current.getTracks().forEach((track) => track.stop());
+      audioStreamRef.current = null;
+    }
+
     try {
-      const res = await fetch("/api/meetings/ai-transcribe", {
+      const activeTitle = meetingTitleInput.trim() || "National Executive Council Session";
+      const finalSpeech = liveTranscript.trim();
+      const minutesCount = Math.max(1, Math.round(recordingSeconds / 60));
+      const formattedDuration = recordingSeconds >= 60
+        ? `${Math.floor(recordingSeconds / 60)}m ${recordingSeconds % 60}s`
+        : `${recordingSeconds || 45}s`;
+
+      // 1. Call AI Transcribe & NLP Summarizer
+      const aiRes = await fetch("/api/meetings/ai-transcribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          title: meetingTitleInput.trim() || "National Emergency Executive Council Session",
-          durationSeconds: recordingSeconds || 45,
+          title: activeTitle,
+          rawSpeech: finalSpeech,
+          audioDuration: formattedDuration,
           chapterName: user?.chapterName || "National Assembly",
         }),
       }).then((r) => r.json());
 
-      if (res.success) {
-        setMeetings((prev) => [res.data, ...prev]);
-        setSelectedMeeting(res.data);
-        setMeetingTitleInput("");
+      const aiData = aiRes.data || {};
+
+      // 2. Persist to meetings database
+      const saveRes = await fetch("/api/meetings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: activeTitle,
+          date: new Date().toISOString().split("T")[0],
+          chapterId: user?.chapterId || null,
+          chapterName: user?.chapterName || "National Executive Assembly",
+          duration: `${minutesCount}m`,
+          recordedBy: user?.name || "Administrative Recorder",
+          audioBlobUrl: audioUrl,
+          transcript: aiData.transcript || finalSpeech || "Meeting convened and reviewed organizational matters.",
+          summary: aiData.summary || "The executive assembly ratified operational resolutions and prioritized action items.",
+          keyDecisions: aiData.keyDecisions || ["Ratified quarterly agenda and operational items"],
+          actionItems: aiData.actionItems || [{ task: "Distribute minutes to members", owner: "Secretary-General", deadline: new Date(Date.now() + 7 * 86400000).toISOString().split("T")[0] }],
+        }),
+      }).then((r) => r.json());
+
+      if (saveRes.success && saveRes.data) {
+        setMeetings((prev) => [saveRes.data, ...prev]);
+        setSelectedMeeting(saveRes.data);
+      } else if (aiRes.success) {
+        const fallbackMeeting: MeetingRecord = {
+          id: `mtg-${Date.now()}`,
+          title: activeTitle,
+          date: new Date().toISOString().split("T")[0],
+          chapterId: user?.chapterId || null,
+          chapterName: user?.chapterName || "National Executive Assembly",
+          duration: `${minutesCount}m`,
+          recordedBy: user?.name || "Administrative Recorder",
+          audioBlobUrl: audioUrl || undefined,
+          transcript: aiData.transcript || finalSpeech,
+          summary: aiData.summary,
+          keyDecisions: aiData.keyDecisions,
+          actionItems: aiData.actionItems,
+        };
+        setMeetings((prev) => [fallbackMeeting, ...prev]);
+        setSelectedMeeting(fallbackMeeting);
       }
+
+      setMeetingTitleInput("");
+      setLiveTranscript("");
     } catch (err) {
-      console.error("AI Transcription failed", err);
+      console.error("AI Transcription and meeting save failed", err);
     } finally {
       setIsTranscribing(false);
     }
+  }
+
+  async function handleDeleteMeeting(id: string) {
+    if (!confirm("Are you sure you want to delete this meeting record?")) return;
+    try {
+      const res = await fetch(`/api/meetings?id=${id}`, { method: "DELETE" }).then((r) => r.json());
+      if (res.success) {
+        setMeetings((prev) => prev.filter((m) => m.id !== id));
+        if (selectedMeeting?.id === id) setSelectedMeeting(null);
+      }
+    } catch (err) {
+      console.error("Failed to delete meeting", err);
+    }
+  }
+
+  function handleCopyMinutes(meeting: MeetingRecord) {
+    const text = `UPUA MEETING MINUTES
+Title: ${meeting.title}
+Date: ${meeting.date}
+Duration: ${meeting.duration}
+Recorded By: ${meeting.recordedBy} (${meeting.chapterName})
+
+EXECUTIVE SUMMARY:
+${meeting.summary}
+
+KEY RATIFIED DECISIONS:
+${meeting.keyDecisions.map((d, i) => `${i + 1}. ${d}`).join("\n")}
+
+ACTION ITEMS:
+${meeting.actionItems.map((a, i) => `${i + 1}. ${a.task} [Owner: ${a.owner} | Due: ${a.deadline}]`).join("\n")}
+
+FULL TRANSCRIPT:
+${meeting.transcript}
+`;
+    navigator.clipboard.writeText(text);
+    setCopiedMinutes(true);
+    setTimeout(() => setCopiedMinutes(false), 2500);
   }
 
   // Admin CRUD Handlers
@@ -1047,7 +1246,7 @@ export default function PortalWorkspace() {
                   >
                     <Plus size={16} /> Record Payment
                   </button>
-                  {user?.role === "admin" && (
+                  {/* {user?.role === "admin" && (
                     <button
                       type="button"
                       className="btn-orgflo-outline"
@@ -1059,7 +1258,7 @@ export default function PortalWorkspace() {
                     >
                       <FileSpreadsheet size={16} /> Import CSV
                     </button>
-                  )}
+                  )} */}
                 </div>
               </div>
 
@@ -1354,7 +1553,7 @@ export default function PortalWorkspace() {
                     >
                       <Plus size={16} /> Add New Chapter
                     </button>
-                    <button
+                    {/* <button
                       type="button"
                       className="btn-orgflo-white"
                       style={{ border: "1.5px solid #dce8df", color: "#0e3d26" }}
@@ -1365,7 +1564,7 @@ export default function PortalWorkspace() {
                       title="Bulk import chapters from CSV"
                     >
                       <FileSpreadsheet size={16} /> Import Chapters CSV
-                    </button>
+                    </button> */}
                   </div>
                 )}
               </div>
@@ -1462,7 +1661,7 @@ export default function PortalWorkspace() {
                       >
                         <Plus size={16} /> Record Expense
                       </button>
-                      <button
+                      {/* <button
                         type="button"
                         className="btn-orgflo-white"
                         style={{ border: "1.5px solid #dce8df", color: "#0e3d26" }}
@@ -1473,7 +1672,7 @@ export default function PortalWorkspace() {
                         title="Bulk import payments or expenses from CSV"
                       >
                         <FileSpreadsheet size={16} /> Import {ledgerSubTab === "income" ? "Payments" : "Expenses"} CSV
-                      </button>
+                      </button> */}
                     </>
                   )}
                 </div>
@@ -1693,7 +1892,9 @@ export default function PortalWorkspace() {
                   style={{
                     marginBottom: "28px",
                     border: isRecording ? "2px solid #c5221f" : "1.5px solid #137459",
-                    background: isRecording ? "#fff9f9" : "#ffffff",
+                    background: isRecording ? "#fffdfd" : "#ffffff",
+                    boxShadow: isRecording ? "0 8px 30px rgba(197, 34, 31, 0.12)" : "0 4px 20px rgba(11, 51, 35, 0.05)",
+                    transition: "all 0.3s ease",
                   }}
                 >
                   <div style={{ padding: "26px 30px" }}>
@@ -1705,16 +1906,17 @@ export default function PortalWorkspace() {
                           borderRadius: "50%",
                           display: "flex",
                           color: isRecording ? "#c5221f" : "#0e3d26",
+                          animation: isRecording ? "pulse 1.5s infinite" : "none",
                         }}
                       >
                         <Mic size={24} />
                       </div>
                       <div>
                         <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.25rem", fontWeight: 800, fontFamily: "var(--font-heading)" }}>
-                          {isRecording ? "🔴 Recording Meeting Live From Microphone..." : "AI Voice Recording & Minutes Studio"}
+                          {isRecording ? "Live Microphone Recording in Progress..." : "AI Voice Recording & Minutes Studio"}
                         </h3>
                         <p style={{ margin: "2px 0 0", fontSize: "0.82rem", color: "#526359" }}>
-                          Speak clearly into your microphone. Once finished, AI will transcribe audio and extract ratified action items.
+                          Speak clearly into your microphone. Once finished, AI transcribes the speech and extracts executive summaries, key decisions, and action items.
                         </p>
                       </div>
                     </div>
@@ -1740,7 +1942,7 @@ export default function PortalWorkspace() {
                         <button
                           type="button"
                           className="btn-orgflo-white"
-                          style={{ background: "#0e3d26", color: "#ffffff", padding: "12px 24px" }}
+                          style={{ background: "#0e3d26", color: "#ffffff", padding: "12px 24px", display: "inline-flex", alignItems: "center", gap: "8px" }}
                           onClick={startRecording}
                         >
                           <Mic size={16} /> Start Microphone Recording
@@ -1749,7 +1951,7 @@ export default function PortalWorkspace() {
                         <button
                           type="button"
                           className="btn-orgflo-white"
-                          style={{ background: "#c5221f", color: "#ffffff", padding: "12px 24px" }}
+                          style={{ background: "#c5221f", color: "#ffffff", padding: "12px 24px", display: "inline-flex", alignItems: "center", gap: "8px" }}
                           onClick={stopAndTranscribe}
                           disabled={isTranscribing}
                         >
@@ -1767,32 +1969,85 @@ export default function PortalWorkspace() {
                       )}
                     </div>
 
-                    {isRecording && (
+                    {micError && (
                       <div
                         style={{
                           background: "#fef3f2",
                           border: "1px solid #fecdca",
                           borderRadius: "12px",
-                          padding: "14px 18px",
+                          padding: "12px 16px",
                           color: "#b42318",
                           fontSize: "0.85rem",
+                          marginBottom: "14px",
                           display: "flex",
                           alignItems: "center",
-                          gap: "10px",
+                          gap: "8px",
                         }}
                       >
+                        <AlertCircle size={16} style={{ flexShrink: 0 }} />
+                        <span>{micError}</span>
+                      </div>
+                    )}
+
+                    {isRecording && (
+                      <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginTop: "14px" }}>
                         <div
                           style={{
-                            width: "10px",
-                            height: "10px",
-                            borderRadius: "50%",
-                            background: "#c5221f",
-                            boxShadow: "0 0 0 4px rgba(197, 34, 31, 0.2)",
+                            background: "#fef3f2",
+                            border: "1px solid #fecdca",
+                            borderRadius: "12px",
+                            padding: "12px 18px",
+                            color: "#b42318",
+                            fontSize: "0.85rem",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
                           }}
-                        />
-                        <span>
-                          Microphone stream is live ({recordingSeconds}s). Audio buffer captured. Click <strong>"Stop & Generate AI Summary"</strong> to finalize.
-                        </span>
+                        >
+                          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                            <div
+                              style={{
+                                width: "10px",
+                                height: "10px",
+                                borderRadius: "50%",
+                                background: "#c5221f",
+                                boxShadow: "0 0 0 4px rgba(197, 34, 31, 0.2)",
+                              }}
+                            />
+                            <span>
+                              Microphone stream active: <strong>{recordingSeconds}s</strong> recorded. Speak now or edit live notes below.
+                            </span>
+                          </div>
+                          <span style={{ fontSize: "0.8rem", color: "#c5221f", fontWeight: 700 }}>
+                            {Math.floor(recordingSeconds / 60)}:{(recordingSeconds % 60).toString().padStart(2, "0")}
+                          </span>
+                        </div>
+
+                        {/* Live Transcription Box */}
+                        <div style={{ background: "#ffffff", border: "1.5px solid #e1eae3", borderRadius: "12px", padding: "14px 16px" }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                            <span style={{ fontSize: "0.78rem", fontWeight: 800, color: "#137459", textTransform: "uppercase", letterSpacing: "0.04em", display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                              <Sparkles size={13} /> Live Speech Transcription
+                            </span>
+                            <small style={{ color: "#788", fontSize: "0.74rem" }}>Continuous real-time speech feed</small>
+                          </div>
+                          <textarea
+                            value={liveTranscript}
+                            onChange={(e) => setLiveTranscript(e.target.value)}
+                            placeholder="Listening to microphone... spoken words will automatically appear here in real time. You can also type or paste meeting minutes directly."
+                            style={{
+                              width: "100%",
+                              minHeight: "90px",
+                              border: "none",
+                              outline: "none",
+                              fontSize: "0.88rem",
+                              color: "#14211a",
+                              lineHeight: "1.6",
+                              resize: "vertical",
+                              fontFamily: "inherit",
+                            }}
+                          />
+                        </div>
                       </div>
                     )}
                   </div>
@@ -1808,7 +2063,14 @@ export default function PortalWorkspace() {
                     style={{ display: "flex", flexDirection: "column", padding: "26px" }}
                   >
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
-                      <span className="badge badge-active">{mtg.chapterName}</span>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                        <span className="badge badge-active">{mtg.chapterName}</span>
+                        {mtg.audioBlobUrl && (
+                          <span className="badge" style={{ background: "#edf5ef", color: "#0e3d26", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                            <Volume2 size={12} /> Audio
+                          </span>
+                        )}
+                      </div>
                       <small style={{ color: "#526359", display: "flex", alignItems: "center", gap: "4px", fontSize: "0.78rem" }}>
                         <Clock size={13} /> {mtg.duration}
                       </small>
@@ -1842,19 +2104,34 @@ export default function PortalWorkspace() {
                       }}
                     >
                       <span style={{ fontSize: "0.8rem", color: "#526359" }}>📅 {mtg.date}</span>
-                      <button
-                        type="button"
-                        onClick={() => setSelectedMeeting(mtg)}
-                        className="btn-orgflo-white"
-                        style={{
-                          background: "#0e3d26",
-                          color: "#ffffff",
-                          padding: "8px 16px",
-                          fontSize: "0.82rem",
-                        }}
-                      >
-                        <Sparkles size={14} /> View AI Minutes
-                      </button>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        {user.role === "admin" && (
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteMeeting(mtg.id)}
+                            style={{ background: "transparent", border: 0, color: "#c5221f", cursor: "pointer", padding: "6px" }}
+                            title="Delete Meeting"
+                          >
+                            <Trash2 size={15} />
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => setSelectedMeeting(mtg)}
+                          className="btn-orgflo-white"
+                          style={{
+                            background: "#0e3d26",
+                            color: "#ffffff",
+                            padding: "8px 16px",
+                            fontSize: "0.82rem",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "6px",
+                          }}
+                        >
+                          <Sparkles size={14} /> View AI Minutes
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -3055,6 +3332,17 @@ export default function PortalWorkspace() {
                 </div>
               </div>
 
+              {/* Audio Playback Player */}
+              {selectedMeeting.audioBlobUrl && (
+                <div style={{ background: "#edf5ef", border: "1px solid #c7e5d3", borderRadius: "12px", padding: "16px 20px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px", fontWeight: 700, color: "#0e3d26", fontSize: "0.9rem" }}>
+                    <Volume2 size={18} color="#137459" />
+                    <span>Meeting Microphone Audio Playback</span>
+                  </div>
+                  <audio controls src={selectedMeeting.audioBlobUrl} style={{ width: "100%", outline: "none" }} />
+                </div>
+              )}
+
               <div>
                 <h4 style={{ color: "#0e3d26", fontSize: "1.1rem", margin: "0 0 8px", fontWeight: 800, fontFamily: "var(--font-heading)" }}>
                   🎙️ Full Audio Transcription Record
@@ -3064,12 +3352,34 @@ export default function PortalWorkspace() {
                 </p>
               </div>
 
-              <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px", borderTop: "1px solid #edf2ee", paddingTop: "20px" }}>
+                <div style={{ display: "flex", gap: "10px" }}>
+                  <button
+                    type="button"
+                    onClick={() => handleCopyMinutes(selectedMeeting)}
+                    className="btn-orgflo-white"
+                    style={{ border: "1.5px solid #dce8df", color: "#0e3d26", padding: "9px 18px", fontSize: "0.86rem", display: "inline-flex", alignItems: "center", gap: "6px" }}
+                  >
+                    <Copy size={15} />
+                    {copiedMinutes ? "Copied to Clipboard!" : "Copy Minutes"}
+                  </button>
+                  {user.role === "admin" && (
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteMeeting(selectedMeeting.id)}
+                      className="btn-orgflo-white"
+                      style={{ border: "1.5px solid #fecdca", color: "#c5221f", padding: "9px 18px", fontSize: "0.86rem", display: "inline-flex", alignItems: "center", gap: "6px" }}
+                    >
+                      <Trash2 size={15} />
+                      Delete
+                    </button>
+                  )}
+                </div>
                 <button
                   type="button"
                   onClick={() => setSelectedMeeting(null)}
                   className="btn-orgflo-white"
-                  style={{ background: "#0e3d26", color: "#ffffff", padding: "10px 24px" }}
+                  style={{ background: "#0e3d26", color: "#ffffff", padding: "9px 24px" }}
                 >
                   Close Record
                 </button>
