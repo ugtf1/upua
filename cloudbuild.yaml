@@ -38,7 +38,7 @@ steps:
     args:
       - 'run'
       - 'deploy'
-      - 'upua-portal'
+      - 'upua'
       - '--image'
       - 'us-east1-docker.pkg.dev/$PROJECT_ID/upua/upua-portal:$COMMIT_SHA'
       - '--region'

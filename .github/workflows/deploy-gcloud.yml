@@ -9,7 +9,7 @@ env:
   PROJECT_ID: top-cedar-471512-k3
   GAR_LOCATION: us-east1
   REPOSITORY: upua
-  SERVICE: upua-portal
+  SERVICE: upua
   REGION: us-east1
   SERVICE_ACCOUNT: upua-deploy@top-cedar-471512-k3.iam.gserviceaccount.com
   CLOUD_SQL_INSTANCE: top-cedar-471512-k3:us-east1:upuadb
