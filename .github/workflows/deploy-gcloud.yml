@@ -42,18 +42,6 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
-      - name: Ensure Artifact Registry repository exists
-        run: |
-          echo "Checking Artifact Registry repository ${{ env.REPOSITORY }}..."
-          gcloud artifacts repositories describe ${{ env.REPOSITORY }} \
-            --location=${{ env.GAR_LOCATION }} \
-            --project=${{ env.PROJECT_ID }} || \
-          gcloud artifacts repositories create ${{ env.REPOSITORY }} \
-            --repository-format=docker \
-            --location=${{ env.GAR_LOCATION }} \
-            --project=${{ env.PROJECT_ID }} \
-            --description="UPUA Portal container images"
-
       # Direct Docker login to Artifact Registry using OAuth2 access token
       - name: Log in to Google Artifact Registry
         uses: docker/login-action@v3
