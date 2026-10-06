@@ -6134,3 +6134,20 @@ a {
   padding: 12px 10px !important;
 }
 
+/* =========================================================
+   WORKSPACE OVERVIEW: TOP PERFORMING CHAPTERS & LATEST MEETING INTELLIGENCE
+   ========================================================= */
+.overview-recent-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 24px !important;
+}
+
+@media (max-width: 900px) {
+  .overview-recent-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+}
+
+

@@ -1445,7 +1445,7 @@ ${meeting.transcript}
               </div>
 
               {/* RECENT ACTIVITY & SUMMARY */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
+              <div className="overview-recent-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
                 {/* Recent Chapters Preview */}
                 <div className="orgflo-card">
                   <div className="orgflo-card-header">
