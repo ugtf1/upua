@@ -1,5 +1,17 @@
 // Prisma Client Singleton for Next.js & Google Cloud Run
 
+function sanitizeDatabaseUrl(url: string | undefined): string | undefined {
+  if (!url) return url;
+  const match = url.match(/^(postgres(?:ql)?:\/\/)([^:]+):(.*)@([^@\/]+)(\/.*)$/);
+  if (!match) return url;
+  const [, protocol, user, pass, host, pathAndQuery] = match;
+  return `${protocol}${encodeURIComponent(decodeURIComponent(user))}:${encodeURIComponent(decodeURIComponent(pass))}@${host}${pathAndQuery}`;
+}
+
+if (process.env.DATABASE_URL) {
+  process.env.DATABASE_URL = sanitizeDatabaseUrl(process.env.DATABASE_URL);
+}
+
 let prismaClientInstance: any = null;
 
 try {

@@ -12,6 +12,7 @@ env:
   SERVICE: upua-portal
   REGION: us-east1
   SERVICE_ACCOUNT: upua-deploy@top-cedar-471512-k3.iam.gserviceaccount.com
+  CLOUD_SQL_INSTANCE: top-cedar-471512-k3:us-east1:upuadb
 
 jobs:
   # ─────────────────────────────────────────────────────────────────
@@ -50,10 +51,31 @@ jobs:
       - name: Generate Prisma Client
         run: npx prisma generate
 
+      - name: Start Cloud SQL Auth Proxy
+        run: |
+          curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.14.0/cloud-sql-proxy.linux.amd64
+          chmod +x cloud-sql-proxy
+          ./cloud-sql-proxy ${{ env.CLOUD_SQL_INSTANCE }} --port=5432 &
+          sleep 4
+
       - name: Run Prisma Migrations
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: npx prisma migrate deploy
+          RAW_DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          export DATABASE_URL=$(node -e "
+            const raw = process.env.RAW_DATABASE_URL || '';
+            const match = raw.match(/^(postgres(?:ql)?:\/\/)([^:]+):(.*)@([^@\/]+)(\/.*)$/);
+            if (!match) {
+              console.log(raw);
+              process.exit(0);
+            }
+            const [, protocol, user, pass, host, pathAndQuery] = match;
+            const encodedUser = encodeURIComponent(decodeURIComponent(user));
+            const encodedPass = encodeURIComponent(decodeURIComponent(pass));
+            const dbName = pathAndQuery.split('?')[0];
+            console.log(protocol + encodedUser + ':' + encodedPass + '@127.0.0.1:5432' + dbName);
+          ")
+          npx prisma migrate deploy
 
   # ─────────────────────────────────────────────────────────────────
   # JOB 2: Build Docker image → Artifact Registry → Cloud Run
@@ -83,6 +105,25 @@ jobs:
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev --quiet
 
+      - name: Prepare sanitized DATABASE_URL for Cloud Run
+        id: db_prep
+        env:
+          RAW_DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          CLEAN_URL=$(node -e "
+            const raw = process.env.RAW_DATABASE_URL || '';
+            const match = raw.match(/^(postgres(?:ql)?:\/\/)([^:]+):(.*)@([^@\/]+)(\/.*)$/);
+            if (!match) {
+              console.log(raw);
+              process.exit(0);
+            }
+            const [, protocol, user, pass, host, pathAndQuery] = match;
+            const encodedUser = encodeURIComponent(decodeURIComponent(user));
+            const encodedPass = encodeURIComponent(decodeURIComponent(pass));
+            console.log(protocol + encodedUser + ':' + encodedPass + '@' + host + pathAndQuery);
+          ")
+          echo "url=${CLEAN_URL}" >> $GITHUB_OUTPUT
+
       - name: Build Docker image
         run: |
           docker build \
@@ -108,10 +149,10 @@ jobs:
             --min-instances=0
             --max-instances=10
             --port=8080
-            --add-cloudsql-instances=top-cedar-471512-k3:us-east1:upuadb
+            --add-cloudsql-instances=${{ env.CLOUD_SQL_INSTANCE }}
           env_vars: |
             NODE_ENV=production
-            DATABASE_URL=${{ secrets.DATABASE_URL }}
+            DATABASE_URL=${{ steps.db_prep.outputs.url }}
             AUTH_SECRET=${{ secrets.AUTH_SECRET }}
             GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}
             STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}
