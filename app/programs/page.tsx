@@ -263,26 +263,24 @@ export default function ProgramsPage() {
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "24px" }}>
             {shelterChapters.map((sc) => (
-              <div
+              <article
                 key={sc.chapter}
-                style={{
-                  background: "#f7faf7",
-                  border: "1px solid #e1eae3",
-                  borderRadius: "14px",
-                  overflow: "hidden",
-                  boxShadow: "0 6px 16px rgba(0,0,0,0.04)",
-                  display: "flex",
-                  flexDirection: "column",
-                }}
+                className="shelter-chapter-card"
               >
-                <div style={{ position: "relative", width: "100%", height: "180px" }}>
-                  <Image src={sc.image} alt={sc.chapter} fill style={{ objectFit: "cover" }} sizes="260px" />
+                <div className="shelter-card-media">
+                  <Image
+                    src={sc.image}
+                    alt={sc.chapter}
+                    fill
+                    sizes="(max-width: 640px) 100vw, 280px"
+                    className="shelter-card-img"
+                  />
                 </div>
                 <div style={{ padding: "16px 18px", marginTop: "auto" }}>
                   <h4 style={{ color: "#0e3d26", fontSize: "0.95rem", margin: "0 0 4px", fontWeight: 700 }}>{sc.chapter}</h4>
                   <span style={{ color: "#137459", fontSize: "12px", fontWeight: 600 }}>📍 {sc.location}</span>
                 </div>
-              </div>
+              </article>
             ))}
           </div>
         </div>

@@ -308,8 +308,14 @@ export default function BlogPage() {
             <div className="blog-posts-grid">
               {filteredPosts.map((post) => (
                 <article className="blog-post-card" key={post.id} style={{ display: "flex", flexDirection: "column" }}>
-                  <div style={{ position: "relative", width: "100%", height: "200px" }}>
-                    <Image src={post.image} alt={post.title} fill style={{ objectFit: "cover" }} sizes="360px" />
+                  <div className="blog-card-media">
+                    <Image
+                      src={post.image}
+                      alt={post.title}
+                      fill
+                      sizes="(max-width: 640px) 100vw, 360px"
+                      className="blog-card-img"
+                    />
                     <span style={{ position: "absolute", top: 12, right: 12, background: "rgba(14, 61, 38, 0.9)", color: "#ffffff", padding: "3px 10px", borderRadius: "100px", fontSize: "10px", fontWeight: 700, textTransform: "uppercase" }}>
                       {post.category}
                     </span>
