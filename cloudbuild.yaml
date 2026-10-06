@@ -51,7 +51,7 @@ steps:
       - '--min-instances=0'
       - '--max-instances=10'
       - '--port=8080'
-      - '--add-cloudsql-instances=top-cedar-471512-k3:us-east1:upua-db'
+      - '--add-cloudsql-instances=top-cedar-471512-k3:us-east1:upuadb'
       - '--set-env-vars=NODE_ENV=production'
       - '--update-secrets=DATABASE_URL=upua-database-url:latest,AUTH_SECRET=upua-auth-secret:latest,GEMINI_API_KEY=upua-gemini-api-key:latest,STRIPE_SECRET_KEY=upua-stripe-secret-key:latest,NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=upua-stripe-publishable-key:latest'
 
