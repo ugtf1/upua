@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # ─────────────────────────────────────────────────────────────────────────────
-# UPUA Portal — GCP Bootstrap Script
-# Run ONCE to set up all Google Cloud infrastructure for the first time.
+# UPUA Portal — GCP Bootstrap Script (Keyless with Workload Identity Federation)
+# Run ONCE to set up all Google Cloud infrastructure for GitHub Actions CI/CD.
 #
 # Prerequisites:
 #   1. gcloud CLI installed (https://cloud.google.com/sdk/docs/install)
@@ -21,11 +21,14 @@ PROJECT_ID="top-cedar-471512-k3"
 REGION="us-east1"
 ARTIFACT_REPO="upua"
 SERVICE_NAME="upua-portal"
-DB_INSTANCE="upua-db"
+DB_INSTANCE="upuadb"
 DB_NAME="upua_db"
 DB_USER="postgres"
 SA_NAME="upua-deploy"
 SA_DISPLAY="UPUA Deployment SA"
+GITHUB_REPO="ugtf1/upua"
+WIF_POOL="github-pool"
+WIF_PROVIDER="github-provider"
 
 # ── SECRET VARIABLES — FILL THESE IN BEFORE RUNNING ──────────────────────────
 DB_PASSWORD="CHANGE_ME_STRONG_PASSWORD"          # Cloud SQL postgres password
@@ -40,7 +43,7 @@ echo "🚀 UPUA GCP Bootstrap — Project: $PROJECT_ID"
 echo ""
 
 # 1. Enable required APIs
-echo "✅ [1/8] Enabling required GCP APIs..."
+echo "✅ [1/7] Enabling required GCP APIs..."
 gcloud services enable \
   run.googleapis.com \
   sqladmin.googleapis.com \
@@ -48,10 +51,11 @@ gcloud services enable \
   secretmanager.googleapis.com \
   cloudbuild.googleapis.com \
   iam.googleapis.com \
+  iamcredentials.googleapis.com \
   --project="$PROJECT_ID"
 
 # 2. Create Artifact Registry repository
-echo "✅ [2/8] Creating Artifact Registry repository..."
+echo "✅ [2/7] Creating Artifact Registry repository..."
 gcloud artifacts repositories create "$ARTIFACT_REPO" \
   --repository-format=docker \
   --location="$REGION" \
@@ -59,39 +63,41 @@ gcloud artifacts repositories create "$ARTIFACT_REPO" \
   --project="$PROJECT_ID" \
   2>/dev/null || echo "   (repository already exists — skipping)"
 
-# 3. Create Cloud SQL PostgreSQL instance
-echo "✅ [3/8] Creating Cloud SQL PostgreSQL 16 instance (this may take 3-5 min)..."
-gcloud sql instances create "$DB_INSTANCE" \
-  --database-version=POSTGRES_16 \
-  --tier=db-f1-micro \
-  --region="$REGION" \
-  --storage-type=SSD \
-  --storage-size=10GB \
-  --storage-auto-increase \
-  --backup-start-time=03:00 \
-  --availability-type=zonal \
-  --no-assign-ip \
-  --project="$PROJECT_ID" \
-  2>/dev/null || echo "   (Cloud SQL instance already exists — skipping)"
+# 3. Create Cloud SQL PostgreSQL instance (if not exists)
+echo "✅ [3/7] Checking Cloud SQL PostgreSQL instance '$DB_INSTANCE'..."
+gcloud sql instances describe "$DB_INSTANCE" --project="$PROJECT_ID" 2>/dev/null || {
+  echo "   Creating Cloud SQL instance $DB_INSTANCE..."
+  gcloud sql instances create "$DB_INSTANCE" \
+    --database-version=POSTGRES_16 \
+    --tier=db-f1-micro \
+    --region="$REGION" \
+    --storage-type=SSD \
+    --storage-size=10GB \
+    --storage-auto-increase \
+    --availability-type=zonal \
+    --project="$PROJECT_ID"
+}
 
 # 4. Create database and set password
-echo "✅ [4/8] Creating database and setting credentials..."
+echo "✅ [4/7] Ensuring database '$DB_NAME' and credentials..."
 gcloud sql databases create "$DB_NAME" \
   --instance="$DB_INSTANCE" \
   --project="$PROJECT_ID" \
   2>/dev/null || echo "   (database already exists — skipping)"
 
-gcloud sql users set-password "$DB_USER" \
-  --instance="$DB_INSTANCE" \
-  --password="$DB_PASSWORD" \
-  --project="$PROJECT_ID"
+if [ "$DB_PASSWORD" != "CHANGE_ME_STRONG_PASSWORD" ]; then
+  gcloud sql users set-password "$DB_USER" \
+    --instance="$DB_INSTANCE" \
+    --password="$DB_PASSWORD" \
+    --project="$PROJECT_ID"
+fi
 
 # Build the Cloud SQL socket DATABASE_URL for Cloud Run
 INSTANCE_CONNECTION_NAME="${PROJECT_ID}:${REGION}:${DB_INSTANCE}"
 DATABASE_URL="postgresql://${DB_USER}:${DB_PASSWORD}@localhost/${DB_NAME}?host=/cloudsql/${INSTANCE_CONNECTION_NAME}"
 
 # 5. Store secrets in Secret Manager
-echo "✅ [5/8] Storing secrets in Secret Manager..."
+echo "✅ [5/7] Storing secrets in Secret Manager..."
 
 create_or_update_secret() {
   local SECRET_ID="$1"
@@ -112,8 +118,8 @@ create_or_update_secret "upua-stripe-secret-key"      "$STRIPE_SECRET_KEY"
 create_or_update_secret "upua-stripe-publishable-key" "$STRIPE_PK_KEY"
 create_or_update_secret "upua-cloud-sql-instance"     "$INSTANCE_CONNECTION_NAME"
 
-# 6. Create deployment Service Account
-echo "✅ [6/8] Creating deployment Service Account..."
+# 6. Create deployment Service Account & assign IAM roles
+echo "✅ [6/7] Configuring deployment Service Account..."
 gcloud iam service-accounts create "$SA_NAME" \
   --display-name="$SA_DISPLAY" \
   --project="$PROJECT_ID" \
@@ -121,7 +127,6 @@ gcloud iam service-accounts create "$SA_NAME" \
 
 SA_EMAIL="${SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
 
-# Grant required IAM roles to the SA
 echo "   Granting IAM roles to $SA_EMAIL..."
 for ROLE in \
   roles/run.admin \
@@ -136,8 +141,9 @@ for ROLE in \
     --quiet
 done
 
-# Also allow Cloud Run service identity to access Cloud SQL & secrets
-COMPUTE_SA="$(gcloud projects describe $PROJECT_ID --format='value(projectNumber)')-compute@developer.gserviceaccount.com"
+# Allow Cloud Run default compute service account to access Cloud SQL & secrets
+PROJECT_NUMBER=$(gcloud projects describe "$PROJECT_ID" --format='value(projectNumber)')
+COMPUTE_SA="${PROJECT_NUMBER}-compute@developer.gserviceaccount.com"
 for ROLE in roles/cloudsql.client roles/secretmanager.secretAccessor; do
   gcloud projects add-iam-policy-binding "$PROJECT_ID" \
     --member="serviceAccount:$COMPUTE_SA" \
@@ -145,61 +151,61 @@ for ROLE in roles/cloudsql.client roles/secretmanager.secretAccessor; do
     --quiet
 done
 
-# 7. Create SA key and print GitHub secret instructions
-echo "✅ [7/8] Generating Service Account key for GitHub Actions..."
-KEY_FILE="/tmp/upua-gcp-sa-key.json"
-gcloud iam service-accounts keys create "$KEY_FILE" \
-  --iam-account="$SA_EMAIL" \
-  --project="$PROJECT_ID"
+# 7. Configure Workload Identity Federation (WIF) — Keyless Auth for GitHub Actions
+echo "✅ [7/7] Configuring Workload Identity Federation (No keys required!)..."
+
+# Create Workload Identity Pool
+gcloud iam workload-identity-pools create "$WIF_POOL" \
+  --project="$PROJECT_ID" \
+  --location="global" \
+  --display-name="GitHub Actions Pool" \
+  2>/dev/null || echo "   (Workload Identity Pool already exists — skipping)"
+
+# Create Workload Identity Provider
+gcloud iam workload-identity-pools providers create-oidc "$WIF_PROVIDER" \
+  --project="$PROJECT_ID" \
+  --location="global" \
+  --workload-identity-pool="$WIF_POOL" \
+  --display-name="GitHub Actions Provider" \
+  --attribute-mapping="google.subject=assertion.sub,attribute.actor=assertion.actor,attribute.repository=assertion.repository" \
+  --attribute-condition="assertion.repository=='${GITHUB_REPO}'" \
+  --issuer-uri="https://token.actions.githubusercontent.com" \
+  2>/dev/null || echo "   (Workload Identity Provider already exists — skipping)"
+
+# Allow GitHub Actions repository to impersonate the service account
+gcloud iam service-accounts add-iam-policy-binding "$SA_EMAIL" \
+  --project="$PROJECT_ID" \
+  --role="roles/iam.workloadIdentityUser" \
+  --member="principalSet://iam.googleapis.com/projects/${PROJECT_NUMBER}/locations/global/workloadIdentityPools/${WIF_POOL}/attribute.repository/${GITHUB_REPO}" \
+  --quiet
+
+WIF_PROVIDER_NAME="projects/${PROJECT_NUMBER}/locations/global/workloadIdentityPools/${WIF_POOL}/providers/${WIF_PROVIDER}"
 
 echo ""
-echo "═══════════════════════════════════════════════════════════════"
-echo " GITHUB ACTIONS SECRETS — ADD THESE TO YOUR REPO SETTINGS"
-echo " https://github.com/ugtf1/upua/settings/secrets/actions"
-echo "═══════════════════════════════════════════════════════════════"
+echo "═════════════════════════════════════════════════════════════════════════"
+echo " 🎉 GITHUB ACTIONS SECRETS — ADD THESE TO YOUR REPO SETTINGS"
+echo " 👉 https://github.com/ugtf1/upua/settings/secrets/actions"
+echo "═════════════════════════════════════════════════════════════════════════"
 echo ""
-echo "Secret Name         : GCP_PROJECT_ID"
-echo "Secret Value        : $PROJECT_ID"
+echo "Secret Name  : WIF_PROVIDER"
+echo "Secret Value : $WIF_PROVIDER_NAME"
 echo ""
-echo "Secret Name         : GCP_SA_KEY"
-echo "Secret Value        : (contents of $KEY_FILE — see below)"
+echo "Secret Name  : DATABASE_URL"
+echo "Secret Value : $DATABASE_URL"
 echo ""
-cat "$KEY_FILE"
+echo "Secret Name  : AUTH_SECRET"
+echo "Secret Value : $AUTH_SECRET"
 echo ""
-echo "Secret Name         : DATABASE_URL"
-echo "Secret Value        : $DATABASE_URL"
+echo "Secret Name  : GEMINI_API_KEY"
+echo "Secret Value : $GEMINI_API_KEY"
 echo ""
-echo "Secret Name         : AUTH_SECRET"
-echo "Secret Value        : $AUTH_SECRET"
+echo "Secret Name  : STRIPE_SECRET_KEY"
+echo "Secret Value : $STRIPE_SECRET_KEY"
 echo ""
-echo "Secret Name         : GEMINI_API_KEY"
-echo "Secret Value        : $GEMINI_API_KEY"
+echo "Secret Name  : NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY"
+echo "Secret Value : $STRIPE_PK_KEY"
+echo "═════════════════════════════════════════════════════════════════════════"
 echo ""
-echo "Secret Name         : CLOUD_SQL_INSTANCE_CONNECTION_NAME"
-echo "Secret Value        : $INSTANCE_CONNECTION_NAME"
-echo ""
-echo "Secret Name         : STRIPE_SECRET_KEY"
-echo "Secret Value        : $STRIPE_SECRET_KEY"
-echo ""
-echo "Secret Name         : NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY"
-echo "Secret Value        : $STRIPE_PK_KEY"
-echo "═══════════════════════════════════════════════════════════════"
-echo ""
-
-# Clean up key file
-rm -f "$KEY_FILE"
-
-# 8. Run initial Prisma migration (requires DATABASE_URL to be set locally)
-echo "✅ [8/8] Prisma migration reminder:"
-echo "   After setting DATABASE_URL in your .env.local (pointing to Cloud SQL proxy),"
-echo "   run: npx prisma migrate deploy"
-echo "   Or it will run automatically via the GitHub Actions pipeline on next push."
-echo ""
-echo "🎉 GCP Bootstrap complete!"
-echo ""
-echo "   Cloud SQL Instance : $INSTANCE_CONNECTION_NAME"
-echo "   Artifact Registry  : $REGION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REPO"
-echo "   Cloud Run Service  : $SERVICE_NAME (will appear after first deploy)"
-echo ""
-echo "   Push to master to trigger the full CI/CD pipeline:"
+echo "✨ No Service Account Keys needed! Secure OIDC authentication is active."
+echo "   Push to master to deploy:"
 echo "   git push origin master"
