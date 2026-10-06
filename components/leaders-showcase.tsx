@@ -10,7 +10,7 @@ export default function LeadersShowcase() {
         {/* Section Header */}
         <div className="leaders-header">
           <h2 id="leaders-heading" className="leaders-title">
-            Leaders who keep the union moving
+            Leaders who keep the <span className="heading-gold-accent">union moving</span>
           </h2>
           <p className="leaders-subtitle">
             Guiding UPU America with integrity, cultural pride, and 21st-century administrative excellence.

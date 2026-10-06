@@ -13,7 +13,7 @@ export default function LandingUpdatesSection() {
         <div className="updates-header">
           <div className="updates-header-text">
             <h2 id="updates-heading" className="updates-title">
-              Updates from UPU America
+              Updates from <span className="heading-gold-accent">UPU America</span>
             </h2>
             <p className="updates-subtitle">
               News and blog posts on UPU America and our programs

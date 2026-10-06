@@ -227,7 +227,9 @@ function LandingHero() {
       {/* Hero Writeup on Left */}
       <div className="association-hero-content">
         <p className="association-eyebrow">UPU America</p>
-        <h1 id="landing-title">Urhobo Progressive Union America.</h1>
+        <h1 id="landing-title">
+          Urhobo Progressive Union <span className="heading-gold-accent">America.</span>
+        </h1>
         <p>
           Promoting the Urhobo culture, supporting community development, and fostering a strong network of members across the United States.
         </p>
@@ -252,7 +254,9 @@ function ProblemSolution() {
     <section className="association-mission" id="problem" aria-labelledby="problem-title">
       <div>
         <p className="association-eyebrow">Why UPUA exists</p>
-        <h2 id="problem-title">Community work moves faster when people, records, and resources stay aligned.</h2>
+        <h2 id="problem-title">
+          Community work moves faster when people, records, and resources <span className="heading-gold-accent">stay aligned.</span>
+        </h2>
       </div>
       <div className="association-mission-copy">
         <p>
@@ -290,7 +294,9 @@ function LandingWork() {
     <section className="association-work-section" id="work" aria-labelledby="work-title">
       <div className="association-section-heading">
         <p className="association-eyebrow">Our work</p>
-        <h2 id="work-title">Programs built for a living association, not a static directory.</h2>
+        <h2 id="work-title">
+          Programs built for a living association, not a <span className="heading-gold-accent">static directory.</span>
+        </h2>
         <a className="association-text-link" href="#updates">View recent updates <ArrowRight size={16} /></a>
       </div>
       <div className="association-work-grid">
@@ -349,7 +355,9 @@ function WorldwideLandingFooter() {
       <div className="upua-world-inner">
         <div className="association-world-heading">
           <p className="association-eyebrow">Worldwide network</p>
-          <h2>Urhobo Progress Union is worldwide.</h2>
+          <h2>
+            Urhobo Progress Union <span className="heading-gold-accent">is worldwide.</span>
+          </h2>
           <p>UPUA is part of a broader global community, with members working together across cities, chapters, and generations.</p>
         </div>
         <div className="upua-map-card">
@@ -366,7 +374,7 @@ function WorldwideLandingFooter() {
         </div>
         <div className="join-community-card" id="join-community">
           <div>
-            <h3>Join the Community</h3>
+            <h3>Join the <span className="heading-gold-accent">Community</span></h3>
             <p>Sign up for the very best tutorials and the latest news.</p>
           </div>
           <form>

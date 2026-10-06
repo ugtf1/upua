@@ -226,7 +226,9 @@ export default function BlogPage() {
         <div className="page-hero-overlay" />
         <div className="page-hero-inner">
           <p className="page-hero-tag">News & Field Updates</p>
-          <h1>Updates from UPU America</h1>
+          <h1>
+            Updates from <span className="heading-gold-accent">UPU America</span>
+          </h1>
           <p className="page-hero-sub">
             Authentic stories, chapter reports, and developmental news on UPU America and our programs across North America and Urhoboland.
           </p>
@@ -407,7 +409,9 @@ export default function BlogPage() {
       {/* Newsletter */}
       <section className="blog-newsletter-section">
         <div className="blog-newsletter-inner">
-          <h2>Subscribe to UPUA Dispatch</h2>
+          <h2>
+            Subscribe to <span className="heading-gold-accent">UPUA Dispatch</span>
+          </h2>
           <p>
             Stay informed with official press releases, convention announcements, chapter spotlights, and cultural events delivered to your inbox.
           </p>

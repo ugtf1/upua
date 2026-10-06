@@ -217,7 +217,9 @@ export default function ProgramsPage() {
         <div className="page-hero-overlay" />
         <div className="page-hero-inner">
           <p className="page-hero-tag">Empowering Our People</p>
-          <h1>UPUA Programs & Community Action</h1>
+          <h1>
+            UPUA Programs & <span className="heading-gold-accent">Community Action</span>
+          </h1>
           <p className="page-hero-sub">
             From women's shelters across North America to STEM training, healthcare missions, and humanitarian relief in Urhoboland — turning diaspora unity into tangible progress.
           </p>
@@ -252,7 +254,7 @@ export default function ProgramsPage() {
               Signature Community Outreach
             </span>
             <h2 style={{ color: "#0e3d26", fontFamily: "var(--font-heading)", fontSize: "clamp(1.8rem, 3.5vw, 2.6rem)", margin: "8px 0 12px" }}>
-              The Women in Shelter Initiative
+              The Women in <span className="heading-gold-accent">Shelter Initiative</span>
             </h2>
             <p style={{ color: "#526359", maxWidth: "750px", margin: "0 auto", fontSize: "15px" }}>
               Across North America, UPUA chapters are giving back — donating time, resources, hygiene items, and love to women's shelters in their local communities. Giving back to those in need is at the heart of who we are.
@@ -290,7 +292,9 @@ export default function ProgramsPage() {
       <section className="programs-list-section">
         <div className="programs-list-inner">
           <div className="landing-section-heading" style={{ textAlign: "center", marginBottom: "56px" }}>
-            <h2 style={{ color: "#0e3d26" }}>Key Programmatic Pillars</h2>
+            <h2 style={{ color: "#0e3d26" }}>
+              Key Programmatic <span className="heading-gold-accent">Pillars</span>
+            </h2>
             <p>Practical interventions advancing education, healthcare, culture, and humanitarian welfare.</p>
           </div>
 
@@ -448,7 +452,9 @@ export default function ProgramsPage() {
       <section className="programs-partner-section">
         <div className="programs-partner-inner">
           <div className="programs-partner-text">
-            <h2>Partner With UPU America</h2>
+            <h2>
+              Partner With <span className="heading-gold-accent">UPU America</span>
+            </h2>
             <p>
               Your generous contribution directly funds women’s shelter packages, STEM equipment for Urhobo students, life-saving medicines, and emergency IDP relief. Every dollar strengthens our community.
             </p>

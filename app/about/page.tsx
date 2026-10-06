@@ -190,7 +190,9 @@ export default function AboutPage() {
         <div className="page-hero-overlay" />
         <div className="page-hero-inner">
           <p className="page-hero-tag">Official UPUA Heritage</p>
-          <h1>About Urhobo Progress Union America</h1>
+          <h1>
+            About Urhobo Progress Union <span className="heading-gold-accent">America</span>
+          </h1>
           <p className="page-hero-sub">
             Developing Urhobo Culture and Ideals · “Okugbe, Egba, Voyan Robaro” (Unity, Strength and Progress)
           </p>
@@ -202,7 +204,9 @@ export default function AboutPage() {
         <div className="about-mission-grid">
           <div className="about-mission-block">
             <span className="about-label">Historical Foundation</span>
-            <h2>The Umbrella Organization of the Urhobo Diaspora</h2>
+            <h2>
+              The Umbrella Organization of the Urhobo <span className="heading-gold-accent">Diaspora</span>
+            </h2>
             <span className="mission-rule" />
             <p>
               <strong>Urhobo Progress Union America (UPUA)</strong> is the umbrella organization of all Urhobo organizations and people resident in North America. In December 2003, it was formally recognized and accredited at the annual Urhobo Day Congress held in the auditorium of the Petroleum Training Institute (PTI), Effurun, Delta State, Nigeria, by the <strong>Urhobo Progress Union (UPU) Worldwide</strong> — the mother organization of all Urhobo people globally.
@@ -239,10 +243,12 @@ export default function AboutPage() {
       <section className="about-values-section" style={{ background: "#f1f6f3" }}>
         <div className="about-values-inner">
           <div className="landing-section-heading" style={{ textAlign: "center", marginBottom: "40px" }}>
-            <h2 style={{ color: "#0e3d26" }}>Our Mission & Vision</h2>
+            <h2 style={{ color: "#0e3d26" }}>
+              Our Mission <span className="heading-gold-accent">& Vision</span>
+            </h2>
             <p>Guided by our ancestral heritage and progressive vision for generations unborn.</p>
           </div>
-          <div className="about-values-grid" style={{ gridTemplateColumns: "1fr 1fr" }}>
+          <div className="about-values-grid about-mission-vision-grid">
             <div className="about-value-card" style={{ borderLeft: "4px solid #137459" }}>
               <h3>Our Mission</h3>
               <p>
@@ -263,7 +269,9 @@ export default function AboutPage() {
       <section className="about-exec-section">
         <div className="about-exec-inner">
           <div className="landing-section-heading" style={{ textAlign: "center", marginBottom: "48px" }}>
-            <h2>National Leadership</h2>
+            <h2>
+              National <span className="heading-gold-accent">Leadership</span>
+            </h2>
             <p>Guiding UPU America with integrity, cultural pride, and 21st-century administrative excellence.</p>
           </div>
 
@@ -311,7 +319,9 @@ export default function AboutPage() {
 
           {/* Full Executive Team Grid */}
           <div className="landing-section-heading" style={{ textAlign: "center", margin: "48px auto 32px" }}>
-            <h3 style={{ color: "#0e3d26", fontSize: "1.5rem" }}>The Executive Committee (EC)</h3>
+            <h3 style={{ color: "#0e3d26", fontSize: "1.5rem" }}>
+              The Executive <span className="heading-gold-accent">Committee (EC)</span>
+            </h3>
             <p>Elected officers managing day-to-day administrative and developmental portfolios.</p>
           </div>
 
@@ -343,7 +353,9 @@ export default function AboutPage() {
 
           {/* UPUAYA (Youth Wing) Exco */}
           <div className="landing-section-heading" style={{ textAlign: "center", margin: "48px auto 32px" }}>
-            <h3 style={{ color: "#003e53", fontSize: "1.5rem" }}>UPUAYA Executive Council (Youth Wing)</h3>
+            <h3 style={{ color: "#003e53", fontSize: "1.5rem" }}>
+              UPUAYA Executive Council <span className="heading-gold-accent">(Youth Wing)</span>
+            </h3>
             <p>Empowering dynamic Urhobo young professionals and students across the United States.</p>
           </div>
 
@@ -375,7 +387,9 @@ export default function AboutPage() {
       <section className="about-branches-section" id="chapters">
         <div className="about-branches-inner">
           <div className="landing-section-heading" style={{ textAlign: "center", marginBottom: "48px" }}>
-            <h2>UPUA Chapters Across America</h2>
+            <h2>
+              UPUA Chapters <span className="heading-gold-accent">Across America</span>
+            </h2>
             <p>Grassroots Urhobo communities united under the UPUA Board of Trustees (BOT).</p>
           </div>
 
@@ -410,7 +424,9 @@ export default function AboutPage() {
       <section className="about-values-section" style={{ background: "#ffffff" }}>
         <div className="about-values-inner">
           <div className="landing-section-heading" style={{ textAlign: "center", marginBottom: "40px" }}>
-            <h2 style={{ color: "#0e3d26" }}>The 24 Urhobo Royal Kingdoms</h2>
+            <h2 style={{ color: "#0e3d26" }}>
+              The 24 Urhobo <span className="heading-gold-accent">Royal Kingdoms</span>
+            </h2>
             <p>Honoring our traditional heritage, ancient dynasties, and Royal Fathers.</p>
           </div>
 
@@ -444,7 +460,7 @@ export default function AboutPage() {
             Urhobo Heritage
           </span>
           <h2 style={{ fontFamily: "var(--font-heading)", fontSize: "clamp(1.8rem, 3.5vw, 2.5rem)", color: "#ffffff", margin: "16px 0 8px" }}>
-            The Urhobo National Anthem
+            The Urhobo <span className="heading-gold-accent">National Anthem</span>
           </h2>
           <p style={{ color: "rgba(255,255,255,0.75)", fontSize: "14px", marginBottom: "36px" }}>
             The sacred anthem echoing the royal lineage and eternal bond of all Urhobo people.
@@ -490,7 +506,9 @@ export default function AboutPage() {
       {/* CTA */}
       <section className="about-cta-section">
         <div className="about-cta-inner">
-          <h2>Be Part of the Urhobo Progress Story</h2>
+          <h2>
+            Be Part of the Urhobo <span className="heading-gold-accent">Progress Story</span>
+          </h2>
           <p>Whether by birth, marriage, or cultural affinity — join your local UPUA chapter or become an associate member today.</p>
           <div className="about-cta-buttons">
             <Link href="/#join-community" className="public-donate-link" style={{ display: "inline-flex", textDecoration: "none" }}>

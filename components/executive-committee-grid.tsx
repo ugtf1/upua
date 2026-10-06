@@ -79,7 +79,7 @@ export default function ExecutiveCommitteeGrid() {
       <div className="ec-container">
         <div className="ec-header">
           <h2 id="ec-heading" className="ec-title">
-            Meet The Executive Committee (EC)
+            Meet The Executive <span className="heading-gold-accent">Committee (EC)</span>
           </h2>
           <p className="ec-subtitle">
             Elected officers managing day-to-day administrative and developmental portfolios.
