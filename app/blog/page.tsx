@@ -238,7 +238,7 @@ export default function BlogPage() {
         <div className="blog-featured-inner">
           <div className="blog-featured-badge">Featured Story</div>
           <article className="blog-featured-card">
-            <div style={{ position: "relative", minHeight: "340px", width: "100%" }}>
+            <div className="blog-featured-media-wrap">
               <Image src={featured.image} alt={featured.title} fill style={{ objectFit: "cover" }} sizes="(max-width: 768px) 100vw, 400px" priority />
             </div>
             <div className="blog-featured-content">
