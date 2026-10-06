@@ -5979,12 +5979,60 @@ a {
 }
 
 /* =========================================================
+   ABOUT PAGE: MISSION & VISION SECTION ALIGNMENT (WEB & MOBILE)
+   ========================================================= */
+.about-mission-vision-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 32px !important;
+  align-items: stretch !important;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.about-mission-vision-grid .about-value-card {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  padding: 36px 32px !important;
+  background: #ffffff !important;
+  border-radius: 18px !important;
+  box-shadow: 0 8px 26px rgba(14, 61, 38, 0.05) !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.about-mission-vision-grid .about-value-card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 16px 36px rgba(14, 61, 38, 0.1) !important;
+}
+
+.about-mission-vision-grid .about-value-card h3 {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  color: #0e3d26;
+  font-weight: 800;
+  margin: 0 0 14px 0;
+  line-height: 1.25;
+}
+
+.about-mission-vision-grid .about-value-card p {
+  color: #4b5851;
+  font-size: 15px;
+  line-height: 1.75;
+  margin: 0;
+  flex-grow: 1;
+}
+
+/* =========================================================
    MOBILE VIEW: MISSION & VISION CARDS DISPLAY AS GRID
    ========================================================= */
 @media (max-width: 768px) {
-  .about-mission-vision-grid,
+  .about-mission-vision-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+    width: 100% !important;
+  }
   .about-values-grid {
-    display: grid !important;
     grid-template-columns: 1fr !important;
     gap: 20px !important;
     width: 100% !important;
@@ -6002,3 +6050,4 @@ a {
     padding: 24px 20px !important;
   }
 }
+

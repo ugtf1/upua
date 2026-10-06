@@ -32,47 +32,47 @@ const executiveTeam = [
   {
     name: "Chief (Dr.) Mrs. Eunice Eruvwetere",
     role: "National Vice President",
-    image: "https://upuamerica.org/wp-content/uploads/2025/01/UPUA-Chief-Dr.-Mrs.-Eunice-Eruvwetere-240x300.jpg",
+    image: "/assets/Eruvwetere.jpg",
   },
   {
     name: "Chief Godwin Ikporo",
     role: "Secretary-General",
-    image: "https://upuamerica.org/wp-content/uploads/2025/01/main-260x300.jpg",
+    image: "/assets/ikporo.jpg",
   },
   {
     name: "Ms. Eguonor Tuoyo",
     role: "Assistant Secretary",
-    image: "https://upuamerica.org/wp-content/uploads/2025/01/UPUA-Ms.-Eguonor-Tuoyo-Photo-208x300.jpg",
+    image: "/assets/tuoyo.jpg",
   },
   {
     name: "Mrs. Evelyn Obire-Egbe (Sosime)",
     role: "Director of Membership & Welfare",
-    image: "https://upuamerica.org/wp-content/uploads/2025/01/UPUA-Mrs.-Evelyn-Sosime-Photo-225x300.jpg",
+    image: "/assets/Obire-Egbe.jpg",
   },
   {
     name: "Dr. Abel Okuma",
     role: "Director of Research & Culture",
-    image: "https://upuamerica.org/wp-content/uploads/2025/01/UPUA-Dr.-Abel-Okuma-247x300.jpg",
+    image: "/assets/okuma.jpg",
   },
   {
     name: "Mr. Efe Shemi",
     role: "National Treasurer",
-    image: "https://upuamerica.org/wp-content/uploads/2025/01/UPUA-Mr.-Efe-Shemi-Photo-1-138x300.jpg",
+    image: "/assets/shemi.jpg",
   },
   {
     name: "Hon. Oghenetega JohnGold",
     role: "Speaker",
-    image: "https://upuamerica.org/wp-content/uploads/2026/03/Hon-JohnGold_new.JPGxxx-222x300.jpg",
+    image: "/assets/johnGold.jpg",
   },
   {
     name: "Chief Eric Ogbafedje Okoko",
     role: "Director of Publicity",
-    image: "https://upuamerica.org/wp-content/uploads/2025/04/Eric-Okoko-Chief-Picture-hat-su-4-3-2025-188x300.jpg",
+    image: "/assets/okoko.jpg",
   },
   {
     name: "Mrs. Betty Ajueyitsi",
     role: "Director of Development",
-    image: "https://upuamerica.org/wp-content/uploads/2025/01/UPUA-Mrs.-Betty-Ajueyitsi-Photo-2-197x300.jpg",
+    image: "/assets/ajueyitsi.jpg",
   },
   {
     name: "Chief (Dr.) Mrs. Louisa Ukochovwera",
@@ -325,29 +325,23 @@ export default function AboutPage() {
             <p>Elected officers managing day-to-day administrative and developmental portfolios.</p>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(230px, 1fr))", gap: "24px", marginBottom: "56px" }}>
+          <div className="ec-grid" style={{ marginBottom: "56px" }}>
             {executiveTeam.map((exec) => (
-              <div
-                key={exec.name}
-                style={{
-                  background: "#edf5f0",
-                  border: "1px solid #d4e7db",
-                  borderRadius: "20px",
-                  overflow: "hidden",
-                  boxShadow: "0 10px 28px rgba(11, 51, 35, 0.06)",
-                  display: "flex",
-                  flexDirection: "column",
-                  transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                }}
-              >
-                <div style={{ width: "100%", height: "240px", position: "relative", overflow: "hidden", background: "#d9e8df" }}>
-                  <Image src={exec.image} alt={exec.name} fill style={{ objectFit: "cover", objectPosition: "top center" }} sizes="(max-width: 640px) 100vw, 240px" />
+              <article className="ec-officer-card" key={exec.name}>
+                <div className="ec-card-media">
+                  <Image
+                    src={exec.image}
+                    alt={exec.name}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 20vw"
+                    className="ec-card-img"
+                  />
                 </div>
-                <div style={{ padding: "18px 16px", textAlign: "center", display: "flex", flexDirection: "column", flexGrow: 1, justifyContent: "center" }}>
-                  <h4 style={{ color: "#0e3d26", fontSize: "1rem", margin: "0 0 6px", fontWeight: 800, lineHeight: "1.3" }}>{exec.name}</h4>
-                  <span style={{ color: "#15803d", fontSize: "12.5px", fontWeight: 700 }}>{exec.role}</span>
+                <div className="ec-card-body">
+                  <h4 className="ec-officer-name">{exec.name}</h4>
+                  <p className="ec-officer-role">{exec.role}</p>
                 </div>
-              </div>
+              </article>
             ))}
           </div>
 
