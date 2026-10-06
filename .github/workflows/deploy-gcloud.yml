@@ -96,6 +96,7 @@ jobs:
             --max-instances=10
             --port=8080
             --add-cloudsql-instances=${{ env.CLOUD_SQL_INSTANCE }}
+            --service-account=${{ env.SERVICE_ACCOUNT }}
           env_vars: |
             NODE_ENV=production
             DATABASE_URL=${{ steps.db_prep.outputs.url }}
