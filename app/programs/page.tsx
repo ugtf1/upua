@@ -20,14 +20,14 @@ interface ProgramItem {
 }
 
 const shelterChapters = [
-  { chapter: "DC, Maryland & Virginia (UPUDMV)", location: "Washington DC, MD, VA", image: "https://upuamerica.org/wp-content/uploads/2026/06/DMV-6.jpg" },
-  { chapter: "Michigan (UPUMI)", location: "Detroit, Michigan", image: "https://upuamerica.org/wp-content/uploads/2026/06/Michigan-2.jpg" },
-  { chapter: "Ohio (UPU Ohio)", location: "Columbus & Cleveland, OH", image: "https://upuamerica.org/wp-content/uploads/2026/06/Ohio-1.jpg" },
-  { chapter: "Southern California (UPUSC)", location: "Los Angeles & San Diego, CA", image: "https://upuamerica.org/wp-content/uploads/2026/06/SolCal-4.jpg" },
-  { chapter: "Chicagoland (UPUC)", location: "Chicago, Illinois", image: "https://upuamerica.org/wp-content/uploads/2026/06/ChicagoLand-1x.jpg" },
-  { chapter: "Delaware Valley (UPUDV)", location: "PA, DE & NJ", image: "https://upuamerica.org/wp-content/uploads/2026/06/Delaware-1.jpg" },
-  { chapter: "Great Kansas City (Waado)", location: "Kansas City, MO / KS", image: "https://upuamerica.org/wp-content/uploads/2026/06/wadoo-1.jpg" },
-  { chapter: "Minnesota (UPUM)", location: "Minneapolis & St. Paul, MN", image: "https://upuamerica.org/wp-content/uploads/2026/06/Minnesota-3.jpg" },
+  { chapter: "DC, Maryland & Virginia (UPUDMV)", location: "Washington DC, MD, VA", image: "/assets/DMV-6.jpg" },
+  { chapter: "Michigan (UPUMI)", location: "Detroit, Michigan", image: "/assets/Michigan-2.jpg" },
+  { chapter: "Ohio (UPU Ohio)", location: "Columbus & Cleveland, OH", image: "/assets/Ohio-1.jpg" },
+  { chapter: "Southern California (UPUSC)", location: "Los Angeles & San Diego, CA", image: "/assets/SolCal-4.jpg" },
+  { chapter: "Chicagoland (UPUC)", location: "Chicago, Illinois", image: "/assets/ChicagoLand-1x.jpg" },
+  { chapter: "Delaware Valley (UPUDV)", location: "PA, DE & NJ", image: "/assets/Delaware-1.jpg" },
+  { chapter: "Great Kansas City (Waado)", location: "Kansas City, MO / KS", image: "/assets/wadoo-1.jpg" },
+  { chapter: "Minnesota (UPUM)", location: "Minneapolis & St. Paul, MN", image: "/assets/Minnesota-3.jpg" },
 ];
 
 const mainPrograms: ProgramItem[] = [
@@ -45,7 +45,7 @@ const mainPrograms: ProgramItem[] = [
     ],
     impact: "16+ North American metro areas mobilized",
     accent: "#137459",
-    featuredImage: "https://upuamerica.org/wp-content/uploads/2026/06/DMV-6.jpg",
+    featuredImage: "/assets/DMV-6.jpg",
     fullWriteup: [
       "The UPUA Women in Shelter Initiative is a signature humanitarian outreach program established to support vulnerable women and children residing in emergency shelters across the United States and Canada.",
       "At UPUA, giving back to those in need is at the heart of our cultural ethos. Each chapter coordinates directly with recognized shelter facilities in cities such as Detroit, Washington D.C., Columbus, Los Angeles, Chicago, Philadelphia, and Minneapolis.",
@@ -175,7 +175,7 @@ const mainPrograms: ProgramItem[] = [
     ],
     impact: "Connecting diaspora children with ancestral roots",
     accent: "#6b0e6b",
-    featuredImage: "https://upuamerica.org/wp-content/uploads/2026/06/SolCal-4.jpg",
+    featuredImage: "/assets/SolCal-4.jpg",
     fullWriteup: [
       "Language is the lifeblood of cultural identity. Recognizing the risk of language erosion among second and third-generation diaspora children, UPU America created a structured language curriculum.",
       "The program delivers weekly live online classes tailored for children, teens, and adult learners. Lessons focus on conversational proficiency, traditional greetings, folklore songs, and proper pronounciation of Urhobo proverbs.",
@@ -208,7 +208,7 @@ export default function ProgramsPage() {
       {/* Hero with authentic image background */}
       <section className="page-hero programs-hero">
         <Image
-          src="https://upuamerica.org/wp-content/uploads/2026/06/DMV-6.jpg"
+          src="/assets/DMV-6.jpg"
           alt="UPUA Community Outreach and Programs"
           fill
           priority

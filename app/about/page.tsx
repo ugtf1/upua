@@ -77,7 +77,7 @@ const executiveTeam = [
   {
     name: "Chief (Dr.) Mrs. Louisa Ukochovwera",
     role: "Deputy BOT Chair / President, UPU Ohio",
-    image: "https://upuamerica.org/wp-content/uploads/2026/06/Ohio-1.jpg",
+    image: "/assets/Ohio-1.jpg",
   },
 ];
 
@@ -86,37 +86,37 @@ const youthWingExco = [
     name: "Oghenekevwe Ajueyitsi",
     role: "Youth Wing President",
     chapter: "UPU DMV",
-    image: "https://upuamerica.org/wp-content/uploads/2026/07/KEVWE-292x300.jpeg",
+    image: "/assets/youth-kevwe.jpeg",
   },
   {
     name: "Praise Asanudje",
     role: "Vice President",
     chapter: "Urhobo/Isoko Ass. Arizona",
-    image: "https://upuamerica.org/wp-content/uploads/2026/07/VICE-PRESIDENT-225x300.jpg",
+    image: "/assets/youth-vp.jpg",
   },
   {
     name: "Favour Okotie",
     role: "Secretary",
     chapter: "UPU Ohio",
-    image: "https://upuamerica.org/wp-content/uploads/2026/07/HERE-IS-MINE-225x300.jpeg",
+    image: "/assets/youth-favour.jpeg",
   },
   {
     name: "Jess Oghenefejiro Ikporo",
     role: "Assistant Secretary",
     chapter: "UPU Midland/Odessa, TX",
-    image: "https://upuamerica.org/wp-content/uploads/2026/07/JESS-228x300.jpeg",
+    image: "/assets/youth-jess.jpeg",
   },
   {
     name: "Eguolor Sam-Ogaga",
     role: "Treasurer",
     chapter: "Urhobo/Isoko Ass. of Middle Tennessee",
-    image: "https://upuamerica.org/wp-content/uploads/2026/07/EGUONOR-225x300.jpeg",
+    image: "/assets/youth-eguolor.jpeg",
   },
   {
     name: "Ufuoma Agarin",
     role: "Social / Publicity Secretary",
     chapter: "UPU DMV",
-    image: "https://upuamerica.org/wp-content/uploads/2026/07/UFUOMA-AGARIN2-171x300.jpeg",
+    image: "/assets/youth-ufuoma.jpeg",
   },
 ];
 
@@ -181,7 +181,7 @@ export default function AboutPage() {
       {/* Hero with authentic image background */}
       <section className="page-hero about-hero">
         <Image
-          src="https://upuamerica.org/wp-content/uploads/2026/06/Congress-1.jpg"
+          src="/assets/Congress-1.jpg"
           alt="UPUA National Congress and Gathering"
           fill
           priority

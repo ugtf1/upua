@@ -69,7 +69,7 @@ const OFFICERS: Officer[] = [
     id: "ec-10",
     name: "Chief (Dr.) Mrs. Louisa Ukochovwera",
     role: "Deputy BOT Chair / President, UPU Ohio",
-    image: "https://upuamerica.org/wp-content/uploads/2026/06/Ohio-1.jpg",
+    image: "/assets/Ohio-1.jpg",
   },
 ];
 

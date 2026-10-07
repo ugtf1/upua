@@ -29,7 +29,7 @@ const blogPosts: BlogPost[] = [
     date: "June 28, 2024",
     readTime: "4 min read",
     author: "UPUA Communications",
-    image: "https://upuamerica.org/wp-content/uploads/2026/06/DMV-6.jpg",
+    image: "/assets/DMV-6.jpg",
     excerpt:
       "From Southern California and Chicagoland to Delaware Valley, Michigan, and the DMV, UPUA chapters mobilized nationwide to donate essential hygiene packages, clothing, supplies, and warmth to local women’s shelters. Giving back to host communities is central to the Urhobo ethos.",
     featured: true,
@@ -65,7 +65,7 @@ const blogPosts: BlogPost[] = [
     date: "May 15, 2024",
     readTime: "4 min read",
     author: "Board of Trustees (BOT)",
-    image: "https://upuamerica.org/wp-content/uploads/2026/06/UPUA-Mr.-Thomas-Uwhubetine-B.O.T-Chair-r067f4n8nnib7zajo7nz4r4dgwrwa4nreq4uzof8yg.jpg",
+    image: "/assets/bot-chairman-blog.jpg",
     excerpt:
       'In a landmark address to the Board of Trustees, Chairman Thomas Uwhubetine outlined a vision to establish permanent UPUA headquarters, expand full-time administrative capacity, and operationalize our motto: "Okugbe, Egba, Voyan Robaro".',
     featured: false,
@@ -137,7 +137,7 @@ const blogPosts: BlogPost[] = [
     date: "January 25, 2024",
     readTime: "3 min read",
     author: "UPUAYA Council",
-    image: "https://upuamerica.org/wp-content/uploads/2026/07/KEVWE-292x300.jpeg",
+    image: "/assets/youth-kevwe.jpeg",
     excerpt:
       "Led by Youth President Oghenekevwe Ajueyitsi and council executives from Arizona, Ohio, Texas, and DMV, UPUAYA launched collegiate mentorship networks and professional forums connecting young Urhobo scholars.",
     featured: false,
@@ -155,7 +155,7 @@ const blogPosts: BlogPost[] = [
     date: "December 10, 2023",
     readTime: "4 min read",
     author: "Research & Culture Directorate",
-    image: "https://upuamerica.org/wp-content/uploads/2026/06/SolCal-4.jpg",
+    image: "/assets/SolCal-4.jpg",
     excerpt:
       "New interactive online Urhobo language and folklore sessions were introduced for children and teenagers across all chapters, ensuring diaspora youth proudly converse in their mother tongue.",
     featured: false,
@@ -173,7 +173,7 @@ const blogPosts: BlogPost[] = [
     date: "November 28, 2023",
     readTime: "3 min read",
     author: "UPU Michigan",
-    image: "https://upuamerica.org/wp-content/uploads/2026/06/Michigan-2.jpg",
+    image: "/assets/Michigan-2.jpg",
     excerpt:
       "Members of Urhobo Progress Union Michigan visited Detroit women's shelters with essential personal care supplies and winter coats, representing the spirit of Urhobo philanthropy in the Great Lakes region.",
     featured: false,
@@ -217,7 +217,7 @@ export default function BlogPage() {
       {/* Hero with authentic image background */}
       <section className="page-hero blog-hero">
         <Image
-          src="https://upuamerica.org/wp-content/uploads/2026/06/SolCal-4.jpg"
+          src="/assets/SolCal-4.jpg"
           alt="UPUA News, Updates and Cultural Gatherings"
           fill
           priority
