@@ -415,7 +415,7 @@ function WorldwideLandingFooter() {
             <span>f</span>
           </div>
         </div>
-        <div className="upua-copyright">Copyright © 2024 Urhobo Progress Union America</div>
+        <div className="upua-copyright">Copyright © {new Date().getFullYear()} Urhobo Progress Union America</div>
       </footer>
     </section>
   );

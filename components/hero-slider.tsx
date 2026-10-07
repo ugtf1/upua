@@ -15,28 +15,28 @@ export interface HeroSlide {
 const HERO_SLIDES: HeroSlide[] = [
   {
     id: "slide-1",
-    image: "/assets/618b2065cb429bf344ce60cbcbaeb44ba78c88fe.png",
+    image: "/assets/618b2065cb429bf344ce60cbcbaeb44ba78c88fe.jpg",
     alt: "Urhobo Progress Union America royal delegates and cultural assembly",
     badge: "Urhobo Heritage",
     caption: "Preserving Rich Culture, Royalty & Tradition",
   },
   {
     id: "slide-2",
-    image: "/assets/4471b2f1651075d7a987b512d9eec099711476b7.png",
+    image: "/assets/4471b2f1651075d7a987b512d9eec099711476b7.jpg",
     alt: "UPUA Executive leadership and chapter community gathering",
     badge: "Community Leadership",
     caption: "Empowering 23 Accredited North American Chapters",
   },
   {
     id: "slide-3",
-    image: "/assets/3845b14f877d50b26c30cd66978853438368e8db.png",
+    image: "/assets/3845b14f877d50b26c30cd66978853438368e8db.jpg",
     alt: "UPUA National Convention & Grand Gala celebration",
     badge: "National Convention",
     caption: "Fostering Unity, Growth & Diaspora Engagement",
   },
   {
     id: "slide-4",
-    image: "/assets/60b7f17fe75538dbf432cd371298d4313cd0bd99.png",
+    image: "/assets/60b7f17fe75538dbf432cd371298d4313cd0bd99.jpg",
     alt: "Youth empowerment, STEM initiatives, and cultural education",
     badge: "Youth & Innovation",
     caption: "Investing in Next-Generation STEM & Scholarships",

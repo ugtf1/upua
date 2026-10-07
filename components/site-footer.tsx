@@ -55,7 +55,7 @@ export default function SiteFooter() {
           </div>
         </div>
         <div className="upua-copyright">
-          Copyright © 2024 Urhobo Progress Union America
+          Copyright © {new Date().getFullYear()} Urhobo Progress Union America
         </div>
       </footer>
     </section>
