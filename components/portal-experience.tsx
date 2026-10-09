@@ -149,6 +149,7 @@ function LandingHeader({
     { href: "/about", label: "About" },
     { href: "/programs", label: "Programs" },
     { href: "/events", label: "Events" },
+    { href: "/store", label: "Store" },
     { href: "/blog", label: "Blog" },
   ];
 
