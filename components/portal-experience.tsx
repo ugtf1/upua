@@ -39,6 +39,7 @@ import InfiniteGalleryMarquee from "@/components/infinite-gallery-marquee";
 import LeadersShowcase from "@/components/leaders-showcase";
 import ExecutiveCommitteeGrid from "@/components/executive-committee-grid";
 import LandingUpdatesSection from "@/components/landing-updates-section";
+import LandingEventsSection from "@/components/landing-events-section";
 
 type Panel = "overview" | "members" | "pivot" | "transactions" | "analytics" | "meetings" | "hosting" | "settings" | "member" | "account";
 type RecorderTab = "attendance" | "transcript" | "summary";
@@ -126,6 +127,8 @@ function LandingPage({ onLogin }: { onLogin: (role: Role) => void }) {
       <ExecutiveCommitteeGrid />
       {/* Updates from UPU America */}
       <LandingUpdatesSection />
+      {/* Latest Events */}
+      <LandingEventsSection />
       <WorldwideLandingFooter />
       <DonationModal isOpen={donationOpen} onClose={() => setDonationOpen(false)} />
     </section>
@@ -145,6 +148,7 @@ function LandingHeader({
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
     { href: "/programs", label: "Programs" },
+    { href: "/events", label: "Events" },
     { href: "/blog", label: "Blog" },
   ];
 

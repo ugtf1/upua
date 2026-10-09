@@ -16,9 +16,8 @@ export default function SiteHeader() {
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
     { href: "/programs", label: "Programs" },
+    { href: "/events", label: "Events" },
     { href: "/blog", label: "Blog" },
-    // { href: "/chapters", label: "Chapters" },
-    // { href: "/gallery", label: "Gallery" },
   ];
 
   return (
