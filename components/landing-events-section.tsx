@@ -76,7 +76,8 @@ export default function LandingEventsSection() {
                   src="/assets/youth-kevwe.jpeg"
                   alt="UPUAYA National Youth Leadership & Career Summit"
                   fill
-                  sizes="(max-width: 768px) 120px, 160px"
+                  sizes="(max-width: 768px) 140px, 150px"
+                  style={{ objectFit: "contain", objectPosition: "center center", padding: "4px" }}
                   className="event-img"
                 />
               </div>
@@ -105,7 +106,8 @@ export default function LandingEventsSection() {
                   src="/assets/bot-chairman-blog.jpg"
                   alt="National Executive Council (NEC) & Chapter Delegates Meeting"
                   fill
-                  sizes="(max-width: 768px) 120px, 160px"
+                  sizes="(max-width: 768px) 140px, 150px"
+                  style={{ objectFit: "contain", objectPosition: "center center", padding: "4px" }}
                   className="event-img"
                 />
               </div>
@@ -134,7 +136,8 @@ export default function LandingEventsSection() {
                   src="/assets/SolCal-4.jpg"
                   alt="Urhobo Cultural Heritage Day & Language Immersion Festival"
                   fill
-                  sizes="(max-width: 768px) 120px, 160px"
+                  sizes="(max-width: 768px) 140px, 150px"
+                  style={{ objectFit: "contain", objectPosition: "center center", padding: "4px" }}
                   className="event-img"
                 />
               </div>

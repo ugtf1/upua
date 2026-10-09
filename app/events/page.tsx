@@ -378,6 +378,7 @@ export default function EventsPage() {
                       fill
                       sizes="(max-width: 640px) 100vw, 360px"
                       className="blog-card-img"
+                      style={{ objectFit: "contain", objectPosition: "center center", padding: "8px" }}
                     />
                     <div className="event-date-badge" style={{ position: "absolute", top: 12, left: 12 }}>
                       <span className="event-badge-month">{evt.monthShort}</span>
@@ -440,7 +441,7 @@ export default function EventsPage() {
                 src={selectedEvent.image}
                 alt={selectedEvent.title}
                 fill
-                style={{ objectFit: "cover" }}
+                style={{ objectFit: "contain", objectPosition: "center center", padding: "10px" }}
                 sizes="780px"
               />
               <div style={{ position: "absolute", bottom: "16px", left: "20px", background: "rgba(14, 61, 38, 0.95)", color: "#ffffff", padding: "5px 14px", borderRadius: "100px", fontSize: "12px", fontWeight: 800, textTransform: "uppercase" }}>
