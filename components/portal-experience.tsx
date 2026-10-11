@@ -37,6 +37,7 @@ import DonationModal from "@/components/donation-modal";
 import HeroSlider from "@/components/hero-slider";
 import InfiniteGalleryMarquee from "@/components/infinite-gallery-marquee";
 import LeadersShowcase from "@/components/leaders-showcase";
+import BoardOfTrusteesSection from "@/components/board-of-trustees-section";
 import ExecutiveCommitteeGrid from "@/components/executive-committee-grid";
 import LandingUpdatesSection from "@/components/landing-updates-section";
 import LandingEventsSection from "@/components/landing-events-section";
@@ -123,6 +124,8 @@ function LandingPage({ onLogin }: { onLogin: (role: Role) => void }) {
       <LandingWork />
       {/* Leaders who keep the union moving */}
       <LeadersShowcase />
+      {/* Board of Trustees Section */}
+      <BoardOfTrusteesSection />
       {/* Meet The Executive Committee */}
       <ExecutiveCommitteeGrid />
       {/* Updates from UPU America */}
