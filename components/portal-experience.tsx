@@ -39,6 +39,7 @@ import InfiniteGalleryMarquee from "@/components/infinite-gallery-marquee";
 import LeadersShowcase from "@/components/leaders-showcase";
 import BoardOfTrusteesSection from "@/components/board-of-trustees-section";
 import ExecutiveCommitteeGrid from "@/components/executive-committee-grid";
+import UpuayaExcoSection from "@/components/upuaya-exco-section";
 import LandingUpdatesSection from "@/components/landing-updates-section";
 import LandingEventsSection from "@/components/landing-events-section";
 
@@ -128,6 +129,8 @@ function LandingPage({ onLogin }: { onLogin: (role: Role) => void }) {
       <BoardOfTrusteesSection />
       {/* Meet The Executive Committee */}
       <ExecutiveCommitteeGrid />
+      {/* UPUAYA Youth Wing EXCO */}
+      <UpuayaExcoSection />
       {/* Updates from UPU America */}
       <LandingUpdatesSection />
       {/* Latest Events */}

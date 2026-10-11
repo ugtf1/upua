@@ -7606,6 +7606,187 @@ a {
   }
 }
 
+/* =========================================================
+   UPUAYA EXCO (YOUTH WING) SECTION & CARDS
+   ========================================================= */
+.upuaya-exco-section {
+  background: linear-gradient(180deg, #f8fbf9 0%, #edf5f0 100%);
+  padding: clamp(64px, 8vw, 110px) clamp(20px, 6vw, 96px);
+  width: 100%;
+  border-top: 1px solid #d4e7db;
+  border-bottom: 1px solid #d4e7db;
+}
 
+.upuaya-exco-container {
+  max-width: 1240px;
+  margin: 0 auto;
+}
 
+.upuaya-exco-header {
+  text-align: center;
+  max-width: 780px;
+  margin: 0 auto 52px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
+.upuaya-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: #e8f5ed;
+  border: 1px solid #c3e2cf;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #0b3323;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.upuaya-pill-icon {
+  color: #f3c31a;
+}
+
+.upuaya-exco-title {
+  font-family: var(--font-heading);
+  font-size: clamp(2.2rem, 4vw, 3.8rem);
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.08;
+  margin: 0 0 16px;
+}
+
+.upuaya-exco-subtitle {
+  font-size: clamp(1rem, 1.3vw, 1.18rem);
+  color: #4b5563;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.upuaya-exco-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 26px;
+}
+
+.upuaya-officer-card {
+  background: #ffffff;
+  border: 1px solid #d7e8dd;
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 28px rgba(11, 51, 35, 0.05);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+  position: relative;
+}
+
+.upuaya-officer-card:hover {
+  transform: translateY(-6px);
+  border-color: #0f6a4b;
+  box-shadow: 0 20px 40px rgba(11, 51, 35, 0.12);
+}
+
+.upuaya-card-upcoming {
+  border-style: dashed;
+  background: #fafcfb;
+}
+
+.upuaya-card-media {
+  position: relative;
+  width: 100%;
+  height: 290px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #d2e4d8 0%, #b8d5c3 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.upuaya-card-img {
+  object-fit: contain !important;
+  object-position: center bottom !important;
+  padding: 10px 10px 0 !important;
+  transition: transform 0.4s ease;
+}
+
+.upuaya-officer-card:hover .upuaya-card-img {
+  transform: scale(1.04);
+}
+
+.upuaya-logo-img {
+  object-fit: contain !important;
+  padding: 38px !important;
+  opacity: 0.85;
+}
+
+.upuaya-role-tag {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: #0b3323;
+  color: #f3c31a;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 999px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 2;
+}
+
+.upuaya-card-body {
+  padding: 22px 20px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: center;
+}
+
+.upuaya-officer-name {
+  font-size: 1.12rem;
+  font-weight: 800;
+  color: #0b3323;
+  line-height: 1.3;
+  margin: 0 0 10px;
+}
+
+.upuaya-chapter-row {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #15803d;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.upuaya-chapter-icon {
+  flex-shrink: 0;
+  color: #e5b700;
+}
+
+.upuaya-chapter-text {
+  line-height: 1.35;
+}
+
+@media (max-width: 1024px) {
+  .upuaya-exco-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .upuaya-exco-grid {
+    grid-template-columns: 1fr;
+  }
+  .upuaya-card-media {
+    height: 250px;
+  }
+}
