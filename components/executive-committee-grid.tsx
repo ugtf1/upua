@@ -15,7 +15,7 @@ const OFFICERS: Officer[] = [
     id: "ec-1",
     name: "Chief Samuel Ogaga",
     role: "National President",
-    image: "/assets/president.jpg",
+    image: "/assets/president.png",
   },
   {
     id: "ec-2",
