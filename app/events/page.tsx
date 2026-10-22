@@ -5,12 +5,31 @@ import Image from "next/image";
 import Link from "next/link";
 import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
-import { Search, Calendar, MapPin, Clock, ArrowRight, X, ExternalLink, Users, Sparkles, CheckCircle2 } from "lucide-react";
+import {
+  Search,
+  Calendar,
+  MapPin,
+  Clock,
+  ArrowRight,
+  X,
+  ExternalLink,
+  Users,
+  Sparkles,
+  CheckCircle2,
+  Phone,
+  Mail,
+  Plane,
+  Award,
+  DollarSign,
+  Building,
+  Ticket,
+  FileText,
+} from "lucide-react";
 
 export interface EventItem {
   id: string;
   title: string;
-  category: "Convention" | "Youth Wing" | "Leadership" | "Culture" | "Community";
+  category: "Convention" | "Youth Wing" | "Leadership" | "Culture" | "Community" | "Fundraiser";
   date: string;
   fullDate: string;
   time: string;
@@ -25,48 +44,175 @@ export interface EventItem {
   registrationUrl?: string;
   hotelUrl?: string;
   vendorUrl?: string;
-  schedule: { time: string; activity: string }[];
+  theme?: string;
+  host?: string;
+  airport?: string;
+  pricing?: { label: string; price: string; note?: string }[];
+  pricingNote?: string;
+  contactInfo?: { name: string; email?: string; phone?: string }[];
+  schedule?: { time: string; activity: string }[];
   highlights: string[];
 }
 
-const eventCategories = ["All", "Convention", "Youth Wing", "Leadership", "Culture", "Community"];
+const eventCategories = ["All", "Convention", "Fundraiser", "Youth Wing", "Leadership", "Culture", "Community"];
 
 const eventsData: EventItem[] = [
   {
     id: "upua-33rd-national-convention-2026",
-    title: "The 33rd Annual Urhobo Progress Union America National Convention",
+    title: "The 33rd Annual Urhobo Progress Union America National Convention 2026",
     category: "Convention",
-    date: "Aug 28 – 31, 2026",
-    fullDate: "Friday, August 28 – Monday, August 31, 2026",
+    date: "Sept 3 – 7, 2026",
+    fullDate: "Thursday, September 3 – Monday, September 7, 2026",
     time: "9:00 AM – 11:30 PM EDT Daily",
-    monthShort: "AUG",
-    day: "28",
+    monthShort: "SEP",
+    day: "03",
     location: "Lawrenceburg, Indiana, USA",
     venueName: "DoubleTree by Hilton Hotel",
-    address: "51 Walnut Street, Lawrenceburg, IN 47025",
-    image: "/update-convention.jpg",
+    address: "51 Walnut Street, Lawrenceburg, IN 47025. USA",
+    image: "/events/upua-convention-2026-flyer.jpg",
     featured: true,
+    host: "UPU Ohio (Host Chapter)",
+    theme: "Urhobo Global Impact: Leadership, Legacy & Prosperity",
+    airport: "(CVG) Cincinnati & Northern Kentucky International Airport",
     excerpt:
-      "The premier annual gathering of Urhobo sons and daughters in the diaspora. Join national delegates, chapter executives, royal dignitaries from Delta State, and friends of Urhobo for three unforgettable days of cultural gala, youth empowerment, economic symposium, and fraternal brotherhood.",
+      "Iniovo Wadoo! Urhobo Progress Union America (UPUA) proudly announces the 2026 33rd Annual National Convention hosted by UPU Ohio. Join national delegates, chapter executives, royal traditional rulers from Delta State, youth ambassadors, and diaspora families for 5 monumental days celebrating Urhobo heritage, leadership, and prosperity.",
     registrationUrl: "https://campaigns.donately.com/t005/landing?account_subdomain=upuamerica&campaign_id=cmp_3bf0af489f59",
     hotelUrl: "https://group.doubletree.com/hu478e",
     vendorUrl: "https://pages.donately.com/upuamerica/campaign/upua-2026-convention-vendor-table-registration-200-table",
+    pricing: [
+      { label: "0 to 2 Years", price: "Free", note: "Infant & Toddler Pass" },
+      { label: "3 to 12 Years", price: "$50.00 USD", note: "Children Registration" },
+      { label: "13 Years and Above", price: "$150.00 USD", note: "Adult & Youth Registration" },
+    ],
+    pricingNote: "All registration fees are in USD, not Canadian Dollars.",
     schedule: [
-      { time: "Fri, Aug 28 · 2:00 PM", activity: "Delegate Arrival, Accreditation & Welcome Cocktail" },
-      { time: "Fri, Aug 28 · 7:00 PM", activity: "Opening Cultural Night & Traditional Urhobo Reception" },
-      { time: "Sat, Aug 29 · 9:00 AM", activity: "National General Assembly & Chapter Reports" },
-      { time: "Sat, Aug 29 · 2:00 PM", activity: "Economic Summit & Investment in Urhoboland" },
-      { time: "Sat, Aug 29 · 7:30 PM", activity: "Grand Cultural Banquet & Royal Dignitaries Gala" },
-      { time: "Sun, Aug 30 · 10:00 AM", activity: "Interdenominational Thanksgiving Service" },
-      { time: "Sun, Aug 30 · 2:00 PM", activity: "UPUAYA National Youth Wing Banquet & Awards" },
-      { time: "Sun, Aug 30 · 8:00 PM", activity: "President's Ball & Communiqué Release" },
+      { time: "Thu, Sept 3 · 2:00 PM", activity: "Delegate Arrival, CVG Airport Reception & Hotel Check-in" },
+      { time: "Thu, Sept 3 · 6:30 PM", activity: "Welcome Cocktail & Host Chapter Meet-and-Greet" },
+      { time: "Fri, Sept 4 · 9:00 AM", activity: "National Executive Council & Chapter Presidents Session" },
+      { time: "Fri, Sept 4 · 3:00 PM", activity: "UPUA Annual National Golf Outing at Sugar Ridge Golf Club" },
+      { time: "Fri, Sept 4 · 7:30 PM", activity: "Opening Cultural Night & Traditional Urhobo Reception" },
+      { time: "Sat, Sept 5 · 9:00 AM", activity: "33rd National General Assembly & Plenary Deliberations" },
+      { time: "Sat, Sept 5 · 2:00 PM", activity: "Economic Symposium: Urhobo Global Impact & Heritage" },
+      { time: "Sat, Sept 5 · 7:00 PM", activity: "Grand Cultural Banquet, Royal Awards & Dignitaries Gala" },
+      { time: "Sun, Sept 6 · 10:00 AM", activity: "Interdenominational Thanksgiving Worship Service" },
+      { time: "Sun, Sept 6 · 2:00 PM", activity: "UPUAYA National Youth Wing Banquet & Mentorship Forum" },
+      { time: "Sun, Sept 6 · 8:00 PM", activity: "President's Ball & Communiqué Release" },
+      { time: "Mon, Sept 7 · 10:00 AM", activity: "Farewell Breakfast & Delegate Departures" },
     ],
     highlights: [
-      "Official Host Hotel: DoubleTree by Hilton Lawrenceburg ($149/night group rate)",
-      "Vendor exhibition tables available for cultural attire, books, and business services ($200 donation)",
-      "Convention brochure goodwill messages and corporate advertisements",
-      "Special royal address from visiting Delta State traditional rulers",
-      "UPUAYA Youth Wing networking banquet and mentoring breakfast",
+      "Official Host: UPU Ohio Chapter welcoming attendees from across the USA, Canada, and Nigeria",
+      "Venue: DoubleTree by Hilton, 51 Walnut Street, Lawrenceburg, IN 47025. USA",
+      "Arrival Airport: (CVG) Cincinnati & Northern Kentucky International Airport",
+      "Convention Theme: 'Urhobo Global Impact: Leadership, Legacy & Prosperity'",
+      "Registration Categories: 0–2 Yrs: Free | 3–12 Yrs: $50.00 | 13+ Yrs: $150.00 (All fees in USD)",
+      "Annual National Golf Outing at Sugar Ridge Golf Club on Friday, Sept 4th",
+      "Convention brochure advertisement & goodwill messages available from $100 to $1,000",
+      "Special royal address from visiting Delta State traditional rulers and cultural leaders",
+      "UPUAYA National Youth Wing Networking Banquet & Awards Ceremony",
+    ],
+  },
+  {
+    id: "upu-ohio-zoom-fundraiser-2026",
+    title: "UPU Ohio Chapter Zoom Fundraiser — 2026 Convention Host Support",
+    category: "Fundraiser",
+    date: "This Saturday, Oct 24, 2026",
+    fullDate: "Saturday, October 24, 2026",
+    time: "7:00 PM – 10:00 PM EDT",
+    monthShort: "OCT",
+    day: "24",
+    location: "Virtual Gathering (Zoom Live)",
+    venueName: "UPU Ohio Virtual Convention Chamber",
+    address: "Official Zoom Meeting ID & Link shared across all UPUA Chapter Channels",
+    image: "/events/upua-convention-2026-flyer.jpg",
+    host: "UPU Ohio (Convention Host Chapter)",
+    theme: "Iniovo Wadoo — Supporting the 2026 National Convention",
+    registrationUrl: "https://campaigns.donately.com/t005/landing?account_subdomain=upuamerica&campaign_id=cmp_3bf0af489f59",
+    excerpt:
+      "Iniovo Wadoo! It's happening this Saturday — UPU Ohio warmly invites you all to their Zoom Fundraiser to support their activities as they host the 2026 National Convention. Kindly join and support them however you can — nothing is too small or too big. See you all on Saturday. Have your check books, credit and debit cards ready for easy access.",
+    highlights: [
+      "Special Zoom fundraising event hosted by UPU Ohio to power 2026 convention operations",
+      "Support community initiatives, convention logistics, and diaspora mobilization",
+      "Online donations, check books, and cards processed securely via Donately",
+      "Interactive fellowship with Urhobo diaspora members from all 23 chapters",
+    ],
+  },
+  {
+    id: "upua-annual-golf-outing-2026",
+    title: "UPUA Annual National Golf Outing 2026",
+    category: "Convention",
+    date: "Sept 4, 2026",
+    fullDate: "Friday, September 4th, 2026",
+    time: "03:00 PM Registration · 04:00 PM Shotgun Start",
+    monthShort: "SEP",
+    day: "04",
+    location: "Lawrenceburg, IN (20 mins from Cincinnati, OH)",
+    venueName: "Sugar Ridge Golf Club",
+    address: "Pine Street, State Line Road, Lawrenceburg, IN 47025. USA",
+    image: "/events/upua-golf-outing-2026.jpg",
+    host: "UPU Ohio & National Organizing Committee",
+    theme: "Unity, Strength, Progress — Touching Lives, Changing Generations",
+    registrationUrl: "https://campaigns.donately.com/t005/landing?account_subdomain=upuamerica&campaign_id=cmp_3bf0af489f59",
+    pricing: [
+      { label: "Individual Golfer", price: "$100.00 USD", note: "Includes 18 holes, cart, lunch & awards" },
+      { label: "Foursome Team", price: "$350.00 USD", note: "Team of 4 players" },
+      { label: "Hole Sponsorship", price: "$200.00+ USD", note: "Individual or company hole signage" },
+    ],
+    pricingNote: "Register by August 15th, 2026. Anyone or company is welcome to sponsor a hole.",
+    contactInfo: [
+      { name: "Chief Mrs Ethel Felix-Okpe", email: "ethelurs@gmail.com", phone: "513-557-9181" },
+      { name: "Chief Godwin Ikporo", phone: "+1 (618) 789-2943" },
+    ],
+    excerpt:
+      "We are excited to invite you to the UPUA National Golf Outing. Whether you be a seasoned golfer or just looking for a fun day on the course, we would love to have you join us. Proceeds will support UPUA programs and initiatives.",
+    schedule: [
+      { time: "03:00 PM", activity: "Golfer Registration, Check-in & Practice Putting Green" },
+      { time: "04:00 PM", activity: "Shotgun Start — 4-Person Scramble Tournament" },
+      { time: "07:30 PM", activity: "Post-Tournament Lunch & Awards Ceremony Following Play" },
+    ],
+    highlights: [
+      "Sugar Ridge Golf Club: Pine Street, State Line Road, Lawrenceburg, IN 47025 (20 mins from Cincinnati, OH)",
+      "4-Person Scramble format suitable for seasoned golfers and newcomers alike",
+      "Cost: $100 per golfer / $350 per foursome team",
+      "Hole Sponsorship: $200 and above — individuals and corporate sponsors welcome",
+      "Registration Deadline: August 15th, 2026",
+      "Lunch and Awards Ceremony following play",
+      "Contacts: Chief Mrs Ethel Felix-Okpe (513-557-9181) & Chief Godwin Ikporo (+1 618-789-2943)",
+    ],
+  },
+  {
+    id: "upua-convention-brochure-ads-2026",
+    title: "2026 Convention Brochure Advertisement & Goodwill Messages",
+    category: "Convention",
+    date: "Book by Aug 15, 2026",
+    fullDate: "Reservations Open Through August 15, 2026",
+    time: "Official Souvenir Publication",
+    monthShort: "AUG",
+    day: "15",
+    location: "Lawrenceburg, IN & Distributed Globally",
+    venueName: "Official Convention Souvenir Brochure",
+    address: "DoubleTree by Hilton, 51 Walnut Street, Lawrenceburg, IN 47025. USA",
+    image: "/events/upua-convention-2026-brochure.jpg",
+    host: "UPU Ohio (Host Chapter)",
+    theme: "Urhobo Global Impact: Leadership, Legacy & Prosperity",
+    registrationUrl: "https://campaigns.donately.com/t005/landing?account_subdomain=upuamerica&campaign_id=cmp_3bf0af489f59",
+    pricing: [
+      { label: "Outside Back Cover", price: "$1,000.00 USD", note: "Premium full-page color back cover" },
+      { label: "Inside Front Cover", price: "$500.00 USD", note: "Prime inside front cover position" },
+      { label: "Inside Back Cover", price: "$500.00 USD", note: "Prime inside back cover position" },
+      { label: "Center Spread", price: "$600.00 USD", note: "Double-page center spread ($300 per page)" },
+      { label: "Full Page", price: "$150.00 USD", note: "Full color standard advert / goodwill page" },
+      { label: "1/2 Page", price: "$100.00 USD", note: "Half page advert / goodwill placement" },
+    ],
+    pricingNote: "Deadline for all artwork, family photos, and text is August 15th, 2026.",
+    excerpt:
+      "Immortalize your family greetings, chapter congratulations, and business brands in the official 2026 UPU America National Convention Souvenir Brochure. Distributed to national delegates, royal dignitaries, and diaspora leaders.",
+    highlights: [
+      "Official commemorative full-color souvenir magazine for the 33rd Annual Convention",
+      "Outside Back Cover: $1,000.00 | Inside Front/Back Cover: $500.00",
+      "Center Spread (2 Pages): $600.00 ($300/page) | Full Page: $150.00 | Half Page: $100.00",
+      "Convention Theme: 'Urhobo Global Impact: Leadership, Legacy & Prosperity'",
+      "Host: UPU Ohio Chapter | Venue: DoubleTree by Hilton, Lawrenceburg, IN",
+      "Submit high-resolution photos, organization logos, and goodwill text before August 15, 2026",
     ],
   },
   {
@@ -268,20 +414,61 @@ export default function EventsPage() {
         <div className="blog-featured-inner">
           <div className="blog-featured-badge">Featured National Event</div>
           <article className="blog-featured-card">
-            <div className="blog-featured-media-wrap">
+            {/* Clickable Flyer leading directly to Donately */}
+            <a
+              href={featured.registrationUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="blog-featured-media-wrap"
+              style={{
+                position: "relative",
+                display: "block",
+                cursor: "pointer",
+                background: "linear-gradient(135deg, #0e3d26 0%, #165637 100%)",
+                borderRadius: "16px",
+                overflow: "hidden",
+                minHeight: "380px",
+              }}
+              title="Click on the registration flyer to register on Donately"
+            >
               <Image
                 src={featured.image}
                 alt={featured.title}
                 fill
-                style={{ objectFit: "cover" }}
-                sizes="(max-width: 768px) 100vw, 400px"
+                style={{ objectFit: "contain", padding: "10px" }}
+                sizes="(max-width: 768px) 100vw, 420px"
                 priority
               />
-              <div className="event-date-badge" style={{ position: "absolute", top: 18, left: 18 }}>
+              <div className="event-date-badge" style={{ position: "absolute", top: 16, left: 16, zIndex: 5 }}>
                 <span className="event-badge-month">{featured.monthShort}</span>
                 <span className="event-badge-day">{featured.day}</span>
               </div>
-            </div>
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: 14,
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  background: "rgba(14, 61, 38, 0.95)",
+                  border: "1.5px solid #d4af37",
+                  color: "#f7d070",
+                  padding: "7px 16px",
+                  borderRadius: "9999px",
+                  fontSize: "12px",
+                  fontWeight: 800,
+                  whiteSpace: "nowrap",
+                  boxShadow: "0 6px 18px rgba(0,0,0,0.4)",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  zIndex: 5,
+                }}
+              >
+                <span>👉 Click Flyer to Register on Donately</span>
+                <ExternalLink size={13} />
+              </div>
+            </a>
+
             <div className="blog-featured-content">
               <div className="blog-post-meta">
                 <span className="blog-tag" style={{ background: "rgba(19, 116, 89, 0.12)", color: "#137459" }}>
@@ -290,29 +477,91 @@ export default function EventsPage() {
                 <span className="blog-date">📅 {featured.date}</span>
                 <span className="blog-read-time">📍 {featured.location}</span>
               </div>
+
+              {featured.theme && (
+                <div
+                  style={{
+                    background: "linear-gradient(90deg, #f0f7f3 0%, #fef9e7 100%)",
+                    borderLeft: "4px solid #d4af37",
+                    padding: "8px 14px",
+                    borderRadius: "6px",
+                    marginBottom: "12px",
+                  }}
+                >
+                  <span style={{ fontSize: "11px", fontWeight: 800, textTransform: "uppercase", color: "#854d0e", letterSpacing: "0.05em" }}>
+                    Convention Theme
+                  </span>
+                  <div style={{ fontSize: "14px", fontWeight: 800, color: "#0e3d26", fontFamily: "var(--font-heading)" }}>
+                    &ldquo;{featured.theme}&rdquo;
+                  </div>
+                </div>
+              )}
+
               <h2>{featured.title}</h2>
               <p>{featured.excerpt}</p>
 
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginTop: "16px", marginBottom: "20px" }}>
-                <span style={{ fontSize: "12px", background: "#f0f7f3", color: "#0e3d26", padding: "4px 10px", borderRadius: "6px", fontWeight: 700 }}>
-                  🏨 DoubleTree by Hilton Lawrenceburg
+              {/* Registration Categories Quick View */}
+              <div style={{ marginTop: "14px", marginBottom: "16px" }}>
+                <div style={{ fontSize: "12px", fontWeight: 800, color: "#0e3d26", textTransform: "uppercase", marginBottom: "6px" }}>
+                  Registration Categories (USD)
+                </div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                  <span style={{ fontSize: "12px", background: "#f0f7f3", color: "#0e3d26", padding: "6px 12px", borderRadius: "8px", fontWeight: 700, border: "1px solid #c7e5d3" }}>
+                    👶 0–2 Yrs: <strong>Free</strong>
+                  </span>
+                  <span style={{ fontSize: "12px", background: "#f0f7f3", color: "#0e3d26", padding: "6px 12px", borderRadius: "8px", fontWeight: 700, border: "1px solid #c7e5d3" }}>
+                    🧒 3–12 Yrs: <strong>$50.00</strong>
+                  </span>
+                  <span style={{ fontSize: "12px", background: "#f0f7f3", color: "#0e3d26", padding: "6px 12px", borderRadius: "8px", fontWeight: 700, border: "1px solid #c7e5d3" }}>
+                    🧑 13+ Yrs: <strong>$150.00</strong>
+                  </span>
+                  <span style={{ fontSize: "12px", background: "#fef3c7", color: "#854d0e", padding: "6px 12px", borderRadius: "8px", fontWeight: 700 }}>
+                    ✈️ CVG Airport
+                  </span>
+                </div>
+              </div>
+
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "20px" }}>
+                <span style={{ fontSize: "12px", background: "#f8faf8", color: "#475467", padding: "4px 10px", borderRadius: "6px", fontWeight: 600 }}>
+                  🏨 DoubleTree by Hilton, Lawrenceburg, IN
                 </span>
-                <span style={{ fontSize: "12px", background: "#f0f7f3", color: "#0e3d26", padding: "4px 10px", borderRadius: "6px", fontWeight: 700 }}>
-                  🛍️ Vendor Table Spaces ($200)
+                <span style={{ fontSize: "12px", background: "#f8faf8", color: "#475467", padding: "4px 10px", borderRadius: "6px", fontWeight: 600 }}>
+                  ⛳ Golf Outing (Sept 4th)
                 </span>
-                <span style={{ fontSize: "12px", background: "#f0f7f3", color: "#0e3d26", padding: "4px 10px", borderRadius: "6px", fontWeight: 700 }}>
-                  📖 Brochure Ads Open
+                <span style={{ fontSize: "12px", background: "#f8faf8", color: "#475467", padding: "4px 10px", borderRadius: "6px", fontWeight: 600 }}>
+                  📖 Brochure Ads ($100–$1,000)
                 </span>
               </div>
 
               <div className="blog-post-footer">
-                <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", alignItems: "center" }}>
+                  <a
+                    href={featured.registrationUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="blog-read-btn"
+                    style={{
+                      background: "#0e3d26",
+                      color: "#ffffff",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      fontWeight: 800,
+                      padding: "11px 22px",
+                      borderRadius: "10px",
+                      boxShadow: "0 4px 14px rgba(14,61,38,0.25)",
+                    }}
+                  >
+                    <span>Register on Donately</span>
+                    <ExternalLink size={15} />
+                  </a>
                   <button
                     type="button"
-                    className="blog-read-btn"
+                    className="event-secondary-btn"
                     onClick={() => setSelectedEvent(featured)}
+                    style={{ padding: "10px 18px", borderRadius: "10px" }}
                   >
-                    View Full Schedule &amp; Info →
+                    View Guidelines &amp; Schedule →
                   </button>
                   {featured.hotelUrl && (
                     <a
@@ -320,6 +569,7 @@ export default function EventsPage() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="event-secondary-btn"
+                      style={{ padding: "10px 16px", borderRadius: "10px" }}
                     >
                       Book Hotel Room <ExternalLink size={14} />
                     </a>
@@ -352,7 +602,7 @@ export default function EventsPage() {
             <input
               type="text"
               className="blog-search-input"
-              placeholder="Search by event, location, city..."
+              placeholder="Search by event, location, city, golf, brochure..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -371,7 +621,7 @@ export default function EventsPage() {
             <div className="blog-posts-grid">
               {filteredEvents.map((evt) => (
                 <article className="blog-post-card event-catalog-card" key={evt.id} style={{ display: "flex", flexDirection: "column" }}>
-                  <div className="blog-card-media" style={{ position: "relative" }}>
+                  <div className="blog-card-media" style={{ position: "relative", minHeight: "220px", background: "#f8faf8" }}>
                     <Image
                       src={evt.image}
                       alt={evt.title}
@@ -380,11 +630,11 @@ export default function EventsPage() {
                       className="blog-card-img"
                       style={{ objectFit: "contain", objectPosition: "center center", padding: "8px" }}
                     />
-                    <div className="event-date-badge" style={{ position: "absolute", top: 12, left: 12 }}>
+                    <div className="event-date-badge" style={{ position: "absolute", top: 12, left: 12, zIndex: 4 }}>
                       <span className="event-badge-month">{evt.monthShort}</span>
                       <span className="event-badge-day">{evt.day}</span>
                     </div>
-                    <span style={{ position: "absolute", top: 12, right: 12, background: "rgba(14, 61, 38, 0.92)", color: "#ffffff", padding: "4px 10px", borderRadius: "100px", fontSize: "10px", fontWeight: 700, textTransform: "uppercase" }}>
+                    <span style={{ position: "absolute", top: 12, right: 12, background: "rgba(14, 61, 38, 0.92)", color: "#ffffff", padding: "4px 10px", borderRadius: "100px", fontSize: "10px", fontWeight: 700, textTransform: "uppercase", zIndex: 4 }}>
                       {evt.category}
                     </span>
                   </div>
@@ -399,14 +649,14 @@ export default function EventsPage() {
                       </div>
                     </div>
 
-                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, color: "#111827", lineHeight: 1.35, margin: "0 0 8px" }}>
+                    <h3 style={{ fontSize: "1.15rem", fontWeight: 800, color: "#111827", lineHeight: 1.35, margin: "0 0 8px" }}>
                       {evt.title}
                     </h3>
                     <p style={{ flex: 1, color: "#475467", fontSize: "13.5px", lineHeight: 1.6, margin: "0 0 16px" }}>
                       {evt.excerpt}
                     </p>
 
-                    <div className="blog-post-footer" style={{ marginTop: "auto", paddingTop: "14px", borderTop: "1px solid #e1eae3", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div className="blog-post-footer" style={{ marginTop: "auto", paddingTop: "14px", borderTop: "1px solid #e1eae3", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "8px" }}>
                       <button
                         type="button"
                         className="btn-view-details"
@@ -414,6 +664,29 @@ export default function EventsPage() {
                       >
                         Event Details <ArrowRight size={14} />
                       </button>
+                      {evt.registrationUrl && (
+                        <a
+                          href={evt.registrationUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            fontSize: "12px",
+                            fontWeight: 800,
+                            color: "#0e3d26",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "4px",
+                            textDecoration: "none",
+                            background: "#f0f8f3",
+                            padding: "6px 12px",
+                            borderRadius: "6px",
+                            border: "1px solid #a7d6b6",
+                          }}
+                        >
+                          <span>Register</span>
+                          <ExternalLink size={12} />
+                        </a>
+                      )}
                     </div>
                   </div>
                 </article>
@@ -426,7 +699,7 @@ export default function EventsPage() {
       {/* Interactive Event Detail Modal */}
       {selectedEvent && (
         <div className="upua-modal-backdrop" onClick={() => setSelectedEvent(null)}>
-          <div className="upua-modal-box event-modal-box" onClick={(e) => e.stopPropagation()}>
+          <div className="upua-modal-box event-modal-box" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "800px", maxHeight: "90vh", overflowY: "auto" }}>
             <button
               type="button"
               className="upua-modal-close-btn"
@@ -436,15 +709,56 @@ export default function EventsPage() {
               <X size={20} />
             </button>
 
-            <div className="upua-modal-image-wrap">
-              <Image
-                src={selectedEvent.image}
-                alt={selectedEvent.title}
-                fill
-                style={{ objectFit: "contain", objectPosition: "center center", padding: "10px" }}
-                sizes="780px"
-              />
-              <div style={{ position: "absolute", bottom: "16px", left: "20px", background: "rgba(14, 61, 38, 0.95)", color: "#ffffff", padding: "5px 14px", borderRadius: "100px", fontSize: "12px", fontWeight: 800, textTransform: "uppercase" }}>
+            {/* Clickable Modal Image */}
+            <div className="upua-modal-image-wrap" style={{ position: "relative", minHeight: "340px", background: "#f8faf8" }}>
+              {selectedEvent.registrationUrl ? (
+                <a
+                  href={selectedEvent.registrationUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ display: "block", position: "relative", width: "100%", height: "100%", cursor: "pointer" }}
+                  title="Click flyer to register online on Donately"
+                >
+                  <Image
+                    src={selectedEvent.image}
+                    alt={selectedEvent.title}
+                    fill
+                    style={{ objectFit: "contain", objectPosition: "center center", padding: "10px" }}
+                    sizes="780px"
+                  />
+                  <div
+                    style={{
+                      position: "absolute",
+                      bottom: "16px",
+                      right: "16px",
+                      background: "rgba(14, 61, 38, 0.95)",
+                      border: "1.5px solid #d4af37",
+                      color: "#f7d070",
+                      padding: "6px 14px",
+                      borderRadius: "100px",
+                      fontSize: "12px",
+                      fontWeight: 800,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+                      zIndex: 10,
+                    }}
+                  >
+                    <span>👉 Click Flyer to Register on Donately</span>
+                    <ExternalLink size={13} />
+                  </div>
+                </a>
+              ) : (
+                <Image
+                  src={selectedEvent.image}
+                  alt={selectedEvent.title}
+                  fill
+                  style={{ objectFit: "contain", objectPosition: "center center", padding: "10px" }}
+                  sizes="780px"
+                />
+              )}
+              <div style={{ position: "absolute", bottom: "16px", left: "20px", background: "rgba(14, 61, 38, 0.95)", color: "#ffffff", padding: "5px 14px", borderRadius: "100px", fontSize: "12px", fontWeight: 800, textTransform: "uppercase", zIndex: 10 }}>
                 {selectedEvent.category}
               </div>
             </div>
@@ -462,6 +776,25 @@ export default function EventsPage() {
                 </span>
               </div>
 
+              {selectedEvent.theme && (
+                <div
+                  style={{
+                    background: "linear-gradient(90deg, #f0f7f3 0%, #fef9e7 100%)",
+                    borderLeft: "4px solid #d4af37",
+                    padding: "10px 16px",
+                    borderRadius: "8px",
+                    marginBottom: "12px",
+                  }}
+                >
+                  <span style={{ fontSize: "11px", fontWeight: 800, textTransform: "uppercase", color: "#854d0e", letterSpacing: "0.05em" }}>
+                    Official Theme
+                  </span>
+                  <div style={{ fontSize: "15px", fontWeight: 800, color: "#0e3d26", fontFamily: "var(--font-heading)" }}>
+                    &ldquo;{selectedEvent.theme}&rdquo;
+                  </div>
+                </div>
+              )}
+
               <h2 style={{ color: "#0e3d26", fontFamily: "var(--font-heading)", fontSize: "clamp(1.4rem, 2.2vw, 1.85rem)", margin: "4px 0 12px", fontWeight: 800, lineHeight: 1.3 }}>
                 {selectedEvent.title}
               </h2>
@@ -478,8 +811,9 @@ export default function EventsPage() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="event-action-primary-btn"
+                    style={{ background: "#0e3d26", color: "#ffffff", fontWeight: 800 }}
                   >
-                    <span>Register Online</span>
+                    <span>Register Online via Donately</span>
                     <ExternalLink size={14} />
                   </a>
                 )}
@@ -507,10 +841,59 @@ export default function EventsPage() {
                 )}
               </div>
 
+              {/* Pricing / Categories Table if available */}
+              {selectedEvent.pricing && selectedEvent.pricing.length > 0 && (
+                <div style={{ marginBottom: "22px" }}>
+                  <h4 style={{ color: "#0e3d26", fontSize: "15px", fontWeight: 800, marginBottom: "10px", display: "flex", alignItems: "center", gap: "6px" }}>
+                    <Ticket size={16} color="#d4af37" /> Registration Categories &amp; Pricing
+                  </h4>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "10px" }}>
+                    {selectedEvent.pricing.map((p, i) => (
+                      <div key={i} style={{ background: "#f0f8f3", border: "1.5px solid #a7d6b6", borderRadius: "10px", padding: "12px 14px" }}>
+                        <div style={{ fontSize: "12px", color: "#526359", fontWeight: 700 }}>{p.label}</div>
+                        <div style={{ fontSize: "1.3rem", fontWeight: 900, color: "#0e3d26", margin: "4px 0" }}>{p.price}</div>
+                        {p.note && <div style={{ fontSize: "11px", color: "#6b7280" }}>{p.note}</div>}
+                      </div>
+                    ))}
+                  </div>
+                  {selectedEvent.pricingNote && (
+                    <div style={{ fontSize: "12px", color: "#b45309", fontWeight: 700, marginTop: "8px", background: "#fef3c7", padding: "8px 12px", borderRadius: "6px" }}>
+                      ⚠️ {selectedEvent.pricingNote}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Contact Information if available */}
+              {selectedEvent.contactInfo && selectedEvent.contactInfo.length > 0 && (
+                <div style={{ marginBottom: "22px" }}>
+                  <h4 style={{ color: "#0e3d26", fontSize: "15px", fontWeight: 800, marginBottom: "10px", display: "flex", alignItems: "center", gap: "6px" }}>
+                    <Phone size={16} color="#0f6a4b" /> Contacts &amp; Registration Enquiries
+                  </h4>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "10px" }}>
+                    {selectedEvent.contactInfo.map((c, i) => (
+                      <div key={i} style={{ background: "#ffffff", border: "1px solid #d1d5db", borderRadius: "10px", padding: "12px 14px", fontSize: "13px" }}>
+                        <strong style={{ color: "#0e3d26", display: "block", marginBottom: "4px" }}>{c.name}</strong>
+                        {c.phone && (
+                          <div style={{ marginBottom: "2px" }}>
+                            📞 <a href={`tel:${c.phone}`} style={{ color: "#0e3d26", fontWeight: 600, textDecoration: "none" }}>{c.phone}</a>
+                          </div>
+                        )}
+                        {c.email && (
+                          <div>
+                            ✉️ <a href={`mailto:${c.email}`} style={{ color: "#0e3d26", fontWeight: 600, textDecoration: "none" }}>{c.email}</a>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Key Highlights */}
               <div style={{ marginBottom: "22px" }}>
                 <h4 style={{ color: "#0e3d26", fontSize: "15px", fontWeight: 800, marginBottom: "10px", display: "flex", alignItems: "center", gap: "6px" }}>
-                  <Sparkles size={16} color="#d4af37" /> Event Highlights
+                  <Sparkles size={16} color="#d4af37" /> Event Highlights &amp; Guidelines
                 </h4>
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                   {selectedEvent.highlights.map((h, i) => (
@@ -529,8 +912,8 @@ export default function EventsPage() {
                     Program Schedule
                   </h4>
                   <div style={{ display: "flex", flexDirection: "column", gap: "10px", background: "#ffffff", border: "1px solid #e5e7eb", borderRadius: "8px", padding: "14px" }}>
-                    {selectedEvent.schedule.map((slot, i) => (
-                      <div key={i} style={{ display: "grid", gridTemplateColumns: "150px 1fr", gap: "12px", borderBottom: i < selectedEvent.schedule.length - 1 ? "1px solid #f3f4f6" : "none", paddingBottom: i < selectedEvent.schedule.length - 1 ? "8px" : "0" }}>
+                    {selectedEvent.schedule.map((slot, i, arr) => (
+                      <div key={i} style={{ display: "grid", gridTemplateColumns: "150px 1fr", gap: "12px", borderBottom: i < arr.length - 1 ? "1px solid #f3f4f6" : "none", paddingBottom: i < arr.length - 1 ? "8px" : "0" }}>
                         <span style={{ fontSize: "12.5px", fontWeight: 700, color: "#0f6a4b" }}>{slot.time}</span>
                         <span style={{ fontSize: "13.5px", color: "#374151" }}>{slot.activity}</span>
                       </div>
@@ -540,18 +923,20 @@ export default function EventsPage() {
               )}
 
               {/* Venue details */}
-              <div style={{ padding: "12px 16px", background: "#f9fafb", borderRadius: "8px", border: "1px solid #e5e7eb", fontSize: "13px", color: "#4b5563", marginBottom: "20px" }}>
-                <strong>📍 Venue:</strong> {selectedEvent.venueName} &bull; {selectedEvent.address}
+              <div style={{ padding: "14px 18px", background: "#f9fafb", borderRadius: "10px", border: "1px solid #e5e7eb", fontSize: "13px", color: "#4b5563", marginBottom: "20px" }}>
+                <div><strong>📍 Venue:</strong> {selectedEvent.venueName} &bull; {selectedEvent.address}</div>
+                {selectedEvent.airport && <div style={{ marginTop: "4px" }}><strong>✈️ Arrival Airport:</strong> {selectedEvent.airport}</div>}
+                {selectedEvent.host && <div style={{ marginTop: "4px" }}><strong>🏛️ Host:</strong> {selectedEvent.host}</div>}
               </div>
 
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid #e1eae3", paddingTop: "18px", flexWrap: "wrap", gap: "12px" }}>
                 <span style={{ fontSize: "12px", color: "#787878" }}>
-                  Organized by Urhobo Progress Union America National Executive &amp; Host Committees
+                  Executive Committee &amp; National Organizing Committee &bull; Urhobo Progress Union America
                 </span>
                 <button
                   type="button"
                   onClick={() => setSelectedEvent(null)}
-                  style={{ background: "#0e3d26", color: "#ffffff", border: 0, borderRadius: "6px", padding: "10px 22px", fontSize: "13.5px", fontWeight: 700, cursor: "pointer" }}
+                  style={{ background: "#0e3d26", color: "#ffffff", border: 0, borderRadius: "8px", padding: "10px 22px", fontSize: "13.5px", fontWeight: 700, cursor: "pointer" }}
                 >
                   Close Window
                 </button>
