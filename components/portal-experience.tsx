@@ -564,7 +564,7 @@ function AdminDashboard(props: { members: Member[]; transactions: Transaction[];
 
   return (
     <div className="stack-page">
-      <section className="console-hero dash-welcome-banner"><div><h2>Admin Overview & Analytics</h2><p>Real-time insights for member engagement, dues collections, and attendance.</p></div><div className="dash-banner-actions"><button type="button" onClick={() => props.setPanel("members")}><Plus size={16} />Manage Members</button><button type="button" onClick={() => props.setPanel("transactions")}><CreditCard size={16} />Dues Ledger</button></div></section>
+      <section className="console-hero dash-welcome-banner"><div><h2>Admin Overview & Analytics</h2><p>Real-time insights for member engagement, dues collections, and attendance.</p></div><div className="dash-banner-actions"><button type="button" onClick={() => props.setPanel("members")}><Plus size={16} />Manage Members</button><button type="button" onClick={() => props.setPanel("transactions")}><CreditCard size={16} />Dues Ledger</button><button type="button" onClick={() => props.setPanel("store")}><ShoppingBag size={16} />Add Store Item</button></div></section>
       <section className="dash-metrics-grid metrics-grid">
         <Metric title="Total Directory Members" value={totalMembers.toString()} note={`${activeMembers} Active - ${totalMembers - activeMembers} Pending/Alumni`} icon={<Users />} />
         <Metric title="Total Dues Collected" value={`${props.settings.currency}${totalDuesPaid.toLocaleString()}`} note="+18.4% this year" icon={<DollarSign />} trend />

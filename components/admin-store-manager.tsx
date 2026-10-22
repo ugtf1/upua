@@ -15,7 +15,9 @@ import {
   Layers,
   Sparkles,
   ExternalLink,
-  ChevronDown
+  ChevronDown,
+  LayoutGrid,
+  List
 } from "lucide-react";
 import type { StoreItem, StoreCategory } from "@/types";
 
@@ -52,6 +54,7 @@ export default function AdminStoreManager({ items, setItems }: AdminStoreManager
   const [activeItem, setActiveItem] = useState<StoreItem | null>(null);
   const [deleteCandidate, setDeleteCandidate] = useState<StoreItem | null>(null);
   const [notification, setNotification] = useState<{ type: "success" | "error"; message: string } | null>(null);
+  const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
 
   // Form Fields
   const [formTitle, setFormTitle] = useState("");
@@ -301,11 +304,35 @@ export default function AdminStoreManager({ items, setItems }: AdminStoreManager
             </button>
           )}
         </div>
+
+        {/* View Mode Switcher */}
+        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          <button
+            type="button"
+            onClick={() => setViewMode("grid")}
+            className={`store-tab-btn ${viewMode === "grid" ? "active" : ""}`}
+            style={{ padding: "8px 12px", display: "inline-flex", alignItems: "center", gap: "6px", cursor: "pointer" }}
+            title="Card Grid View (with Edit & Delete Icons)"
+          >
+            <LayoutGrid size={16} />
+            <span>Cards</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setViewMode("table")}
+            className={`store-tab-btn ${viewMode === "table" ? "active" : ""}`}
+            style={{ padding: "8px 12px", display: "inline-flex", alignItems: "center", gap: "6px", cursor: "pointer" }}
+            title="Data Table View"
+          >
+            <List size={16} />
+            <span>Table</span>
+          </button>
+        </div>
       </div>
 
-      {/* Catalog Table */}
-      <div className="store-admin-table-card">
-        {filteredItems.length === 0 ? (
+      {/* Catalog Display */}
+      {filteredItems.length === 0 ? (
+        <div className="store-admin-table-card">
           <div className="store-admin-empty">
             <Package size={48} strokeWidth={1.5} color="#9ca3af" />
             <h3>No store items match your criteria</h3>
@@ -315,7 +342,237 @@ export default function AdminStoreManager({ items, setItems }: AdminStoreManager
               <span>Create Item</span>
             </button>
           </div>
-        ) : (
+        </div>
+      ) : viewMode === "grid" ? (
+        /* ========================================================
+            CARDS GRID VIEW WITH EDIT & DELETE ICONS
+        ======================================================== */
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "20px" }}>
+          {filteredItems.map((item) => (
+            <div
+              key={item.id}
+              style={{
+                background: "#ffffff",
+                borderRadius: "18px",
+                overflow: "hidden",
+                border: "1.5px solid #e5e7eb",
+                boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
+                display: "flex",
+                flexDirection: "column",
+                position: "relative",
+                transition: "transform 0.2s, box-shadow 0.2s",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLDivElement).style.transform = "translateY(-3px)";
+                (e.currentTarget as HTMLDivElement).style.boxShadow = "0 10px 28px rgba(0,0,0,0.12)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLDivElement).style.transform = "none";
+                (e.currentTarget as HTMLDivElement).style.boxShadow = "0 2px 12px rgba(0,0,0,0.06)";
+              }}
+            >
+              {/* Card Media Header */}
+              <div
+                style={{
+                  background: "linear-gradient(135deg, #f0f8f3 0%, #e8f0fe 100%)",
+                  padding: "24px 16px",
+                  textAlign: "center",
+                  position: "relative",
+                  minHeight: "155px",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <div style={{ position: "relative", width: "90px", height: "90px", margin: "0 auto 8px" }}>
+                  <Image
+                    src={item.image}
+                    alt={item.title}
+                    fill
+                    style={{ objectFit: "contain" }}
+                    sizes="90px"
+                  />
+                </div>
+
+                {/* Badge if present */}
+                {item.badge && (
+                  <span
+                    style={{
+                      position: "absolute",
+                      top: "12px",
+                      left: "12px",
+                      fontSize: "0.68rem",
+                      fontWeight: 800,
+                      padding: "3px 10px",
+                      borderRadius: "9999px",
+                      background: "#0e3d26",
+                      color: "#ffffff",
+                      letterSpacing: "0.04em",
+                      zIndex: 5,
+                    }}
+                  >
+                    {item.badge}
+                  </span>
+                )}
+
+                {/* Top-Right Edit and Delete Icons */}
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "10px",
+                    right: "10px",
+                    display: "flex",
+                    gap: "6px",
+                    zIndex: 10,
+                  }}
+                >
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openEditModal(item);
+                    }}
+                    title="Edit Item"
+                    style={{
+                      width: "34px",
+                      height: "34px",
+                      borderRadius: "9px",
+                      background: "#ffffff",
+                      border: "1.5px solid #a7d6b6",
+                      color: "#0e3d26",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: "pointer",
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
+                      transition: "all 0.15s ease",
+                    }}
+                  >
+                    <Pencil size={15} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDeleteCandidate(item);
+                    }}
+                    title="Delete Item"
+                    style={{
+                      width: "34px",
+                      height: "34px",
+                      borderRadius: "9px",
+                      background: "#ffffff",
+                      border: "1.5px solid #fecaca",
+                      color: "#dc2626",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: "pointer",
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
+                      transition: "all 0.15s ease",
+                    }}
+                  >
+                    <Trash2 size={15} />
+                  </button>
+                </div>
+
+                {/* Stock Toggle pill */}
+                <button
+                  type="button"
+                  className={`store-stock-toggle ${item.inStock ? "in-stock" : "out-of-stock"}`}
+                  style={{ marginTop: "6px", cursor: "pointer" }}
+                  onClick={() => {
+                    const updated = { ...item, inStock: !item.inStock };
+                    setItems((prev) => prev.map((i) => (i.id === item.id ? updated : i)));
+                    fetch("/api/store/items", {
+                      method: "PUT",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify(updated),
+                    }).catch(() => {});
+                    showNotification("success", `"${item.title}" is now ${updated.inStock ? "In Stock" : "Out of Stock"}.`);
+                  }}
+                >
+                  {item.inStock ? "● In Stock" : "○ Out of Stock"}
+                </button>
+              </div>
+
+              {/* Card Body */}
+              <div style={{ padding: "18px 20px", flex: 1, display: "flex", flexDirection: "column", gap: "8px" }}>
+                <span className="store-table-category-tag" style={{ alignSelf: "flex-start", margin: 0 }}>
+                  {item.category}
+                </span>
+                <strong style={{ fontSize: "1.02rem", color: "#111827", lineHeight: 1.35 }}>
+                  {item.title}
+                </strong>
+                <p style={{ fontSize: "0.82rem", color: "#6b7280", lineHeight: 1.5, margin: 0, flex: 1 }}>
+                  {item.description}
+                </p>
+                {item.options && item.options.length > 0 && (
+                  <div style={{ fontSize: "0.75rem", color: "#4b5563", background: "#f3f4f6", padding: "4px 8px", borderRadius: "6px" }}>
+                    <strong>Options:</strong> {item.options.join(", ")}
+                  </div>
+                )}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "10px" }}>
+                  <strong style={{ fontSize: "1.45rem", color: "#0e3d26", fontWeight: 900 }}>
+                    ${item.price.toFixed(2)}
+                  </strong>
+                </div>
+
+                {/* Bottom Edit & Delete Buttons Row */}
+                <div style={{ display: "flex", gap: "8px", marginTop: "12px", paddingTop: "12px", borderTop: "1.5px solid #f3f4f6" }}>
+                  <button
+                    type="button"
+                    onClick={() => openEditModal(item)}
+                    style={{
+                      flex: 1,
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "6px",
+                      padding: "8px 12px",
+                      background: "#e8f5ed",
+                      color: "#0e3d26",
+                      border: "1.5px solid #a7d6b6",
+                      borderRadius: "9px",
+                      fontSize: "0.82rem",
+                      fontWeight: 700,
+                      cursor: "pointer",
+                    }}
+                  >
+                    <Pencil size={14} /> Edit Item
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDeleteCandidate(item)}
+                    style={{
+                      flex: 1,
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "6px",
+                      padding: "8px 12px",
+                      background: "#fef2f2",
+                      color: "#dc2626",
+                      border: "1.5px solid #fecaca",
+                      borderRadius: "9px",
+                      fontSize: "0.82rem",
+                      fontWeight: 700,
+                      cursor: "pointer",
+                    }}
+                  >
+                    <Trash2 size={14} /> Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        /* ========================================================
+            DATA TABLE VIEW
+        ======================================================== */
+        <div className="store-admin-table-card">
           <div className="store-table-responsive">
             <table className="store-admin-table">
               <thead>
@@ -419,8 +676,8 @@ export default function AdminStoreManager({ items, setItems }: AdminStoreManager
               </tbody>
             </table>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* CREATE / EDIT MODAL */}
       {modalMode && (

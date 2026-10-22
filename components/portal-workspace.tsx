@@ -41,6 +41,7 @@ import {
   Sparkle,
   Award,
   ShoppingCart,
+  ShoppingBag,
   Package,
   Tag,
   Truck,
@@ -51,11 +52,16 @@ import {
   Minus,
   Ticket,
   FileSpreadsheet,
+  Pencil,
+  ExternalLink,
+  Layers,
 } from "lucide-react";
 import DonationModal from "@/components/donation-modal";
 import DuesModal from "@/components/dues-modal";
 import CSVImportModal, { ImportType } from "@/components/csv-import-modal";
 import { ChapterData, PaymentRecord, ExpenseRecord, MeetingRecord, MemberRecord } from "@/lib/data-service";
+import type { StoreItem, StoreCategory } from "@/types";
+import { seedStoreItems } from "@/lib/seed-data";
 
 export type Role = "admin" | "chapter" | "member";
 
@@ -67,6 +73,27 @@ interface AuthUser {
   chapterId?: string | null;
   chapterName?: string;
 }
+
+const STORE_PRESET_GRAPHICS = [
+  { label: "Convention Booth / Table", value: "/store/convention-booth.svg" },
+  { label: "Full-Page Souvenir Brochure", value: "/store/brochure-full-page.svg" },
+  { label: "Half-Page Souvenir Brochure", value: "/store/brochure-half-page.svg" },
+  { label: "Gala Banquet Ticket Pass", value: "/store/gala-ticket.svg" },
+  { label: "Ceremonial Sash & Beads", value: "/store/regalia-sash-coral.svg" },
+  { label: "Heritage Crest Polo Shirt", value: "/store/apparel-polo.svg" },
+  { label: "Urhobo Dictionary Book", value: "/store/book-dictionary.svg" },
+  { label: "Commemorative Lapel Pins", value: "/store/accessory-lapel-pin.svg" },
+  { label: "Ceremonial Desk Banner", value: "/store/accessory-desk-flag.svg" },
+  { label: "UPUAYA Fleece Hoodie", value: "/store/apparel-hoodie.svg" },
+  { label: "Official UPUA Seal / Logo", value: "/upua-logo.png" },
+];
+
+const STORE_CATEGORIES_LIST: StoreCategory[] = [
+  "Convention Packages",
+  "Apparel & Regalia",
+  "Books & Culture",
+  "Accessories",
+];
 
 export default function PortalWorkspace() {
   // Authentication State
@@ -108,6 +135,25 @@ export default function PortalWorkspace() {
     { id: "ORD-003", buyerName: "Dr. Bernard Rerri", buyerEmail: "chicago@upuamerica.org", chapterName: "UPU Chicagoland", items: [{ product: { id: "p5", name: "Group Health Insurance Plan", category: "insurance", price: 350, description: "", stock: 999 }, qty: 3 }], total: 1050, date: "2025-09-15", status: "pending" },
     { id: "ORD-004", buyerName: "Mr. Felix Agbabune", buyerEmail: "socal@upuamerica.org", chapterName: "UPU SoCal", items: [{ product: { id: "p7", name: "UPUA Branded Cap", category: "merchandise", price: 35, description: "", stock: 200 }, qty: 4 }], total: 140, date: "2025-09-18", status: "confirmed" },
   ]);
+
+  // Store Catalog Management State
+  const [storeCatalog, setStoreCatalog] = useState<StoreItem[]>(seedStoreItems);
+  const [isStoreModalOpen, setIsStoreModalOpen] = useState(false);
+  const [storeModalMode, setStoreModalMode] = useState<"create" | "edit">("create");
+  const [activeStoreItem, setActiveStoreItem] = useState<StoreItem | null>(null);
+  const [deleteStoreCandidate, setDeleteStoreCandidate] = useState<StoreItem | null>(null);
+  const [storeToast, setStoreToast] = useState<{ type: "success" | "error"; message: string } | null>(null);
+
+  // Store Item Form State
+  const [itemFormTitle, setItemFormTitle] = useState("");
+  const [itemFormCategory, setItemFormCategory] = useState<StoreCategory>("Convention Packages");
+  const [itemFormPrice, setItemFormPrice] = useState("");
+  const [itemFormImage, setItemFormImage] = useState("/store/convention-booth.svg");
+  const [itemFormBadge, setItemFormBadge] = useState("");
+  const [itemFormDescription, setItemFormDescription] = useState("");
+  const [itemFormFeatures, setItemFormFeatures] = useState("");
+  const [itemFormOptions, setItemFormOptions] = useState("");
+  const [itemFormInStock, setItemFormInStock] = useState(true);
 
   // QuickBooks Reports State
   const [qbConnected, setQbConnected] = useState(false);
@@ -185,6 +231,152 @@ export default function PortalWorkspace() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  // Store Catalog Synchronizer
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("orgflo_store_items");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setStoreCatalog(parsed);
+        }
+      }
+    } catch {}
+
+    fetch("/api/store/items")
+      .then((r) => r.json())
+      .then((res) => {
+        if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
+          setStoreCatalog(res.data);
+          try {
+            localStorage.setItem("orgflo_store_items", JSON.stringify(res.data));
+          } catch {}
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  function showStoreToast(type: "success" | "error", message: string) {
+    setStoreToast({ type, message });
+    setTimeout(() => setStoreToast(null), 4500);
+  }
+
+  function openCreateStoreItemModal() {
+    setItemFormTitle("");
+    setItemFormCategory("Convention Packages");
+    setItemFormPrice("");
+    setItemFormImage("/store/convention-booth.svg");
+    setItemFormBadge("");
+    setItemFormDescription("");
+    setItemFormFeatures("");
+    setItemFormOptions("");
+    setItemFormInStock(true);
+    setActiveStoreItem(null);
+    setStoreModalMode("create");
+    setIsStoreModalOpen(true);
+  }
+
+  function openEditStoreItemModal(item: StoreItem) {
+    setActiveStoreItem(item);
+    setItemFormTitle(item.title);
+    setItemFormCategory(item.category);
+    setItemFormPrice(item.price.toString());
+    setItemFormImage(item.image || "/store/convention-booth.svg");
+    setItemFormBadge(item.badge || "");
+    setItemFormDescription(item.description || "");
+    setItemFormFeatures(item.features ? item.features.join("\n") : "");
+    setItemFormOptions(item.options ? item.options.join(", ") : "");
+    setItemFormInStock(item.inStock !== false);
+    setStoreModalMode("edit");
+    setIsStoreModalOpen(true);
+  }
+
+  async function handleSaveStoreItem(e: React.FormEvent) {
+    e.preventDefault();
+    if (!itemFormTitle.trim()) {
+      showStoreToast("error", "Please enter an item title.");
+      return;
+    }
+    const numPrice = parseFloat(itemFormPrice);
+    if (isNaN(numPrice) || numPrice < 0) {
+      showStoreToast("error", "Please enter a valid price ($0 or greater).");
+      return;
+    }
+
+    const itemData: StoreItem = {
+      id: storeModalMode === "edit" && activeStoreItem ? activeStoreItem.id : `item-${Date.now()}`,
+      title: itemFormTitle.trim(),
+      category: itemFormCategory,
+      price: numPrice,
+      image: itemFormImage || "/store/convention-booth.svg",
+      badge: itemFormBadge.trim() || undefined,
+      description: itemFormDescription.trim(),
+      features: itemFormFeatures
+        ? itemFormFeatures.split("\n").map((s) => s.trim()).filter(Boolean)
+        : [],
+      options: itemFormOptions
+        ? itemFormOptions.split(",").map((s) => s.trim()).filter(Boolean)
+        : undefined,
+      inStock: itemFormInStock,
+    };
+
+    let updatedCatalog: StoreItem[];
+    if (storeModalMode === "edit" && activeStoreItem) {
+      updatedCatalog = storeCatalog.map((i) => (i.id === activeStoreItem.id ? itemData : i));
+    } else {
+      updatedCatalog = [itemData, ...storeCatalog];
+    }
+
+    setStoreCatalog(updatedCatalog);
+    try {
+      localStorage.setItem("orgflo_store_items", JSON.stringify(updatedCatalog));
+    } catch {}
+
+    setIsStoreModalOpen(false);
+
+    try {
+      const res = await fetch("/api/store/items", {
+        method: storeModalMode === "edit" ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(itemData),
+      });
+      const data = await res.json();
+      if (data.success) {
+        showStoreToast("success", storeModalMode === "edit" ? "Store item updated successfully!" : "New store item created successfully!");
+      } else {
+        showStoreToast("error", data.error || "Failed to sync with store server.");
+      }
+    } catch {
+      showStoreToast("success", "Saved locally to browser catalog.");
+    }
+  }
+
+  async function handleDeleteStoreItem() {
+    if (!deleteStoreCandidate) return;
+    const target = deleteStoreCandidate;
+    const updatedCatalog = storeCatalog.filter((i) => i.id !== target.id);
+    setStoreCatalog(updatedCatalog);
+    try {
+      localStorage.setItem("orgflo_store_items", JSON.stringify(updatedCatalog));
+    } catch {}
+
+    setDeleteStoreCandidate(null);
+
+    try {
+      const res = await fetch(`/api/store/items?id=${encodeURIComponent(target.id)}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (data.success) {
+        showStoreToast("success", `"${target.title}" deleted successfully.`);
+      } else {
+        showStoreToast("error", data.error || "Failed to delete item from server.");
+      }
+    } catch {
+      showStoreToast("success", "Item removed from local catalog.");
+    }
+  }
 
   // Set default tab based on user role
   useEffect(() => {
@@ -904,7 +1096,7 @@ ${meeting.transcript}
                   className={`app-sidebar-link ${activeTab === "shop" ? "active" : ""}`}
                   onClick={() => { setActiveTab("shop"); setMobileNavOpen(false); }}
                 >
-                  <ShoppingCart size={18} /> Shop & Orders
+                  <ShoppingBag size={18} /> Store & Items
                 </button>
 
                 <button
@@ -1246,19 +1438,24 @@ ${meeting.transcript}
                   >
                     <Plus size={16} /> Record Payment
                   </button>
-                  {/* {user?.role === "admin" && (
+                  {user.role === "admin" && (
                     <button
                       type="button"
-                      className="btn-orgflo-outline"
-                      onClick={() => {
-                        setCsvImportType("members");
-                        setCsvImportModalOpen(true);
+                      className="btn-orgflo-gold"
+                      onClick={openCreateStoreItemModal}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        fontWeight: 800,
+                        boxShadow: "0 4px 14px rgba(226,170,58,0.35)",
+                        cursor: "pointer",
                       }}
-                      title="Bulk import data from CSV file"
+                      title="Add a new item to the store catalog"
                     >
-                      <FileSpreadsheet size={16} /> Import CSV
+                      <Plus size={16} /> Add Store Item
                     </button>
-                  )} */}
+                  )}
                 </div>
               </div>
 
@@ -1356,6 +1553,52 @@ ${meeting.transcript}
                   </div>
                   <div style={{ marginTop: "12px", display: "flex", alignItems: "center", gap: "6px" }}>
                     <span className="badge badge-active">Treasury Healthy</span>
+                  </div>
+                </div>
+
+                <div
+                  className="orgflo-metric-card"
+                  style={{ cursor: "pointer", transition: "transform 0.15s ease, box-shadow 0.15s ease" }}
+                  onClick={() => setActiveTab("shop")}
+                  title="View Store Items & Merchandise"
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                    <div>
+                      <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.03em" }}>
+                        STORE CATALOG
+                      </span>
+                      <div style={{ fontFamily: "var(--font-heading)", fontSize: "1.9rem", fontWeight: 800, color: "#854d0e", marginTop: "8px" }}>
+                        {storeCatalog.length} Items
+                      </div>
+                    </div>
+                    <div className="orgflo-metric-icon-wrap" style={{ background: "#fef9c3", color: "#854d0e" }}>
+                      <ShoppingBag size={20} />
+                    </div>
+                  </div>
+                  <div style={{ marginTop: "12px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "6px" }}>
+                    <span className="badge badge-active">{storeCatalog.filter((i) => i.inStock).length} In Stock</span>
+                    {user.role === "admin" && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openCreateStoreItemModal();
+                        }}
+                        style={{
+                          background: "none",
+                          border: "none",
+                          color: "#137459",
+                          fontWeight: 700,
+                          fontSize: "0.8rem",
+                          cursor: "pointer",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "2px",
+                        }}
+                      >
+                        <Plus size={13} /> Add Item
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -2620,38 +2863,35 @@ ${meeting.transcript}
           })()}
 
           {/* ============================================================
-              TAB: SHOP
+              TAB: SHOP / STORE CATALOG
           ============================================================ */}
           {activeTab === "shop" && (() => {
-            const shopProducts = [
-              { id: "p1", category: "tickets", name: "2025 UPUA Convention Ticket", price: 250, description: "Full access to the annual UPUA National Convention — gala, workshops & cultural night.", badge: "HOT", stock: 48 },
-              { id: "p2", category: "tickets", name: "UPUA Youth Summit Ticket", price: 75, description: "Urhobo Youth in America leadership summit. Networking, career panels & mentorship.", badge: "", stock: 120 },
-              { id: "p3", category: "wrapper", name: "Urhobo Aso-Oke Wrapper (Blue)", price: 120, description: "Premium hand-woven Urhobo Aso-Oke fabric in royal blue. 6 yards, suitable for men & women.", badge: "BESTSELLER", stock: 34 },
-              { id: "p4", category: "wrapper", name: "Urhobo Aso-Oke Wrapper (Gold)", price: 120, description: "Premium hand-woven Urhobo Aso-Oke fabric in gold. Perfect for UPUA events.", badge: "", stock: 22 },
-              { id: "p4b", category: "wrapper", name: "Urhobo George Fabric (5 yards)", price: 85, description: "Traditional George fabric in Urhobo ceremonial patterns. Rich cotton-blend.", badge: "NEW", stock: 60 },
-              { id: "p5", category: "insurance", name: "UPUA Group Health Plan (Individual)", price: 350, description: "Annual group health insurance for individual members. Covers basic health & emergency.", badge: "", stock: 999 },
-              { id: "p6", category: "insurance", name: "UPUA Group Health Plan (Family)", price: 850, description: "Annual family health plan for up to 4 dependants. Comprehensive UPUA community coverage.", badge: "POPULAR", stock: 999 },
-              { id: "p6b", category: "insurance", name: "Travel Insurance (Annual)", price: 150, description: "International travel insurance for UPUA members visiting Nigeria and West Africa.", badge: "", stock: 999 },
-              { id: "p7", category: "merchandise", name: "UPUA Branded Cap", price: 35, description: "Embroidered UPUA logo cap in forest green. One size fits all.", badge: "", stock: 200 },
-              { id: "p8", category: "merchandise", name: "UPUA Classic T-Shirt", price: 45, description: "100% cotton UPUA T-shirt with Urhobo Pride print. Sizes S–3XL.", badge: "NEW", stock: 150 },
-              { id: "p9", category: "merchandise", name: "Urhobo Beaded Bracelet", price: 25, description: "Handcrafted traditional Urhobo beaded bracelet. Unisex, one-size.", badge: "", stock: 85 },
-              { id: "p10", category: "merchandise", name: "Urhobo History Book (Vol. 2)", price: 55, description: "The definitive illustrated history of the Urhobo people in America. 320 pages.", badge: "", stock: 40 },
-            ];
             const categories = [
               { id: "all", label: "All Items" },
-              { id: "tickets", label: "Convention Tickets" },
-              { id: "wrapper", label: "Wrapper & Fabric" },
-              { id: "insurance", label: "Insurance Plans" },
-              { id: "merchandise", label: "Merchandise" },
+              { id: "Convention Packages", label: "Convention Packages" },
+              { id: "Apparel & Regalia", label: "Apparel & Regalia" },
+              { id: "Books & Culture", label: "Books & Culture" },
+              { id: "Accessories", label: "Accessories" },
             ];
-            const filteredProducts = shopCategoryFilter === "all" ? shopProducts : shopProducts.filter(p => p.category === shopCategoryFilter);
+            const filteredProducts = shopCategoryFilter === "all"
+              ? storeCatalog
+              : storeCatalog.filter(p => p.category === shopCategoryFilter);
             const cartTotal = shopCart.reduce((s, c) => s + c.product.price * c.qty, 0);
             const cartCount = shopCart.reduce((s, c) => s + c.qty, 0);
-            const addToCart = (product: typeof shopProducts[0]) => {
+            const addToCart = (product: StoreItem) => {
+              const shopItem: ShopProduct = {
+                id: product.id,
+                name: product.title,
+                category: product.category,
+                price: product.price,
+                description: product.description,
+                badge: product.badge,
+                stock: product.inStock ? 50 : 0,
+              };
               setShopCart(prev => {
                 const ex = prev.find(c => c.product.id === product.id);
                 if (ex) return prev.map(c => c.product.id === product.id ? { ...c, qty: c.qty + 1 } : c);
-                return [...prev, { product, qty: 1 }];
+                return [...prev, { product: shopItem, qty: 1 }];
               });
             };
             const updateQty = (productId: string, delta: number) =>
@@ -2662,26 +2902,106 @@ ${meeting.transcript}
               BESTSELLER: { background: "#137459", color: "#fff" },
               POPULAR: { background: "#1a73e8", color: "#fff" },
               NEW: { background: "#e37400", color: "#fff" },
+              VIP: { background: "#7c3aed", color: "#fff" },
+              HANDCRAFTED: { background: "#0e3d26", color: "#fff" },
+              EDUCATIONAL: { background: "#0284c7", color: "#fff" },
             };
             return (
               <div>
                 {/* Banner */}
                 <div className="dash-welcome-banner" style={{ marginBottom: "28px" }}>
-                  <div style={{ zIndex: 1 }}>
-                    <div style={{ fontSize: "0.78rem", color: "#a7d6b6", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "6px" }}>UPUA MEMBER STORE</div>
-                    <h2 style={{ fontFamily: "var(--font-heading)", fontSize: "1.7rem", fontWeight: 800, margin: "0 0 6px" }}>Shop & Purchase</h2>
-                    <p style={{ color: "#c3ded0", fontSize: "0.95rem", margin: "0 0 18px" }}>
-                      Convention tickets, traditional wrappers, insurance plans & Urhobo merchandise.
+                  <div style={{ zIndex: 1, width: "100%" }}>
+                    <div style={{ fontSize: "0.78rem", color: "#a7d6b6", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "6px" }}>
+                      UPUA OFFICIAL STORE &amp; MERCHANDISE
+                    </div>
+                    <h2 style={{ fontFamily: "var(--font-heading)", fontSize: "1.8rem", fontWeight: 800, margin: "0 0 6px" }}>
+                      Store Catalog &amp; Purchases
+                    </h2>
+                    <p style={{ color: "#c3ded0", fontSize: "0.95rem", margin: "0 0 18px", maxWidth: "680px" }}>
+                      Convention vendor booths, souvenir brochure advertisements, gala ticket passes, royal coral regalia, and Urhobo cultural literature.
                     </p>
-                    <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                    <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", alignItems: "center" }}>
+                      {user.role === "admin" && (
+                        <button
+                          type="button"
+                          className="btn-orgflo-gold"
+                          onClick={openCreateStoreItemModal}
+                          style={{
+                            padding: "10px 22px",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "8px",
+                            fontWeight: 800,
+                            cursor: "pointer",
+                            boxShadow: "0 4px 14px rgba(226,170,58,0.35)",
+                          }}
+                        >
+                          <Plus size={16} /> Add Store Item
+                        </button>
+                      )}
+                      <a
+                        href="/store"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "6px",
+                          padding: "10px 18px",
+                          background: "rgba(255, 255, 255, 0.15)",
+                          color: "#ffffff",
+                          borderRadius: "12px",
+                          fontSize: "0.88rem",
+                          fontWeight: 700,
+                          textDecoration: "none",
+                          border: "1px solid rgba(255, 255, 255, 0.3)",
+                        }}
+                      >
+                        <ExternalLink size={16} /> Open Public Storefront
+                      </a>
                       {cartCount > 0 && (
-                        <button className="btn-orgflo-gold" onClick={() => setShopCartOpen(true)} style={{ padding: "10px 20px" }}>
+                        <button
+                          className="btn-orgflo-white"
+                          onClick={() => setShopCartOpen(true)}
+                          style={{ padding: "10px 20px", display: "inline-flex", alignItems: "center", gap: "8px" }}
+                        >
                           <ShoppingCart size={16} /> Cart ({cartCount}) · ${cartTotal.toFixed(2)}
                         </button>
                       )}
                     </div>
                   </div>
                 </div>
+
+                {/* Toast Notification */}
+                {storeToast && (
+                  <div
+                    style={{
+                      marginBottom: "24px",
+                      padding: "14px 20px",
+                      borderRadius: "12px",
+                      background: storeToast.type === "success" ? "#e6f4ea" : "#fce8e6",
+                      color: storeToast.type === "success" ? "#137333" : "#c5221f",
+                      border: `1.5px solid ${storeToast.type === "success" ? "#34a853" : "#ea4335"}`,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      fontWeight: 700,
+                      fontSize: "0.9rem",
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      {storeToast.type === "success" ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
+                      <span>{storeToast.message}</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setStoreToast(null)}
+                      style={{ background: "transparent", border: "none", cursor: "pointer", color: "inherit" }}
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                )}
 
                 {/* Admin Orders Table */}
                 {user.role === "admin" && (
@@ -2755,49 +3075,217 @@ ${meeting.transcript}
                 )}
 
                 {/* Category Filter */}
-                <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginBottom: "24px" }}>
+                <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginBottom: "24px", alignItems: "center" }}>
                   {categories.map(cat => (
-                    <button key={cat.id} onClick={() => setShopCategoryFilter(cat.id)}
-                      style={{ padding: "8px 18px", borderRadius: "9999px", border: `2px solid ${shopCategoryFilter === cat.id ? "#0e3d26" : "#e0e5e2"}`, background: shopCategoryFilter === cat.id ? "#0e3d26" : "#ffffff", color: shopCategoryFilter === cat.id ? "#ffffff" : "#3c4043", fontWeight: 700, fontSize: "0.85rem", cursor: "pointer", transition: "all 0.18s ease" }}>
+                    <button
+                      key={cat.id}
+                      onClick={() => setShopCategoryFilter(cat.id)}
+                      style={{
+                        padding: "8px 18px",
+                        borderRadius: "9999px",
+                        border: `2px solid ${shopCategoryFilter === cat.id ? "#0e3d26" : "#e0e5e2"}`,
+                        background: shopCategoryFilter === cat.id ? "#0e3d26" : "#ffffff",
+                        color: shopCategoryFilter === cat.id ? "#ffffff" : "#3c4043",
+                        fontWeight: 700,
+                        fontSize: "0.85rem",
+                        cursor: "pointer",
+                        transition: "all 0.18s ease"
+                      }}
+                    >
                       {cat.label}
                     </button>
                   ))}
+                  {user.role === "admin" && (
+                    <button
+                      type="button"
+                      onClick={openCreateStoreItemModal}
+                      style={{
+                        marginLeft: "auto",
+                        padding: "8px 16px",
+                        borderRadius: "9999px",
+                        background: "#f0f8f3",
+                        border: "1.5px solid #137459",
+                        color: "#0e3d26",
+                        fontWeight: 800,
+                        fontSize: "0.83rem",
+                        cursor: "pointer",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "6px"
+                      }}
+                    >
+                      <Plus size={14} /> Add Item
+                    </button>
+                  )}
                 </div>
 
                 {/* Product Grid */}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "20px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "22px" }}>
                   {filteredProducts.map(product => {
                     const inCart = shopCart.find(c => c.product.id === product.id);
                     return (
-                      <div key={product.id}
-                        style={{ background: "#fff", borderRadius: "18px", overflow: "hidden", boxShadow: "0 2px 14px rgba(0,0,0,0.07)", border: "1.5px solid #f0f2f1", display: "flex", flexDirection: "column", transition: "transform 0.2s, box-shadow 0.2s" }}
-                        onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = "translateY(-3px)"; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 10px 32px rgba(0,0,0,0.12)"; }}
-                        onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = "none"; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 2px 14px rgba(0,0,0,0.07)"; }}
+                      <div
+                        key={product.id}
+                        style={{
+                          background: "#fff",
+                          borderRadius: "18px",
+                          overflow: "hidden",
+                          boxShadow: "0 2px 14px rgba(0,0,0,0.07)",
+                          border: "1.5px solid #f0f2f1",
+                          display: "flex",
+                          flexDirection: "column",
+                          position: "relative",
+                          transition: "transform 0.2s, box-shadow 0.2s"
+                        }}
+                        onMouseEnter={e => {
+                          (e.currentTarget as HTMLDivElement).style.transform = "translateY(-3px)";
+                          (e.currentTarget as HTMLDivElement).style.boxShadow = "0 10px 32px rgba(0,0,0,0.12)";
+                        }}
+                        onMouseLeave={e => {
+                          (e.currentTarget as HTMLDivElement).style.transform = "none";
+                          (e.currentTarget as HTMLDivElement).style.boxShadow = "0 2px 14px rgba(0,0,0,0.07)";
+                        }}
                       >
-                        <div style={{ background: "linear-gradient(135deg, #f0f8f3 0%, #e8f0fe 100%)", padding: "26px 20px", textAlign: "center", position: "relative" }}>
-                          <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: "#ffffff", boxShadow: "0 2px 8px rgba(0,0,0,0.08)", margin: "0 auto 10px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            {product.category === "tickets" && <Ticket size={24} color="#0e3d26" />}
-                            {product.category === "wrapper" && <Tag size={24} color="#0e3d26" />}
-                            {product.category === "insurance" && <Shield size={24} color="#0e3d26" />}
-                            {product.category === "merchandise" && <Package size={24} color="#0e3d26" />}
+                        {/* Card Image Area */}
+                        <div
+                          style={{
+                            background: "linear-gradient(135deg, #f0f8f3 0%, #e8f0fe 100%)",
+                            padding: "22px 16px",
+                            textAlign: "center",
+                            position: "relative",
+                            minHeight: "155px",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center"
+                          }}
+                        >
+                          <div style={{ position: "relative", width: "96px", height: "96px", margin: "0 auto 8px" }}>
+                            {product.image ? (
+                              <Image
+                                src={product.image}
+                                alt={product.title}
+                                fill
+                                style={{ objectFit: "contain" }}
+                                sizes="96px"
+                              />
+                            ) : (
+                              <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: "#ffffff", boxShadow: "0 2px 8px rgba(0,0,0,0.08)", margin: "24px auto 0", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                <Package size={24} color="#0e3d26" />
+                              </div>
+                            )}
                           </div>
+
+                          {/* Badge */}
                           {product.badge && (
-                            <span style={{ ...badgeColor[product.badge], position: "absolute", top: "12px", right: "12px", fontSize: "0.68rem", fontWeight: 900, padding: "3px 10px", borderRadius: "9999px" }}>
+                            <span
+                              style={{
+                                ...(badgeColor[product.badge.toUpperCase()] || { background: "#0e3d26", color: "#fff" }),
+                                position: "absolute",
+                                top: "12px",
+                                left: "12px",
+                                fontSize: "0.68rem",
+                                fontWeight: 900,
+                                padding: "3px 10px",
+                                borderRadius: "9999px",
+                                letterSpacing: "0.04em",
+                                zIndex: 5
+                              }}
+                            >
                               {product.badge}
                             </span>
                           )}
-                          <div style={{ fontSize: "0.74rem", color: "#5f6368", fontWeight: 600 }}>
-                            {product.stock < 50 ? `Limited: ${product.stock} available` : "In stock"}
+
+                          {/* ========================================================
+                              ADMIN ACTION ICONS (EDIT & DELETE) OVERLAY ON CARD
+                          ======================================================== */}
+                          {user.role === "admin" && (
+                            <div
+                              style={{
+                                position: "absolute",
+                                top: "10px",
+                                right: "10px",
+                                display: "flex",
+                                gap: "6px",
+                                zIndex: 10
+                              }}
+                            >
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openEditStoreItemModal(product);
+                                }}
+                                title="Edit Store Item"
+                                style={{
+                                  width: "34px",
+                                  height: "34px",
+                                  borderRadius: "9px",
+                                  background: "#ffffff",
+                                  border: "1.5px solid #a7d6b6",
+                                  color: "#0e3d26",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  cursor: "pointer",
+                                  boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
+                                  transition: "all 0.15s ease",
+                                }}
+                              >
+                                <Pencil size={15} />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setDeleteStoreCandidate(product);
+                                }}
+                                title="Delete Store Item"
+                                style={{
+                                  width: "34px",
+                                  height: "34px",
+                                  borderRadius: "9px",
+                                  background: "#ffffff",
+                                  border: "1.5px solid #fecaca",
+                                  color: "#dc2626",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  cursor: "pointer",
+                                  boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
+                                  transition: "all 0.15s ease",
+                                }}
+                              >
+                                <Trash2 size={15} />
+                              </button>
+                            </div>
+                          )}
+
+                          <div style={{ fontSize: "0.72rem", color: product.inStock ? "#137333" : "#c5221f", fontWeight: 700 }}>
+                            {product.inStock ? "● In Stock" : "○ Out of Stock"}
                           </div>
                         </div>
+
+                        {/* Card Content */}
                         <div style={{ padding: "18px 20px", flex: 1, display: "flex", flexDirection: "column", gap: "8px" }}>
                           <div style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.07em", color: "#80868b" }}>
-                            {categories.find(c => c.id === product.category)?.label}
+                            {product.category}
                           </div>
-                          <div style={{ fontWeight: 800, fontSize: "0.98rem", color: "#14211a", lineHeight: 1.3, fontFamily: "var(--font-heading)" }}>{product.name}</div>
-                          <div style={{ fontSize: "0.82rem", color: "#5f6368", lineHeight: 1.5, flex: 1 }}>{product.description}</div>
+                          <div style={{ fontWeight: 800, fontSize: "1.02rem", color: "#14211a", lineHeight: 1.3, fontFamily: "var(--font-heading)" }}>
+                            {product.title}
+                          </div>
+                          <div style={{ fontSize: "0.82rem", color: "#5f6368", lineHeight: 1.5, flex: 1 }}>
+                            {product.description}
+                          </div>
+                          {product.options && product.options.length > 0 && (
+                            <div style={{ fontSize: "0.75rem", color: "#6b7280", background: "#f9fafb", padding: "4px 8px", borderRadius: "6px" }}>
+                              <strong>Options:</strong> {product.options.join(", ")}
+                            </div>
+                          )}
                           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "10px" }}>
-                            <div style={{ fontSize: "1.5rem", fontWeight: 900, color: "#0e3d26", fontFamily: "var(--font-heading)" }}>${product.price}</div>
+                            <div style={{ fontSize: "1.5rem", fontWeight: 900, color: "#0e3d26", fontFamily: "var(--font-heading)" }}>
+                              ${product.price.toFixed(2)}
+                            </div>
                             {inCart ? (
                               <div style={{ display: "flex", alignItems: "center", gap: "8px", background: "#f0f8f3", borderRadius: "10px", padding: "6px 10px" }}>
                                 <button onClick={() => updateQty(product.id, -1)} style={{ background: "#e0f0e8", border: "none", borderRadius: "6px", width: "28px", height: "28px", cursor: "pointer", color: "#0e3d26", fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -2809,12 +3297,76 @@ ${meeting.transcript}
                                 </button>
                               </div>
                             ) : (
-                              <button onClick={() => addToCart(product)}
-                                style={{ background: "#0e3d26", color: "#fff", border: "none", borderRadius: "10px", padding: "9px 16px", fontWeight: 700, fontSize: "0.85rem", cursor: "pointer", display: "flex", alignItems: "center", gap: "6px" }}>
+                              <button
+                                onClick={() => addToCart(product)}
+                                style={{
+                                  background: "#0e3d26",
+                                  color: "#fff",
+                                  border: "none",
+                                  borderRadius: "10px",
+                                  padding: "9px 16px",
+                                  fontWeight: 700,
+                                  fontSize: "0.85rem",
+                                  cursor: "pointer",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "6px"
+                                }}
+                              >
                                 <ShoppingCart size={14} /> Add to Cart
                               </button>
                             )}
                           </div>
+
+                          {/* ========================================================
+                              ADMIN BOTTOM ACTION BUTTONS
+                          ======================================================== */}
+                          {user.role === "admin" && (
+                            <div style={{ display: "flex", gap: "8px", marginTop: "12px", paddingTop: "12px", borderTop: "1.5px solid #f0f2f1" }}>
+                              <button
+                                type="button"
+                                onClick={() => openEditStoreItemModal(product)}
+                                style={{
+                                  flex: 1,
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  gap: "6px",
+                                  padding: "8px 12px",
+                                  background: "#e8f5ed",
+                                  color: "#0e3d26",
+                                  border: "1.5px solid #a7d6b6",
+                                  borderRadius: "9px",
+                                  fontSize: "0.82rem",
+                                  fontWeight: 700,
+                                  cursor: "pointer",
+                                }}
+                              >
+                                <Pencil size={14} /> Edit Item
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setDeleteStoreCandidate(product)}
+                                style={{
+                                  flex: 1,
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  gap: "6px",
+                                  padding: "8px 12px",
+                                  background: "#fef2f2",
+                                  color: "#dc2626",
+                                  border: "1.5px solid #fecaca",
+                                  borderRadius: "9px",
+                                  fontSize: "0.82rem",
+                                  fontWeight: 700,
+                                  cursor: "pointer",
+                                }}
+                              >
+                                <Trash2 size={14} /> Delete
+                              </button>
+                            </div>
+                          )}
                         </div>
                       </div>
                     );
@@ -3569,6 +4121,346 @@ ${meeting.transcript}
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================
+          ADMIN MODAL: ADD / EDIT STORE ITEM
+      ======================================================== */}
+      {isStoreModalOpen && (
+        <div className="app-sidebar-backdrop" onClick={() => setIsStoreModalOpen(false)}>
+          <div
+            className="orgflo-card"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              maxWidth: "680px",
+              width: "92%",
+              margin: "40px auto",
+              maxHeight: "90vh",
+              overflowY: "auto",
+              boxShadow: "0 25px 60px rgba(0,0,0,0.35)",
+              borderRadius: "20px",
+              padding: 0,
+            }}
+          >
+            {/* Modal Header Banner */}
+            <div
+              style={{
+                background: "linear-gradient(135deg, #0e3d26 0%, #165637 100%)",
+                color: "#ffffff",
+                padding: "24px 28px",
+                position: "relative",
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span className="badge badge-active" style={{ background: "rgba(255,255,255,0.2)", color: "#ffffff", fontSize: "0.74rem" }}>
+                  <Sparkles size={12} style={{ display: "inline", verticalAlign: "middle", marginRight: "4px" }} />
+                  UPUA STORE CATALOG ADMIN
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setIsStoreModalOpen(false)}
+                  style={{ background: "transparent", border: "none", color: "#ffffff", cursor: "pointer", padding: "4px" }}
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              <h2 style={{ fontFamily: "var(--font-heading)", fontSize: "1.45rem", margin: "10px 0 4px", fontWeight: 800 }}>
+                {storeModalMode === "edit" ? "Edit Store Item" : "Add New Store Item"}
+              </h2>
+              <p style={{ fontSize: "0.86rem", color: "#c3ded0", margin: 0 }}>
+                This item will be saved to the database, synced across the admin portal, and published to the public storefront at /store.
+              </p>
+            </div>
+
+            {/* Modal Body Form */}
+            <form onSubmit={handleSaveStoreItem} style={{ padding: "26px 28px", display: "flex", flexDirection: "column", gap: "16px" }}>
+              <div>
+                <label style={{ display: "block", fontSize: "0.84rem", fontWeight: 700, color: "#0e3d26", marginBottom: "6px" }}>
+                  Item Title *
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Official UPUA Ceremonial Sash & Beads"
+                  value={itemFormTitle}
+                  onChange={(e) => setItemFormTitle(e.target.value)}
+                  className="donation-input"
+                  style={{ width: "100%", padding: "10px 14px" }}
+                />
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.84rem", fontWeight: 700, color: "#0e3d26", marginBottom: "6px" }}>
+                    Category *
+                  </label>
+                  <select
+                    value={itemFormCategory}
+                    onChange={(e) => setItemFormCategory(e.target.value as StoreCategory)}
+                    className="donation-input"
+                    style={{ width: "100%", padding: "10px 14px" }}
+                  >
+                    {STORE_CATEGORIES_LIST.map((cat) => (
+                      <option key={cat} value={cat}>{cat}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label style={{ display: "block", fontSize: "0.84rem", fontWeight: 700, color: "#0e3d26", marginBottom: "6px" }}>
+                    Price (USD $) *
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    required
+                    placeholder="e.g. 65.00"
+                    value={itemFormPrice}
+                    onChange={(e) => setItemFormPrice(e.target.value)}
+                    className="donation-input"
+                    style={{ width: "100%", padding: "10px 14px" }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.84rem", fontWeight: 700, color: "#0e3d26", marginBottom: "6px" }}>
+                    Promotional Badge (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. BESTSELLER, HOT, NEW, VIP"
+                    value={itemFormBadge}
+                    onChange={(e) => setItemFormBadge(e.target.value)}
+                    className="donation-input"
+                    style={{ width: "100%", padding: "10px 14px" }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: "block", fontSize: "0.84rem", fontWeight: 700, color: "#0e3d26", marginBottom: "6px" }}>
+                    Inventory Status
+                  </label>
+                  <label style={{ display: "flex", alignItems: "center", gap: "10px", marginTop: "10px", cursor: "pointer", fontWeight: 600, fontSize: "0.88rem", color: itemFormInStock ? "#137333" : "#c5221f" }}>
+                    <input
+                      type="checkbox"
+                      checked={itemFormInStock}
+                      onChange={(e) => setItemFormInStock(e.target.checked)}
+                      style={{ width: "18px", height: "18px", accentColor: "#0e3d26", cursor: "pointer" }}
+                    />
+                    <span>{itemFormInStock ? "In Stock (Available for Purchase)" : "Out of Stock"}</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Graphic / Image Selector */}
+              <div>
+                <label style={{ display: "block", fontSize: "0.84rem", fontWeight: 700, color: "#0e3d26", marginBottom: "6px" }}>
+                  Product Artwork / Preset Graphic
+                </label>
+                <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+                  <div style={{ flex: 1 }}>
+                    <select
+                      value={itemFormImage}
+                      onChange={(e) => setItemFormImage(e.target.value)}
+                      className="donation-input"
+                      style={{ width: "100%", padding: "10px 14px" }}
+                    >
+                      {STORE_PRESET_GRAPHICS.map((p) => (
+                        <option key={p.value} value={p.value}>{p.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                  {itemFormImage && (
+                    <div style={{ width: "52px", height: "52px", borderRadius: "10px", background: "#f0f8f3", border: "1.5px solid #a7d6b6", padding: "4px", position: "relative", flexShrink: 0 }}>
+                      <Image src={itemFormImage} alt="Preview" fill style={{ objectFit: "contain" }} sizes="52px" />
+                    </div>
+                  )}
+                </div>
+                <div style={{ marginTop: "6px" }}>
+                  <input
+                    type="text"
+                    placeholder="Or enter custom image URL (/store/... or https://...)"
+                    value={itemFormImage}
+                    onChange={(e) => setItemFormImage(e.target.value)}
+                    className="donation-input"
+                    style={{ width: "100%", padding: "8px 12px", fontSize: "0.82rem" }}
+                  />
+                </div>
+              </div>
+
+              {/* Description */}
+              <div>
+                <label style={{ display: "block", fontSize: "0.84rem", fontWeight: 700, color: "#0e3d26", marginBottom: "6px" }}>
+                  Item Description *
+                </label>
+                <textarea
+                  required
+                  rows={3}
+                  placeholder="Provide a clear, engaging description of this store package or item..."
+                  value={itemFormDescription}
+                  onChange={(e) => setItemFormDescription(e.target.value)}
+                  className="donation-input"
+                  style={{ width: "100%", padding: "10px 14px", resize: "vertical" }}
+                />
+              </div>
+
+              {/* Features / Highlights */}
+              <div>
+                <label style={{ display: "block", fontSize: "0.84rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
+                  Key Features / Inclusions (One per line)
+                </label>
+                <textarea
+                  rows={3}
+                  placeholder="Official certificate&#10;Complimentary banquet passes&#10;Premium silk gift wrap"
+                  value={itemFormFeatures}
+                  onChange={(e) => setItemFormFeatures(e.target.value)}
+                  className="donation-input"
+                  style={{ width: "100%", padding: "10px 14px", resize: "vertical", fontSize: "0.84rem" }}
+                />
+              </div>
+
+              {/* Options / Variations */}
+              <div>
+                <label style={{ display: "block", fontSize: "0.84rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
+                  Variations / Options (Comma-separated)
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Small, Medium, Large, XL, 2XL"
+                  value={itemFormOptions}
+                  onChange={(e) => setItemFormOptions(e.target.value)}
+                  className="donation-input"
+                  style={{ width: "100%", padding: "10px 14px", fontSize: "0.84rem" }}
+                />
+              </div>
+
+              {/* Form Action Buttons */}
+              <div style={{ display: "flex", gap: "10px", marginTop: "12px", paddingTop: "14px", borderTop: "1px solid #f0f2f1" }}>
+                <button
+                  type="submit"
+                  className="btn-orgflo-white"
+                  style={{
+                    background: "#0e3d26",
+                    color: "#ffffff",
+                    flex: 1,
+                    justifyContent: "center",
+                    padding: "12px 20px",
+                    fontWeight: 800,
+                    fontSize: "0.95rem",
+                    boxShadow: "0 4px 14px rgba(14,61,38,0.25)",
+                  }}
+                >
+                  <CheckCircle2 size={16} />
+                  {storeModalMode === "edit" ? "Save Changes" : "Create Store Item"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsStoreModalOpen(false)}
+                  style={{
+                    background: "#f0f2f1",
+                    border: 0,
+                    padding: "12px 22px",
+                    borderRadius: "10px",
+                    cursor: "pointer",
+                    fontWeight: 700,
+                    color: "#526359",
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================
+          ADMIN MODAL: DELETE STORE ITEM CONFIRMATION
+      ======================================================== */}
+      {deleteStoreCandidate && (
+        <div className="app-sidebar-backdrop" onClick={() => setDeleteStoreCandidate(null)}>
+          <div
+            className="orgflo-card"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              maxWidth: "480px",
+              width: "90%",
+              margin: "120px auto",
+              padding: "28px",
+              borderRadius: "18px",
+              boxShadow: "0 20px 50px rgba(0,0,0,0.3)",
+              textAlign: "center",
+            }}
+          >
+            <div
+              style={{
+                width: "56px",
+                height: "56px",
+                borderRadius: "50%",
+                background: "#fee2e2",
+                color: "#dc2626",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "0 auto 16px",
+              }}
+            >
+              <Trash2 size={26} />
+            </div>
+
+            <h3 style={{ fontFamily: "var(--font-heading)", fontSize: "1.3rem", fontWeight: 800, color: "#14211a", margin: "0 0 8px" }}>
+              Delete Store Item?
+            </h3>
+            <p style={{ color: "#5f6368", fontSize: "0.92rem", lineHeight: 1.5, margin: "0 0 20px" }}>
+              Are you sure you want to permanently delete <strong>&ldquo;{deleteStoreCandidate.title}&rdquo;</strong> (${deleteStoreCandidate.price.toFixed(2)})?
+              This will remove it from the admin catalog and the public storefront.
+            </p>
+
+            <div style={{ display: "flex", gap: "10px" }}>
+              <button
+                type="button"
+                onClick={handleDeleteStoreItem}
+                style={{
+                  flex: 1,
+                  background: "#dc2626",
+                  color: "#ffffff",
+                  border: "none",
+                  borderRadius: "10px",
+                  padding: "12px 18px",
+                  fontWeight: 800,
+                  fontSize: "0.9rem",
+                  cursor: "pointer",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "6px",
+                }}
+              >
+                <Trash2 size={16} /> Yes, Delete Item
+              </button>
+              <button
+                type="button"
+                onClick={() => setDeleteStoreCandidate(null)}
+                style={{
+                  background: "#f0f2f1",
+                  border: "none",
+                  borderRadius: "10px",
+                  padding: "12px 20px",
+                  fontWeight: 700,
+                  fontSize: "0.9rem",
+                  cursor: "pointer",
+                  color: "#374151",
+                }}
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}
