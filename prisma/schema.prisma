@@ -98,3 +98,18 @@ model Meeting {
   actionItems  String   // JSON string of { task, owner, deadline }[]
   createdAt    DateTime @default(now())
 }
+
+model StoreItem {
+  id          String   @id
+  title       String
+  category    String   // "Convention Packages" | "Apparel & Regalia" | "Books & Culture" | "Accessories"
+  price       Float
+  image       String
+  badge       String?
+  description String
+  features    String   // JSON string of string[]
+  options     String?  // JSON string of string[] | null
+  inStock     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

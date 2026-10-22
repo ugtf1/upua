@@ -1,16 +1,84 @@
 import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 import { seedStoreItems } from "@/lib/seed-data";
 import type { StoreItem } from "@/types";
 
-// In-memory persistent cache across requests for the running server instance
-let storeItemsMemory: StoreItem[] = [...seedStoreItems];
+// ─── Helpers to convert between DB row ↔ app type ─────────────────────────────
+
+function dbToStoreItem(row: {
+  id: string;
+  title: string;
+  category: string;
+  price: number;
+  image: string;
+  badge: string | null;
+  description: string;
+  features: string;
+  options: string | null;
+  inStock: boolean;
+}): StoreItem {
+  return {
+    id: row.id,
+    title: row.title,
+    category: row.category as StoreItem["category"],
+    price: row.price,
+    image: row.image,
+    badge: row.badge ?? undefined,
+    description: row.description,
+    features: safeParseJson<string[]>(row.features, []),
+    options: row.options ? safeParseJson<string[] | undefined>(row.options, undefined) : undefined,
+    inStock: row.inStock,
+  };
+}
+
+function safeParseJson<T>(val: string, fallback: T): T {
+  try {
+    return JSON.parse(val) as T;
+  } catch {
+    return fallback;
+  }
+}
+
+// ─── Seed DB with default items on first use ──────────────────────────────────
+
+async function ensureSeeded() {
+  if (!prisma) return false;
+  const count = await prisma.storeItem.count();
+  if (count === 0) {
+    await prisma.storeItem.createMany({
+      data: seedStoreItems.map((item) => ({
+        id: item.id,
+        title: item.title,
+        category: item.category,
+        price: item.price,
+        image: item.image,
+        badge: item.badge ?? null,
+        description: item.description,
+        features: JSON.stringify(item.features ?? []),
+        options: item.options ? JSON.stringify(item.options) : null,
+        inStock: item.inStock,
+      })),
+      skipDuplicates: true,
+    });
+  }
+  return true;
+}
+
+// ─── GET /api/store/items ──────────────────────────────────────────────────────
 
 export async function GET() {
-  return NextResponse.json({
-    success: true,
-    data: storeItemsMemory,
-  });
+  try {
+    if (!prisma) throw new Error("No DB");
+    await ensureSeeded();
+    const rows = await prisma.storeItem.findMany({ orderBy: { createdAt: "desc" } });
+    return NextResponse.json({ success: true, data: rows.map(dbToStoreItem) });
+  } catch {
+    // Fallback: return seed data so the store always renders
+    return NextResponse.json({ success: true, data: seedStoreItems });
+  }
 }
+
+// ─── POST /api/store/items ─────────────────────────────────────────────────────
 
 export async function POST(req: Request) {
   try {
@@ -23,40 +91,54 @@ export async function POST(req: Request) {
       );
     }
 
-    const newItem: StoreItem = {
-      id: body.id || `item-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`,
-      title: body.title.trim(),
-      category: body.category,
-      price: Number(body.price),
-      image: body.image || "/store/convention-booth.svg",
-      badge: body.badge?.trim() || undefined,
-      description: body.description?.trim() || "",
-      features: Array.isArray(body.features)
-        ? body.features.filter(Boolean)
-        : typeof body.features === "string"
-        ? body.features.split("\n").map((f: string) => f.trim()).filter(Boolean)
-        : [],
-      options: Array.isArray(body.options)
-        ? body.options.filter(Boolean)
-        : typeof body.options === "string" && body.options.trim()
-        ? body.options.split(",").map((o: string) => o.trim()).filter(Boolean)
-        : undefined,
-      inStock: body.inStock !== false,
-    };
+    const features: string[] = Array.isArray(body.features)
+      ? body.features.filter(Boolean)
+      : typeof body.features === "string"
+      ? body.features.split("\n").map((f: string) => f.trim()).filter(Boolean)
+      : [];
 
-    storeItemsMemory.unshift(newItem);
+    const options: string[] | undefined = Array.isArray(body.options)
+      ? body.options.filter(Boolean)
+      : typeof body.options === "string" && body.options.trim()
+      ? body.options.split(",").map((o: string) => o.trim()).filter(Boolean)
+      : undefined;
+
+    const id =
+      body.id || `item-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
+
+    if (!prisma) throw new Error("No DB");
+
+    const row = await prisma.storeItem.create({
+      data: {
+        id,
+        title: body.title.trim(),
+        category: body.category,
+        price: Number(body.price),
+        image: body.image || "/store/convention-booth.svg",
+        badge: body.badge?.trim() || null,
+        description: body.description?.trim() || "",
+        features: JSON.stringify(features),
+        options: options ? JSON.stringify(options) : null,
+        inStock: body.inStock !== false,
+      },
+    });
+
+    const newItem = dbToStoreItem(row);
+    const allRows = await prisma.storeItem.findMany({ orderBy: { createdAt: "desc" } });
 
     return NextResponse.json({
       success: true,
       message: "Store item created successfully.",
       data: newItem,
-      items: storeItemsMemory,
+      items: allRows.map(dbToStoreItem),
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Failed to create item.";
     return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }
+
+// ─── PUT /api/store/items ──────────────────────────────────────────────────────
 
 export async function PUT(req: Request) {
   try {
@@ -69,48 +151,71 @@ export async function PUT(req: Request) {
       );
     }
 
-    const index = storeItemsMemory.findIndex((item) => item.id === body.id);
-    if (index === -1) {
+    if (!prisma) throw new Error("No DB");
+
+    const existing = await prisma.storeItem.findUnique({ where: { id: body.id } });
+    if (!existing) {
       return NextResponse.json(
         { success: false, error: "Store item not found." },
         { status: 404 }
       );
     }
 
-    const updatedItem: StoreItem = {
-      ...storeItemsMemory[index],
-      title: body.title !== undefined ? body.title.trim() : storeItemsMemory[index].title,
-      category: body.category !== undefined ? body.category : storeItemsMemory[index].category,
-      price: body.price !== undefined ? Number(body.price) : storeItemsMemory[index].price,
-      image: body.image !== undefined ? body.image : storeItemsMemory[index].image,
-      badge: body.badge !== undefined ? (body.badge.trim() || undefined) : storeItemsMemory[index].badge,
-      description: body.description !== undefined ? body.description.trim() : storeItemsMemory[index].description,
-      features: Array.isArray(body.features)
-        ? body.features.filter(Boolean)
-        : typeof body.features === "string"
-        ? body.features.split("\n").map((f: string) => f.trim()).filter(Boolean)
-        : storeItemsMemory[index].features,
-      options: Array.isArray(body.options)
-        ? body.options.filter(Boolean)
-        : typeof body.options === "string"
-        ? (body.options.trim() ? body.options.split(",").map((o: string) => o.trim()).filter(Boolean) : undefined)
-        : storeItemsMemory[index].options,
-      inStock: body.inStock !== undefined ? Boolean(body.inStock) : storeItemsMemory[index].inStock,
-    };
+    const features: string[] = Array.isArray(body.features)
+      ? body.features.filter(Boolean)
+      : typeof body.features === "string"
+      ? body.features.split("\n").map((f: string) => f.trim()).filter(Boolean)
+      : safeParseJson<string[]>(existing.features, []);
 
-    storeItemsMemory[index] = updatedItem;
+    const options: string[] | null =
+      body.options !== undefined
+        ? Array.isArray(body.options)
+          ? body.options.filter(Boolean)
+          : typeof body.options === "string" && body.options.trim()
+          ? body.options.split(",").map((o: string) => o.trim()).filter(Boolean)
+          : null
+        : existing.options
+        ? safeParseJson<string[] | null>(existing.options, null)
+        : null;
+
+    const row = await prisma.storeItem.update({
+      where: { id: body.id },
+      data: {
+        title: body.title !== undefined ? body.title.trim() : existing.title,
+        category: body.category !== undefined ? body.category : existing.category,
+        price: body.price !== undefined ? Number(body.price) : existing.price,
+        image: body.image !== undefined ? body.image : existing.image,
+        badge:
+          body.badge !== undefined
+            ? body.badge.trim() || null
+            : existing.badge,
+        description:
+          body.description !== undefined
+            ? body.description.trim()
+            : existing.description,
+        features: JSON.stringify(features),
+        options: options ? JSON.stringify(options) : null,
+        inStock:
+          body.inStock !== undefined ? Boolean(body.inStock) : existing.inStock,
+      },
+    });
+
+    const updatedItem = dbToStoreItem(row);
+    const allRows = await prisma.storeItem.findMany({ orderBy: { createdAt: "desc" } });
 
     return NextResponse.json({
       success: true,
       message: "Store item updated successfully.",
       data: updatedItem,
-      items: storeItemsMemory,
+      items: allRows.map(dbToStoreItem),
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Failed to update item.";
     return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }
+
+// ─── DELETE /api/store/items?id=... ───────────────────────────────────────────
 
 export async function DELETE(req: Request) {
   try {
@@ -124,21 +229,25 @@ export async function DELETE(req: Request) {
       );
     }
 
-    const index = storeItemsMemory.findIndex((item) => item.id === id);
-    if (index === -1) {
+    if (!prisma) throw new Error("No DB");
+
+    const existing = await prisma.storeItem.findUnique({ where: { id } });
+    if (!existing) {
       return NextResponse.json(
         { success: false, error: "Store item not found." },
         { status: 404 }
       );
     }
 
-    const [deletedItem] = storeItemsMemory.splice(index, 1);
+    await prisma.storeItem.delete({ where: { id } });
+
+    const allRows = await prisma.storeItem.findMany({ orderBy: { createdAt: "desc" } });
 
     return NextResponse.json({
       success: true,
       message: "Store item deleted successfully.",
-      data: deletedItem,
-      items: storeItemsMemory,
+      data: dbToStoreItem(existing),
+      items: allRows.map(dbToStoreItem),
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Failed to delete item.";
