@@ -43,8 +43,7 @@ function safeParseJson<T>(val: string, fallback: T): T {
 
 async function ensureSeeded() {
   if (!prisma) return false;
-  const count = await prisma.storeItem.count();
-  if (count === 0) {
+  try {
     await prisma.storeItem.createMany({
       data: seedStoreItems.map((item) => ({
         id: item.id,
@@ -60,6 +59,8 @@ async function ensureSeeded() {
       })),
       skipDuplicates: true,
     });
+  } catch {
+    // ignore seeding error if already seeded or constrained
   }
   return true;
 }
