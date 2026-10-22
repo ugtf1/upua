@@ -31,8 +31,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { Area, AreaChart, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { fullMonths, months, seedHostingSchedule, seedMeetings, seedMembers, seedSettings, seedTransactions } from "@/lib/seed-data";
-import type { HostingScheduleItem, MeetingSession, Member, OrgSettings, Role, Transaction, User } from "@/types";
+import { fullMonths, months, seedHostingSchedule, seedMeetings, seedMembers, seedSettings, seedStoreItems, seedTransactions } from "@/lib/seed-data";
+import type { HostingScheduleItem, MeetingSession, Member, OrgSettings, Role, StoreItem, Transaction, User } from "@/types";
 import DonationModal from "@/components/donation-modal";
 import HeroSlider from "@/components/hero-slider";
 import InfiniteGalleryMarquee from "@/components/infinite-gallery-marquee";
@@ -42,8 +42,10 @@ import ExecutiveCommitteeGrid from "@/components/executive-committee-grid";
 import UpuayaExcoSection from "@/components/upuaya-exco-section";
 import LandingUpdatesSection from "@/components/landing-updates-section";
 import LandingEventsSection from "@/components/landing-events-section";
+import AdminStoreManager from "@/components/admin-store-manager";
+import { ShoppingBag } from "lucide-react";
 
-type Panel = "overview" | "members" | "pivot" | "transactions" | "analytics" | "meetings" | "hosting" | "settings" | "member" | "account";
+type Panel = "overview" | "members" | "store" | "pivot" | "transactions" | "analytics" | "meetings" | "hosting" | "settings" | "member" | "account";
 type RecorderTab = "attendance" | "transcript" | "summary";
 
 const chartColors = ["#0e3d26", "#196a43", "#529671", "#88c99e", "#b7e4c7"];
@@ -77,6 +79,7 @@ export default function PortalExperience() {
   const [meetings, setMeetings] = useStoredState<MeetingSession[]>("orgflo_meetings", seedMeetings);
   const [hostingSchedule, setHostingSchedule] = useStoredState<HostingScheduleItem[]>("orgflo_hosting_schedule", seedHostingSchedule);
   const [settings, setSettings] = useStoredState<OrgSettings>("orgflo_settings", seedSettings);
+  const [storeItems, setStoreItems] = useStoredState<StoreItem[]>("orgflo_store_items", seedStoreItems);
 
   function quickLogin(role: Role) {
     setUser(
@@ -105,6 +108,8 @@ export default function PortalExperience() {
           setHostingSchedule={setHostingSchedule}
           settings={settings}
           setSettings={setSettings}
+          storeItems={storeItems}
+          setStoreItems={setStoreItems}
         />
       )}
     </main>
@@ -465,6 +470,8 @@ function Workspace(props: {
   setHostingSchedule: (schedule: HostingScheduleItem[]) => void;
   settings: OrgSettings;
   setSettings: (settings: OrgSettings) => void;
+  storeItems: StoreItem[];
+  setStoreItems: (items: StoreItem[] | ((prev: StoreItem[]) => StoreItem[])) => void;
 }) {
   const activeUser = props.user ?? { id: "u1", username: "admin", name: "Elder Admin", email: "admin@upua.org", role: "admin" as Role };
   const [panel, setPanel] = useState<Panel>(activeUser.role === "admin" ? "overview" : "member");
@@ -474,6 +481,7 @@ function Workspace(props: {
     ? [
         ["overview", "Overview", <LayoutDashboard size={18} key="o" />],
         ["members", "Member Directory", <Users size={18} key="m" />],
+        ["store", "Store Management", <ShoppingBag size={18} key="sm" />],
         ["pivot", "Pivot View", <Grid2X2 size={18} key="p" />],
         ["transactions", "Transactions", <CreditCard size={18} key="t" />],
         ["analytics", "Financial Analytics", <BarChart3 size={18} key="a" />]
@@ -513,6 +521,9 @@ function Workspace(props: {
         </header>
         <section className="app-page-content admin-content">
           {activeUser.role === "admin" && panel === "overview" && <AdminDashboard {...props} setPanel={setPanel} />}
+          {panel === "store" && activeUser.role === "admin" && (
+            <AdminStoreManager items={props.storeItems} setItems={props.setStoreItems} />
+          )}
           {panel === "members" && <MemberDirectory members={props.members} setMembers={props.setMembers} />}
           {panel === "pivot" && <PivotView members={props.members} />}
           {panel === "transactions" && <TransactionsPage user={activeUser} transactions={props.transactions} settings={props.settings} />}

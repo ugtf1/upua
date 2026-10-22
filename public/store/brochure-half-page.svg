@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#072b1d"/>
+      <stop offset="50%" stop-color="#0b3824"/>
+      <stop offset="100%" stop-color="#041a11"/>
+    </linearGradient>
+    <linearGradient id="gold3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffd54f"/>
+      <stop offset="100%" stop-color="#d4af37"/>
+    </linearGradient>
+    <filter id="shadow3" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="8" dy="14" stdDeviation="18" flood-color="#000000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="600" fill="url(#bg3)"/>
+
+  <!-- Subtle circles backdrop -->
+  <circle cx="400" cy="270" r="150" fill="#137459" opacity="0.25"/>
+
+  <!-- Brochure Graphic -->
+  <g filter="url(#shadow3)">
+    <!-- Main Magazine Cover -->
+    <rect x="250" y="90" width="280" height="380" rx="10" fill="#ffffff"/>
+    
+    <!-- Cover Header / Banner -->
+    <rect x="250" y="90" width="280" height="85" rx="10" fill="#0b3323"/>
+    <rect x="250" y="155" width="280" height="20" fill="#0b3323"/>
+    <rect x="250" y="170" width="280" height="5" fill="url(#gold3)"/>
+
+    <text x="390" y="125" font-family="system-ui, sans-serif" font-weight="900" font-size="16" fill="url(#gold3)" text-anchor="middle" letter-spacing="2">UPUA SOUVENIR</text>
+    <text x="390" y="145" font-family="system-ui, sans-serif" font-weight="700" font-size="11" fill="#ffffff" text-anchor="middle" letter-spacing="2">COMMEMORATIVE BROCHURE</text>
+
+    <!-- Top Half Ad Slot (Active) -->
+    <rect x="275" y="195" width="230" height="125" rx="6" fill="#f0f7f3" stroke="#ffd54f" stroke-width="2"/>
+    <rect x="290" y="210" width="110" height="10" rx="2" fill="#0b3323"/>
+    <rect x="290" y="228" width="140" height="6" rx="2" fill="#d1d5db"/>
+    <rect x="290" y="238" width="130" height="6" rx="2" fill="#e5e7eb"/>
+    <rect x="290" y="248" width="100" height="6" rx="2" fill="#e5e7eb"/>
+    
+    <!-- Photo in Half Page Ad -->
+    <rect x="435" y="210" width="55" height="55" rx="4" fill="#c3e2cf"/>
+    <circle cx="462" cy="235" r="12" fill="#0f6a4b"/>
+
+    <rect x="290" y="275" width="200" height="30" rx="4" fill="#0b3323"/>
+    <text x="390" y="295" font-family="system-ui, sans-serif" font-weight="800" font-size="11" fill="url(#gold3)" text-anchor="middle" letter-spacing="1">YOUR HALF PAGE AD HERE</text>
+
+    <!-- Divider Line across middle -->
+    <line x1="265" y1="332" x2="515" y2="332" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="6,4"/>
+
+    <!-- Bottom Half Section (Preview / Inactive) -->
+    <rect x="275" y="345" width="230" height="105" rx="6" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1.5"/>
+    <rect x="290" y="360" width="90" height="8" rx="2" fill="#9ca3af" opacity="0.6"/>
+    <rect x="290" y="375" width="160" height="5" rx="2" fill="#e5e7eb"/>
+    <rect x="290" y="385" width="140" height="5" rx="2" fill="#e5e7eb"/>
+    <rect x="290" y="395" width="150" height="5" rx="2" fill="#e5e7eb"/>
+    <text x="390" y="425" font-family="system-ui, sans-serif" font-weight="600" font-size="9" fill="#9ca3af" text-anchor="middle">RESERVED SECTION</text>
+
+    <!-- Magazine Spine Highlight -->
+    <rect x="250" y="90" width="8" height="380" rx="4" fill="#000000" opacity="0.18"/>
+  </g>
+
+  <!-- Tag Pill -->
+  <rect x="260" y="505" width="280" height="42" rx="21" fill="#000000" opacity="0.4"/>
+  <rect x="260" y="505" width="280" height="42" rx="21" fill="none" stroke="#ffd54f" stroke-width="1.5"/>
+  <text x="400" y="531" font-family="system-ui, sans-serif" font-weight="800" font-size="14" fill="#ffd54f" text-anchor="middle" letter-spacing="1">HALF-PAGE COMMEMORATIVE AD</text>
+</svg>

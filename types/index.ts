@@ -86,3 +86,20 @@ export interface OrgSettings {
   contactEmail: string;
   contactPhone: string;
 }
+
+
+export type StoreCategory = "Convention Packages" | "Apparel & Regalia" | "Books & Culture" | "Accessories";
+
+export interface StoreItem {
+  id: string;
+  title: string;
+  category: StoreCategory;
+  price: number;
+  image: string;
+  badge?: string;
+  description: string;
+  features: string[];
+  options?: string[];
+  inStock: boolean;
+}
+

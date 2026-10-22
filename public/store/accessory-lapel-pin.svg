@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg8" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#072b1d"/>
+      <stop offset="50%" stop-color="#0b3824"/>
+      <stop offset="100%" stop-color="#03160e"/>
+    </linearGradient>
+    <linearGradient id="gold8" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff5b3"/>
+      <stop offset="35%" stop-color="#ffd54f"/>
+      <stop offset="70%" stop-color="#d4af37"/>
+      <stop offset="100%" stop-color="#997a15"/>
+    </linearGradient>
+    <linearGradient id="enamelGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#145236"/>
+      <stop offset="100%" stop-color="#0b3323"/>
+    </linearGradient>
+    <filter id="shadow8" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="6" dy="14" stdDeviation="18" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="600" fill="url(#bg8)"/>
+
+  <!-- Velvet Jewelry Display Box / Tray -->
+  <rect x="180" y="100" width="440" height="370" rx="20" fill="#051c13" stroke="#1d6645" stroke-width="2"/>
+  <rect x="200" y="120" width="400" height="330" rx="14" fill="#082b1d" stroke="#0f442d" stroke-width="1.5"/>
+
+  <!-- Left Lapel Pin -->
+  <g filter="url(#shadow8)" transform="translate(320, 260) rotate(-6)">
+    <!-- Outer Gold Rim -->
+    <circle cx="0" cy="0" r="70" fill="url(#gold8)"/>
+    <circle cx="0" cy="0" r="63" fill="#051f14"/>
+    <!-- Hard Enamel Green Ring -->
+    <circle cx="0" cy="0" r="60" fill="url(#enamelGreen)" stroke="url(#gold8)" stroke-width="2"/>
+    
+    <!-- Stars along ring -->
+    <polygon points="0,-48 3,-42 9,-42 4,-38 6,-32 0,-36 -6,-32 -4,-38 -9,-42 -3,-42" fill="url(#gold8)"/>
+    <polygon points="48,0 42,3 42,9 38,4 32,6 36,0 32,-6 38,-4 42,-9 42,-3" fill="url(#gold8)"/>
+    <polygon points="0,48 -3,42 -9,42 -4,38 -6,32 0,36 6,32 4,38 9,42 3,42" fill="url(#gold8)"/>
+    <polygon points="-48,0 -42,-3 -42,-9 -38,-4 -32,-6 -36,0 -32,6 -38,4 -42,9 -42,3" fill="url(#gold8)"/>
+
+    <!-- Inner Core & Royal Lion / Star Emblem -->
+    <circle cx="0" cy="0" r="38" fill="url(#gold8)"/>
+    <circle cx="0" cy="0" r="33" fill="#0b3323"/>
+    <polygon points="0,-22 7,-6 24,-4 11,8 15,24 0,15 -15,24 -11,8 -24,-4 -7,-6" fill="url(#gold8)"/>
+  </g>
+
+  <!-- Right Lapel Pin (Slightly overlapping pair) -->
+  <g filter="url(#shadow8)" transform="translate(480, 280) rotate(8)">
+    <!-- Outer Gold Rim -->
+    <circle cx="0" cy="0" r="70" fill="url(#gold8)"/>
+    <circle cx="0" cy="0" r="63" fill="#051f14"/>
+    <!-- Hard Enamel Green Ring -->
+    <circle cx="0" cy="0" r="60" fill="url(#enamelGreen)" stroke="url(#gold8)" stroke-width="2"/>
+    
+    <!-- Stars along ring -->
+    <polygon points="0,-48 3,-42 9,-42 4,-38 6,-32 0,-36 -6,-32 -4,-38 -9,-42 -3,-42" fill="url(#gold8)"/>
+    <polygon points="48,0 42,3 42,9 38,4 32,6 36,0 32,-6 38,-4 42,-9 42,-3" fill="url(#gold8)"/>
+    <polygon points="0,48 -3,42 -9,42 -4,38 -6,32 0,36 6,32 4,38 9,42 3,42" fill="url(#gold8)"/>
+    <polygon points="-48,0 -42,-3 -42,-9 -38,-4 -32,-6 -36,0 -32,6 -38,4 -42,9 -42,3" fill="url(#gold8)"/>
+
+    <!-- Inner Core & Royal Lion / Star Emblem -->
+    <circle cx="0" cy="0" r="38" fill="url(#gold8)"/>
+    <circle cx="0" cy="0" r="33" fill="#0b3323"/>
+    <polygon points="0,-22 7,-6 24,-4 11,8 15,24 0,15 -15,24 -11,8 -24,-4 -7,-6" fill="url(#gold8)"/>
+  </g>
+
+  <!-- Tag Pill -->
+  <rect x="250" y="495" width="300" height="42" rx="21" fill="#000000" opacity="0.4"/>
+  <rect x="250" y="495" width="300" height="42" rx="21" fill="none" stroke="#ffd54f" stroke-width="1.5"/>
+  <text x="400" y="521" font-family="system-ui, sans-serif" font-weight="800" font-size="14" fill="#ffd54f" text-anchor="middle" letter-spacing="1">GOLD LAPEL PINS (PAIR)</text>
+</svg>

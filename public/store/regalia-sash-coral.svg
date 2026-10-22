@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b3323"/>
+      <stop offset="50%" stop-color="#08281b"/>
+      <stop offset="100%" stop-color="#03160e"/>
+    </linearGradient>
+    <linearGradient id="coralBead" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff7f6e"/>
+      <stop offset="40%" stop-color="#dc3522"/>
+      <stop offset="100%" stop-color="#8a1407"/>
+    </linearGradient>
+    <linearGradient id="sashGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#145236"/>
+      <stop offset="50%" stop-color="#0e3d26"/>
+      <stop offset="100%" stop-color="#062115"/>
+    </linearGradient>
+    <linearGradient id="gold5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff099"/>
+      <stop offset="50%" stop-color="#ffd54f"/>
+      <stop offset="100%" stop-color="#b8860b"/>
+    </linearGradient>
+    <filter id="shadow5" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="4" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="600" fill="url(#bg5)"/>
+
+  <!-- Velvet platform pedestal -->
+  <ellipse cx="400" cy="380" rx="270" ry="80" fill="#051c12" stroke="#13593a" stroke-width="2"/>
+  <ellipse cx="400" cy="370" rx="240" ry="65" fill="#082c1d"/>
+
+  <!-- Sash & Coral Graphic -->
+  <g filter="url(#shadow5)">
+    <!-- Ceremonial Satin Sash draped diagonal ribbon -->
+    <path d="M220,110 L340,90 L580,410 L460,430 Z" fill="url(#sashGreen)" stroke="#ffd54f" stroke-width="2"/>
+    
+    <!-- Gold Fringe at bottom of sash -->
+    <g fill="#ffd54f">
+      <rect x="460" y="430" width="8" height="24"/>
+      <rect x="472" y="428" width="8" height="24"/>
+      <rect x="484" y="426" width="8" height="24"/>
+      <rect x="496" y="424" width="8" height="24"/>
+      <rect x="508" y="422" width="8" height="24"/>
+      <rect x="520" y="420" width="8" height="24"/>
+      <rect x="532" y="418" width="8" height="24"/>
+      <rect x="544" y="416" width="8" height="24"/>
+      <rect x="556" y="414" width="8" height="24"/>
+      <rect x="568" y="412" width="8" height="24"/>
+    </g>
+
+    <!-- Gold Embroidered Emblem & Motto on Sash -->
+    <circle cx="395" cy="255" r="32" fill="#145236" stroke="url(#gold5)" stroke-width="2"/>
+    <polygon points="395,235 401,248 415,250 405,260 408,274 395,266 382,274 385,260 375,250 389,248" fill="url(#gold5)"/>
+    
+    <!-- Text along sash -->
+    <text x="320" y="180" font-family="system-ui, sans-serif" font-weight="900" font-size="15" fill="url(#gold5)" transform="rotate(45 320 180)" letter-spacing="3">UPU AMERICA</text>
+
+    <!-- Royal Red Coral Beads Bracelet loop -->
+    <g filter="url(#shadow5)">
+      <!-- Curved circular string of coral beads -->
+      <ellipse cx="380" cy="330" rx="90" ry="38" fill="none" stroke="#600000" stroke-width="4" opacity="0.3"/>
+      
+      <!-- Individual polished coral beads -->
+      <circle cx="295" cy="330" r="16" fill="url(#coralBead)"/>
+      <circle cx="310" cy="348" r="17" fill="url(#coralBead)"/>
+      <circle cx="335" cy="360" r="18" fill="url(#coralBead)"/>
+      <circle cx="365" cy="366" r="18" fill="url(#coralBead)"/>
+      <circle cx="395" cy="366" r="18" fill="url(#coralBead)"/>
+      <circle cx="425" cy="360" r="18" fill="url(#coralBead)"/>
+      <circle cx="450" cy="348" r="17" fill="url(#coralBead)"/>
+      <circle cx="465" cy="330" r="16" fill="url(#coralBead)"/>
+      <circle cx="450" cy="312" r="17" fill="url(#coralBead)"/>
+      <circle cx="425" cy="300" r="18" fill="url(#coralBead)"/>
+      <circle cx="395" cy="294" r="18" fill="url(#coralBead)"/>
+      <circle cx="365" cy="294" r="18" fill="url(#coralBead)"/>
+      <circle cx="335" cy="300" r="18" fill="url(#coralBead)"/>
+      <circle cx="310" cy="312" r="17" fill="url(#coralBead)"/>
+
+      <!-- Gold Spacer Beads -->
+      <circle cx="380" cy="367" r="8" fill="url(#gold5)"/>
+      <circle cx="380" cy="293" r="8" fill="url(#gold5)"/>
+      <circle cx="295" cy="330" r="6" fill="url(#gold5)"/>
+      <circle cx="465" cy="330" r="6" fill="url(#gold5)"/>
+    </g>
+  </g>
+
+  <!-- Tag Pill -->
+  <rect x="250" y="495" width="300" height="42" rx="21" fill="#000000" opacity="0.4"/>
+  <rect x="250" y="495" width="300" height="42" rx="21" fill="none" stroke="#ffd54f" stroke-width="1.5"/>
+  <text x="400" y="521" font-family="system-ui, sans-serif" font-weight="800" font-size="14" fill="#ffd54f" text-anchor="middle" letter-spacing="1">CEREMONIAL SASH &amp; CORAL BEADS</text>
+</svg>

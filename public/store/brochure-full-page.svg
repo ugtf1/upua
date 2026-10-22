@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#072b1d"/>
+      <stop offset="50%" stop-color="#0b3824"/>
+      <stop offset="100%" stop-color="#041a11"/>
+    </linearGradient>
+    <linearGradient id="gold2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffd54f"/>
+      <stop offset="100%" stop-color="#d4af37"/>
+    </linearGradient>
+    <filter id="shadow2" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="8" dy="14" stdDeviation="18" flood-color="#000000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="600" fill="url(#bg2)"/>
+
+  <!-- Subtle circles backdrop -->
+  <circle cx="400" cy="270" r="220" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.06"/>
+  <circle cx="400" cy="270" r="150" fill="#137459" opacity="0.25"/>
+
+  <!-- Brochure Graphic -->
+  <g filter="url(#shadow2)">
+    <!-- Back page (perspective effect) -->
+    <rect x="290" y="80" width="270" height="370" rx="8" fill="#184e36" stroke="#2a7755" stroke-width="2" transform="rotate(4 425 265)"/>
+    
+    <!-- Main Magazine Cover -->
+    <rect x="250" y="90" width="280" height="380" rx="10" fill="#ffffff"/>
+    
+    <!-- Cover Header / Banner -->
+    <rect x="250" y="90" width="280" height="110" rx="10" fill="#0b3323"/>
+    <rect x="250" y="180" width="280" height="20" fill="#0b3323"/>
+    <rect x="250" y="195" width="280" height="6" fill="url(#gold2)"/>
+
+    <text x="390" y="130" font-family="system-ui, sans-serif" font-weight="900" font-size="18" fill="url(#gold2)" text-anchor="middle" letter-spacing="2">UPUA SOUVENIR</text>
+    <text x="390" y="152" font-family="system-ui, sans-serif" font-weight="700" font-size="12" fill="#ffffff" text-anchor="middle" letter-spacing="3">CONVENTION BROCHURE</text>
+    <text x="390" y="172" font-family="system-ui, sans-serif" font-weight="600" font-size="10" fill="#9bd1b7" text-anchor="middle" letter-spacing="1">ANNUAL NATIONAL GALA</text>
+
+    <!-- Magazine Body Content Preview -->
+    <!-- Gold Ribbon / Badge -->
+    <circle cx="480" cy="235" r="24" fill="url(#gold2)"/>
+    <text x="480" y="240" font-family="system-ui, sans-serif" font-weight="900" font-size="11" fill="#0b3323" text-anchor="middle">FULL</text>
+    <text x="480" y="250" font-family="system-ui, sans-serif" font-weight="800" font-size="8" fill="#0b3323" text-anchor="middle">PAGE</text>
+
+    <!-- Ad Mockup Lines -->
+    <rect x="280" y="225" width="160" height="12" rx="3" fill="#0e3d26"/>
+    <rect x="280" y="248" width="130" height="8" rx="2" fill="#d1d5db"/>
+    <rect x="280" y="264" width="180" height="6" rx="2" fill="#e5e7eb"/>
+    <rect x="280" y="276" width="170" height="6" rx="2" fill="#e5e7eb"/>
+    <rect x="280" y="288" width="140" height="6" rx="2" fill="#e5e7eb"/>
+
+    <!-- Featured Photo box in Ad -->
+    <rect x="280" y="315" width="220" height="115" rx="6" fill="#f0f7f3" stroke="#c3e2cf" stroke-width="1.5"/>
+    <circle cx="390" cy="360" r="22" fill="#d4e7db"/>
+    <polygon points="390,345 396,357 410,358 399,368 402,382 390,374 378,382 381,368 370,358 384,357" fill="#15803d"/>
+    <text x="390" y="405" font-family="system-ui, sans-serif" font-weight="700" font-size="10" fill="#15803d" text-anchor="middle">OFFICIAL FULL COLOR AD</text>
+
+    <!-- Magazine Spine Highlight -->
+    <rect x="250" y="90" width="8" height="380" rx="4" fill="#000000" opacity="0.18"/>
+  </g>
+
+  <!-- Tag Pill -->
+  <rect x="260" y="505" width="280" height="42" rx="21" fill="#000000" opacity="0.4"/>
+  <rect x="260" y="505" width="280" height="42" rx="21" fill="none" stroke="#ffd54f" stroke-width="1.5"/>
+  <text x="400" y="531" font-family="system-ui, sans-serif" font-weight="800" font-size="14" fill="#ffd54f" text-anchor="middle" letter-spacing="1">FULL-PAGE COMMEMORATIVE AD</text>
+</svg>

@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#051f15"/>
+      <stop offset="50%" stop-color="#0b3824"/>
+      <stop offset="100%" stop-color="#04150e"/>
+    </linearGradient>
+    <linearGradient id="ticketGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff099"/>
+      <stop offset="40%" stop-color="#ffd54f"/>
+      <stop offset="100%" stop-color="#c99700"/>
+    </linearGradient>
+    <linearGradient id="ticketDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0e3d26"/>
+      <stop offset="100%" stop-color="#072215"/>
+    </linearGradient>
+    <filter id="shadow4" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="6" dy="16" stdDeviation="20" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="600" fill="url(#bg4)"/>
+
+  <!-- Background festive bokeh sparks -->
+  <g opacity="0.3">
+    <circle cx="200" cy="180" r="4" fill="#ffd54f"/>
+    <circle cx="620" cy="160" r="5" fill="#ffd54f"/>
+    <circle cx="160" cy="380" r="3" fill="#ffffff"/>
+    <circle cx="660" cy="390" r="4" fill="#ffd54f"/>
+    <circle cx="380" cy="120" r="3" fill="#ffd54f"/>
+    <circle cx="530" cy="480" r="4" fill="#ffffff"/>
+  </g>
+
+  <!-- Glowing aura behind ticket -->
+  <ellipse cx="400" cy="270" rx="260" ry="140" fill="#137459" opacity="0.35"/>
+
+  <!-- Golden Gala Ticket Pass -->
+  <g filter="url(#shadow4)" transform="rotate(-3 400 270)">
+    <!-- Ticket Body Outer -->
+    <rect x="140" y="160" width="520" height="230" rx="16" fill="url(#ticketDark)" stroke="url(#ticketGold)" stroke-width="2.5"/>
+
+    <!-- Gold Accent Borders inside -->
+    <rect x="152" y="172" width="500" height="206" rx="10" fill="none" stroke="#ffd54f" stroke-width="1" opacity="0.4"/>
+
+    <!-- Stub Perforation Line -->
+    <line x1="510" y1="160" x2="510" y2="390" stroke="#ffd54f" stroke-width="2" stroke-dasharray="8,6" opacity="0.8"/>
+    <!-- Perforation cutouts on ticket edges -->
+    <circle cx="510" cy="160" r="14" fill="#0b3824"/>
+    <circle cx="510" cy="390" r="14" fill="#0b3824"/>
+
+    <!-- Left / Main Ticket Section Content -->
+    <!-- UPUA Crest & Header -->
+    <circle cx="210" cy="225" r="32" fill="#145236" stroke="#ffd54f" stroke-width="1.5"/>
+    <polygon points="210,205 217,219 232,221 221,231 224,246 210,238 196,246 199,231 188,221 203,219" fill="#ffd54f"/>
+
+    <text x="260" y="215" font-family="system-ui, sans-serif" font-weight="900" font-size="14" fill="#ffd54f" letter-spacing="2">UPU AMERICA NATIONAL CONVENTION</text>
+    <text x="260" y="240" font-family="system-ui, sans-serif" font-weight="900" font-size="22" fill="#ffffff" letter-spacing="1">GRAND CULTURAL GALA</text>
+    <text x="260" y="262" font-family="system-ui, sans-serif" font-weight="700" font-size="13" fill="#a3cfbb">BANQUET &amp; ROYAL AWARDS NIGHT</text>
+
+    <!-- Details Box -->
+    <rect x="180" y="285" width="300" height="75" rx="8" fill="#08281b" stroke="#1d6645" stroke-width="1"/>
+    <text x="200" y="310" font-family="system-ui, sans-serif" font-weight="700" font-size="11" fill="#ffd54f">DATE &amp; TIME</text>
+    <text x="200" y="328" font-family="system-ui, sans-serif" font-weight="800" font-size="12" fill="#ffffff">SATURDAY, AUGUST 29 &bull; 6:00 PM</text>
+    <text x="200" y="348" font-family="system-ui, sans-serif" font-weight="600" font-size="11" fill="#cbd5e1">DoubleTree Lawrenceburg Ballroom</text>
+
+    <!-- Right Stub Section Content -->
+    <text x="585" y="200" font-family="system-ui, sans-serif" font-weight="800" font-size="11" fill="#ffd54f" text-anchor="middle" letter-spacing="1.5">ADMIT ONE</text>
+    <text x="585" y="235" font-family="system-ui, sans-serif" font-weight="900" font-size="28" fill="#ffffff" text-anchor="middle">$75</text>
+    <text x="585" y="255" font-family="system-ui, sans-serif" font-weight="700" font-size="10" fill="#a3cfbb" text-anchor="middle">VIP ACCESS</text>
+
+    <!-- Barcode graphic on stub -->
+    <g opacity="0.8" fill="#ffffff">
+      <rect x="535" y="280" width="3" height="55"/>
+      <rect x="542" y="280" width="5" height="55"/>
+      <rect x="551" y="280" width="2" height="55"/>
+      <rect x="556" y="280" width="6" height="55"/>
+      <rect x="566" y="280" width="3" height="55"/>
+      <rect x="573" y="280" width="7" height="55"/>
+      <rect x="584" y="280" width="4" height="55"/>
+      <rect x="592" y="280" width="2" height="55"/>
+      <rect x="597" y="280" width="6" height="55"/>
+      <rect x="607" y="280" width="3" height="55"/>
+      <rect x="614" y="280" width="7" height="55"/>
+      <rect x="625" y="280" width="4" height="55"/>
+    </g>
+    <text x="585" y="352" font-family="monospace" font-size="9" fill="#ffd54f" text-anchor="middle">UPUA-2026-GLA</text>
+  </g>
+
+  <!-- Tag Pill -->
+  <rect x="270" y="495" width="260" height="42" rx="21" fill="#000000" opacity="0.4"/>
+  <rect x="270" y="495" width="260" height="42" rx="21" fill="none" stroke="#ffd54f" stroke-width="1.5"/>
+  <text x="400" y="521" font-family="system-ui, sans-serif" font-weight="800" font-size="14" fill="#ffd54f" text-anchor="middle" letter-spacing="1">OFFICIAL GALA &amp; BANQUET PASS</text>
+</svg>

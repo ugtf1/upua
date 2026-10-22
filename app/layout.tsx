@@ -1,20 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import { Outfit, Plus_Jakarta_Sans } from "next/font/google";
+// Using system & web safe fonts to avoid next/font build timeouts
+const outfit = { variable: "--font-heading-opt" };
+const plusJakartaSans = { variable: "--font-main-opt" };
 import "./globals.css";
-
-const outfit = Outfit({
-  subsets: ["latin"],
-  weight: ["500", "600", "700", "800", "900"],
-  variable: "--font-heading-opt",
-  display: "swap",
-});
-
-const plusJakartaSans = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  variable: "--font-main-opt",
-  display: "swap",
-});
 
 export const viewport: Viewport = {
   themeColor: "#0e3d26",

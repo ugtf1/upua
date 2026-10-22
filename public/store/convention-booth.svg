@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b3323"/>
+      <stop offset="50%" stop-color="#0e3d26"/>
+      <stop offset="100%" stop-color="#051f14"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffd54f"/>
+      <stop offset="100%" stop-color="#d4af37"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="600" fill="url(#bg)"/>
+  
+  <!-- Decorative grid lines / subtle geometric tech texture -->
+  <g opacity="0.08" stroke="#ffffff" stroke-width="1.5">
+    <line x1="100" y1="0" x2="100" y2="600"/>
+    <line x1="200" y1="0" x2="200" y2="600"/>
+    <line x1="300" y1="0" x2="300" y2="600"/>
+    <line x1="400" y1="0" x2="400" y2="600"/>
+    <line x1="500" y1="0" x2="500" y2="600"/>
+    <line x1="600" y1="0" x2="600" y2="600"/>
+    <line x1="700" y1="0" x2="700" y2="600"/>
+    <line x1="0" y1="150" x2="800" y2="150"/>
+    <line x1="0" y1="300" x2="800" y2="300"/>
+    <line x1="0" y1="450" x2="800" y2="450"/>
+  </g>
+
+  <!-- Glowing backdrop aura -->
+  <circle cx="400" cy="270" r="160" fill="#137459" opacity="0.35" filter="blur(40px)"/>
+
+  <!-- Table Graphic -->
+  <g filter="url(#shadow)">
+    <!-- Backdrop banner / booth backdrop -->
+    <rect x="250" y="120" width="300" height="150" rx="8" fill="#145236" stroke="#257a55" stroke-width="2"/>
+    <rect x="270" y="140" width="260" height="40" rx="4" fill="url(#gold)"/>
+    <text x="400" y="165" font-family="system-ui, sans-serif" font-weight="900" font-size="16" fill="#0b3323" text-anchor="middle" letter-spacing="2">UPUA CONVENTION 2026</text>
+    <text x="400" y="210" font-family="system-ui, sans-serif" font-weight="700" font-size="13" fill="#a3cfbb" text-anchor="middle" letter-spacing="1.5">OFFICIAL EXHIBITOR SPACE</text>
+    <rect x="360" y="228" width="80" height="3" rx="1.5" fill="#ffd54f"/>
+
+    <!-- Table base & draped tablecloth -->
+    <!-- Table top surface -->
+    <polygon points="180,270 620,270 660,310 140,310" fill="#d4af37"/>
+    <!-- Table front draped cloth -->
+    <polygon points="140,310 660,310 640,460 160,460" fill="#0b3323" stroke="#ffd54f" stroke-width="2"/>
+    <!-- Table drape folds -->
+    <path d="M140,310 L160,460 L240,460 L220,310 Z" fill="#08261a" opacity="0.6"/>
+    <path d="M300,310 L310,460 L380,460 L370,310 Z" fill="#0e442b" opacity="0.4"/>
+    <path d="M560,310 L580,460 L640,460 L660,310 Z" fill="#08261a" opacity="0.6"/>
+    
+    <!-- Table emblem -->
+    <circle cx="400" cy="385" r="38" fill="#145236" stroke="#ffd54f" stroke-width="2"/>
+    <polygon points="400,358 409,376 429,378 414,392 418,412 400,401 382,412 386,392 371,378 391,376" fill="#ffd54f"/>
+
+    <!-- Display items on table -->
+    <rect x="220" y="260" width="50" height="35" rx="3" fill="#ffffff" opacity="0.9"/>
+    <rect x="530" y="260" width="50" height="35" rx="3" fill="#ffffff" opacity="0.9"/>
+    <rect x="370" y="255" width="60" height="42" rx="3" fill="#e8f5ed" stroke="#137459" stroke-width="1.5"/>
+  </g>
+
+  <!-- Tag Pill -->
+  <rect x="280" y="495" width="240" height="42" rx="21" fill="#000000" opacity="0.4"/>
+  <rect x="280" y="495" width="240" height="42" rx="21" fill="none" stroke="#ffd54f" stroke-width="1.5"/>
+  <text x="400" y="521" font-family="system-ui, sans-serif" font-weight="800" font-size="14" fill="#ffd54f" text-anchor="middle" letter-spacing="1">EXHIBITION &amp; VENDOR BOOTH</text>
+</svg>

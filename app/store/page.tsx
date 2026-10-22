@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
+import type { StoreItem } from "@/types";
+import { seedStoreItems } from "@/lib/seed-data";
 import {
   Search,
   ShoppingCart,
@@ -25,18 +27,7 @@ import {
   DollarSign
 } from "lucide-react";
 
-export interface StoreItem {
-  id: string;
-  title: string;
-  category: "Convention Packages" | "Apparel & Regalia" | "Books & Culture" | "Accessories";
-  price: number;
-  image: string;
-  badge?: string;
-  description: string;
-  features: string[];
-  options?: string[];
-  inStock: boolean;
-}
+// StoreItem interface defined in @/types
 
 const storeCategories = [
   "All",
@@ -46,171 +37,7 @@ const storeCategories = [
   "Accessories",
 ];
 
-const catalogItems: StoreItem[] = [
-  {
-    id: "convention-vendor-table-2026",
-    title: "Convention Vendor Exhibition Table (2026)",
-    category: "Convention Packages",
-    price: 200,
-    image: "/assets/Congress-1.jpg",
-    badge: "Convention 2026",
-    description:
-      "Reserved 6-foot vendor table with 2 vendor passes and tablecloth at the 33rd Annual UPUA National Convention. Ideal for showcasing cultural clothing, art, jewelry, books, and business services.",
-    features: [
-      "1x 6ft exhibition table + 2 chairs",
-      "2x Vendor attendee credential badges",
-      "Listing in official convention souvenir directory",
-      "Setup on Friday, Aug 28 through Sunday, Aug 30, 2026",
-    ],
-    inStock: true,
-  },
-  {
-    id: "convention-brochure-full-page",
-    title: "Convention Souvenir Brochure (Full Page Ad)",
-    category: "Convention Packages",
-    price: 150,
-    image: "/update-convention.jpg",
-    badge: "Popular",
-    description:
-      "Full-color, full-page goodwill message, memorial tribute, family congratulations, or corporate advertisement printed in the official 2026 UPUA Convention Souvenir Brochure.",
-    features: [
-      "Full-page 8.5\" x 11\" glossy color placement",
-      "Distributed to 1,500+ diaspora delegates and dignitaries",
-      "Digital edition permanently archived online",
-      "Artwork & greeting text coordinated after checkout",
-    ],
-    inStock: true,
-  },
-  {
-    id: "convention-brochure-half-page",
-    title: "Convention Souvenir Brochure (Half Page Ad)",
-    category: "Convention Packages",
-    price: 100,
-    image: "/update-convention.jpg",
-    description:
-      "Half-page full-color goodwill message, family announcement, or business listing in the official convention souvenir magazine.",
-    features: [
-      "Half-page glossy color placement",
-      "High circulation among North American Urhobo community",
-      "Complimentary printed copy of the souvenir brochure",
-    ],
-    inStock: true,
-  },
-  {
-    id: "convention-cultural-gala-ticket",
-    title: "National Cultural Gala & Banquet Pass",
-    category: "Convention Packages",
-    price: 75,
-    image: "/assets/SolCal-4.jpg",
-    badge: "Ticket",
-    description:
-      "All-inclusive ticket for the Grand Cultural Gala Night at DoubleTree Lawrenceburg, including authentic 3-course Urhobo banquet, royal dignitaries reception, and cultural music gala.",
-    features: [
-      "Admit One to Grand Banquet & Gala (Sat, Aug 29)",
-      "Traditional Urhobo dinner buffet & beverages",
-      "Live cultural performances & royal dance troupes",
-    ],
-    inStock: true,
-  },
-  {
-    id: "upua-ceremonial-sash-coral-set",
-    title: "Official UPUA Ceremonial Sash & Coral Beads",
-    category: "Apparel & Regalia",
-    price: 65,
-    image: "/assets/SolCal-4.jpg",
-    badge: "Handcrafted",
-    description:
-      "Authentic ceremonial attire kit featuring custom gold-embroidered UPUA satin sash accompanied by handcrafted polished royal red coral wrist beads.",
-    features: [
-      "Gold thread embroidered UPUA emblem and motto",
-      "Natural polished coral bead bracelet",
-      "Unisex fit for cultural festivals and meetings",
-      "Protective velvet keepsake pouch included",
-    ],
-    options: ["Men's Cut", "Women's Cut"],
-    inStock: true,
-  },
-  {
-    id: "upua-heritage-crest-polo",
-    title: "UPUA Heritage Crest Embroidered Polo Shirt",
-    category: "Apparel & Regalia",
-    price: 35,
-    image: "/assets/ChicagoLand-1x.jpg",
-    description:
-      "Premium 100% combed ringspun cotton polo shirt featuring the detailed gold & emerald UPUA crest embroidery on the left chest with contrast sleeve trim.",
-    features: [
-      "100% breathable pique cotton fabric",
-      "High-density embroidery crest that won't fade",
-      "Available in Forest Green or Crisp White",
-      "Pre-shrunk tailored fit",
-    ],
-    options: ["Small (S)", "Medium (M)", "Large (L)", "XL", "2XL", "3XL"],
-    inStock: true,
-  },
-  {
-    id: "urhobo-comprehensive-dictionary-book",
-    title: "Comprehensive Urhobo-English Cultural Dictionary",
-    category: "Books & Culture",
-    price: 45,
-    image: "/update-stem.jpg",
-    badge: "Educational",
-    description:
-      "Authoritative illustrated language compendium and cultural reference guide designed for diaspora children, students, and families learning Urhobo grammar, idioms, and folklore.",
-    features: [
-      "Over 450 pages with phonetics & vocabulary guides",
-      "Chapters on Urhobo history, clans, and kingdoms",
-      "Common conversational proverbs & phrases translated",
-      "Hardcover edition with ribbon bookmark",
-    ],
-    inStock: true,
-  },
-  {
-    id: "upua-commemorative-lapel-pins",
-    title: "UPUA Commemorative Gold Lapel Pin (Set of 2)",
-    category: "Accessories",
-    price: 20,
-    image: "/assets/Delaware-1.jpg",
-    description:
-      "Polished hard-enamel and 24K gold-plated lapel badges featuring the official UPUA coat of arms. Perfect for suits, blazers, caps, and traditional agbada attire.",
-    features: [
-      "Set of 2 matching gold-plated pins",
-      "Military clutch backing for secure wear",
-      "Jewelry gift box presentation",
-    ],
-    inStock: true,
-  },
-  {
-    id: "urhobo-desk-flag-stand",
-    title: "Urhobo Ceremonial Desk Banner & Brass Stand",
-    category: "Accessories",
-    price: 25,
-    image: "/upua-logo.png",
-    description:
-      "Miniature embroidered Urhobo national banner mounted on an 11-inch solid polished brass stand. Ideal for executive desks, chapter meetings, and home displays.",
-    features: [
-      "Detailed embroidered colors & royal emblem",
-      "Weighted brass base with anti-scratch bottom",
-      "Dimensions: 4\" x 6\" silk flag, 11\" brass pole",
-    ],
-    inStock: true,
-  },
-  {
-    id: "upuaya-youth-fleece-hoodie",
-    title: "UPUAYA Next-Gen Heavyweight Fleece Hoodie",
-    category: "Apparel & Regalia",
-    price: 45,
-    image: "/assets/youth-kevwe.jpeg",
-    description:
-      "Plush ultra-warm 350 GSM fleece hoodie featuring the modern UPUAYA Youth Wing graphic, double-lined hood, and matching drawstrings.",
-    features: [
-      "Super soft cotton-poly blend fleece",
-      "Ribbed cuffs and waistband with kangaroo pocket",
-      "Screen-printed with water-based durable inks",
-    ],
-    options: ["Small (S)", "Medium (M)", "Large (L)", "XL", "2XL"],
-    inStock: true,
-  },
-];
+const defaultCatalogItems: StoreItem[] = seedStoreItems;
 
 interface CartEntry {
   item: StoreItem;
@@ -219,6 +46,31 @@ interface CartEntry {
 }
 
 export default function StorePage() {
+  const [storeItemsList, setStoreItemsList] = useState<StoreItem[]>(defaultCatalogItems);
+
+  useEffect(() => {
+    // 1. Check local storage synced from Admin console
+    try {
+      const stored = localStorage.getItem("orgflo_store_items");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setStoreItemsList(parsed);
+        }
+      }
+    } catch {}
+
+    // 2. Fetch from /api/store/items
+    fetch("/api/store/items")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.success && Array.isArray(data.data) && data.data.length > 0) {
+          setStoreItemsList(data.data);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [cart, setCart] = useState<CartEntry[]>([]);
@@ -449,7 +301,7 @@ export default function StorePage() {
     }
   };
 
-  const filteredItems = catalogItems.filter((item) => {
+  const filteredItems = storeItemsList.filter((item) => {
     const matchCategory = activeCategory === "All" || item.category === activeCategory;
     const matchSearch =
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
