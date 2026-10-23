@@ -24,8 +24,12 @@ import {
   ChevronRight,
   Lock,
   Loader2,
-  DollarSign
+  DollarSign,
+  Heart
 } from "lucide-react";
+
+const DONATELY_CAMPAIGN_URL =
+  "https://campaigns.donately.com/t005/landing?account_subdomain=upuamerica&campaign_id=cmp_3bf0af489f59";
 
 // StoreItem interface defined in @/types
 
@@ -364,6 +368,17 @@ export default function StorePage() {
               <DollarSign size={18} />
               <span>Direct Custom Item Payment</span>
             </button>
+            <a
+              href={DONATELY_CAMPAIGN_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="store-hero-donate-btn"
+              title="Donate to 2026 UPUA Convention Campaign on Donately"
+            >
+              <Heart size={18} color="#04140b" fill="#04140b" />
+              <span>Donate via Donately</span>
+              <ExternalLink size={15} color="#04140b" />
+            </a>
           </div>
         </div>
       </section>
@@ -405,6 +420,44 @@ export default function StorePage() {
               <strong>No Portal Login Required</strong>
               <small>Open to members, guests &amp; vendors</small>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Donately Integrated Convention Campaign Giving Callout */}
+      <section className="store-donate-callout-section">
+        <div className="store-donate-callout-inner">
+          <div className="store-donate-callout-content">
+            <div className="store-donate-callout-badge">
+              <Heart size={14} fill="#f5c037" color="#f5c037" />
+              <span>2026 National Convention Campaign</span>
+            </div>
+            <h2>
+              Support the Urhobo Progress Union America <span className="heading-gold-accent">on Donately</span>
+            </h2>
+            <p>
+              Looking to make an official philanthropic donation, convention pledge, or support the host chapter directly? Give securely through our official Donately campaign. All contributions directly empower convention operations, youth initiatives, STEM labs, and diaspora welfare.
+            </p>
+            <div className="store-donate-callout-tags">
+              <span>✓ Official Donately Campaign</span>
+              <span>✓ Instant Tax-Deductible Receipt</span>
+              <span>✓ Debit, Credit &amp; Bank Transfer</span>
+            </div>
+          </div>
+
+          <div className="store-donate-callout-action">
+            <a
+              href={DONATELY_CAMPAIGN_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="store-donate-callout-btn"
+              title="Open Donately Campaign in New Tab"
+            >
+              <Heart size={18} fill="#062316" color="#062316" />
+              <span>Donate on Donately</span>
+              <ExternalLink size={16} />
+            </a>
+            <small>Opens secure Donately checkout in a new tab</small>
           </div>
         </div>
       </section>
@@ -659,6 +712,17 @@ export default function StorePage() {
                 <div style={{ textAlign: "center", fontSize: "11.5px", color: "#6b7280", marginTop: "10px", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
                   <ShieldCheck size={14} color="#0f6a4b" />
                   <span>Instant email receipt &bull; Stripe secured</span>
+                </div>
+
+                <div className="store-cart-donate-hint">
+                  <span>Want to make an official donation instead?</span>
+                  <a
+                    href={DONATELY_CAMPAIGN_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Donate on Donately <ExternalLink size={12} />
+                  </a>
                 </div>
               </div>
             )}
@@ -998,6 +1062,18 @@ export default function StorePage() {
               <p style={{ margin: 0, fontSize: "13px", color: "#667085" }}>
                 Pay directly for custom convention sponsorships, custom exhibitor fees, or specific quoted items.
               </p>
+            </div>
+
+            <div style={{ marginTop: "12px", padding: "10px 14px", background: "#fef9ee", border: "1px solid #f9dfa5", borderRadius: "8px", fontSize: "12.5px", color: "#8a5807", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "10px", flexWrap: "wrap" }}>
+              <span>Making an official convention donation instead?</span>
+              <a
+                href={DONATELY_CAMPAIGN_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ fontWeight: 800, color: "#8a5807", textDecoration: "underline", display: "inline-flex", alignItems: "center", gap: "4px" }}
+              >
+                Donate on Donately <ExternalLink size={13} />
+              </a>
             </div>
 
             {orderError && <div className="store-error-banner">{orderError}</div>}
