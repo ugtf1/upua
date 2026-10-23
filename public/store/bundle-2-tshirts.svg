@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <linearGradient id="bundleBg1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#041810"/>
+      <stop offset="50%" stop-color="#0a3321"/>
+      <stop offset="100%" stop-color="#04120b"/>
+    </linearGradient>
+    <linearGradient id="goldB1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff2a8"/>
+      <stop offset="50%" stop-color="#f5c037"/>
+      <stop offset="100%" stop-color="#c98a08"/>
+    </linearGradient>
+    <linearGradient id="shirtGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#126b47"/>
+      <stop offset="100%" stop-color="#083e27"/>
+    </linearGradient>
+    <linearGradient id="shirtBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a5fb4"/>
+      <stop offset="100%" stop-color="#0d3266"/>
+    </linearGradient>
+    <filter id="shadowB1" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#000000" flood-opacity="0.55"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="600" fill="url(#bundleBg1)"/>
+
+  <!-- Radial Glow -->
+  <circle cx="400" cy="270" r="230" fill="#157c52" opacity="0.3" filter="blur(40px)"/>
+
+  <!-- Decorative Badge Top Left -->
+  <g transform="translate(100, 70)">
+    <rect width="180" height="34" rx="17" fill="#062316" stroke="url(#goldB1)" stroke-width="1.5"/>
+    <text x="90" y="22" font-family="system-ui, sans-serif" font-size="11" font-weight="900" fill="#f5c037" text-anchor="middle" letter-spacing="1.5">OFFICIAL BUNDLE SALE</text>
+  </g>
+
+  <!-- Left Shirt: Royal Blue -->
+  <g filter="url(#shadowB1)" transform="translate(190, 130) rotate(-6)">
+    <!-- T-shirt Path -->
+    <path d="M 60 40 Q 110 65 160 40 L 210 85 L 180 125 L 155 110 L 155 310 L 65 310 L 65 110 L 40 125 L 10 85 Z" fill="url(#shirtBlue)" stroke="#3584e4" stroke-width="2"/>
+    <!-- Collar -->
+    <path d="M 80 44 Q 110 70 140 44" fill="none" stroke="#62a0ea" stroke-width="4"/>
+    <!-- Chest Crest -->
+    <circle cx="110" cy="140" r="22" fill="#0d3266" stroke="#f5c037" stroke-width="1.5"/>
+    <text x="110" y="144" font-family="system-ui, sans-serif" font-size="9" font-weight="900" fill="#f5c037" text-anchor="middle">UPUA</text>
+    <text x="110" y="200" font-family="system-ui, sans-serif" font-size="13" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="1">ROYAL BLUE</text>
+  </g>
+
+  <!-- Right Shirt: Emerald Green (Overlapping) -->
+  <g filter="url(#shadowB1)" transform="translate(390, 120) rotate(5)">
+    <!-- T-shirt Path -->
+    <path d="M 60 40 Q 110 65 160 40 L 210 85 L 180 125 L 155 110 L 155 310 L 65 310 L 65 110 L 40 125 L 10 85 Z" fill="url(#shirtGreen)" stroke="#2ec27e" stroke-width="2"/>
+    <!-- Collar -->
+    <path d="M 80 44 Q 110 70 140 44" fill="none" stroke="#57e389" stroke-width="4"/>
+    <!-- Chest Crest -->
+    <circle cx="110" cy="140" r="22" fill="#083e27" stroke="#f5c037" stroke-width="1.5"/>
+    <text x="110" y="144" font-family="system-ui, sans-serif" font-size="9" font-weight="900" fill="#f5c037" text-anchor="middle">UPUA</text>
+    <text x="110" y="200" font-family="system-ui, sans-serif" font-size="13" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="1">EMERALD</text>
+  </g>
+
+  <!-- Center Floating Price Star / Badge -->
+  <g filter="url(#shadowB1)" transform="translate(400, 310)">
+    <circle r="65" fill="#061e13" stroke="url(#goldB1)" stroke-width="3"/>
+    <circle r="57" fill="none" stroke="#f5c037" stroke-width="1" stroke-dasharray="4,3" opacity="0.6"/>
+    <text y="-20" font-family="system-ui, sans-serif" font-size="11" font-weight="900" fill="#f5c037" text-anchor="middle" letter-spacing="1">2 T-SHIRTS</text>
+    <text y="15" font-family="system-ui, sans-serif" font-size="36" font-weight="900" fill="#ffffff" text-anchor="middle">$35</text>
+    <rect x="-42" y="25" width="84" height="20" rx="10" fill="#d4920b"/>
+    <text y="39" font-family="system-ui, sans-serif" font-size="10" font-weight="900" fill="#04120b" text-anchor="middle">SAVE $5</text>
+  </g>
+
+  <!-- Bottom Title Banner -->
+  <g transform="translate(400, 520)">
+    <rect x="-240" y="0" width="480" height="46" rx="23" fill="#000000" opacity="0.6"/>
+    <rect x="-240" y="0" width="480" height="46" rx="23" fill="none" stroke="url(#goldB1)" stroke-width="1.5"/>
+    <text y="28" font-family="system-ui, sans-serif" font-weight="900" font-size="15" fill="#f5c037" text-anchor="middle" letter-spacing="1.5">CONVENTION T-SHIRT DUO BUNDLE</text>
+  </g>
+</svg>

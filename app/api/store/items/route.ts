@@ -44,23 +44,36 @@ function safeParseJson<T>(val: string, fallback: T): T {
 async function ensureSeeded() {
   if (!prisma) return false;
   try {
-    await prisma.storeItem.createMany({
-      data: seedStoreItems.map((item) => ({
-        id: item.id,
-        title: item.title,
-        category: item.category,
-        price: item.price,
-        image: item.image,
-        badge: item.badge ?? null,
-        description: item.description,
-        features: JSON.stringify(item.features ?? []),
-        options: item.options ? JSON.stringify(item.options) : null,
-        inStock: item.inStock,
-      })),
-      skipDuplicates: true,
-    });
-  } catch {
-    // ignore seeding error if already seeded or constrained
+    for (const item of seedStoreItems) {
+      await prisma.storeItem.upsert({
+        where: { id: item.id },
+        update: {
+          title: item.title,
+          category: item.category,
+          price: item.price,
+          image: item.image,
+          badge: item.badge ?? null,
+          description: item.description,
+          features: JSON.stringify(item.features ?? []),
+          options: item.options ? JSON.stringify(item.options) : null,
+          inStock: item.inStock,
+        },
+        create: {
+          id: item.id,
+          title: item.title,
+          category: item.category,
+          price: item.price,
+          image: item.image,
+          badge: item.badge ?? null,
+          description: item.description,
+          features: JSON.stringify(item.features ?? []),
+          options: item.options ? JSON.stringify(item.options) : null,
+          inStock: item.inStock,
+        },
+      });
+    }
+  } catch (err) {
+    console.error("ensureSeeded error:", err);
   }
   return true;
 }

@@ -39,6 +39,17 @@ const storeCategories = [
 
 const defaultCatalogItems: StoreItem[] = seedStoreItems;
 
+function getItemEffectivePrice(item: StoreItem, selectedOption?: string): number {
+  if (selectedOption) {
+    const match = selectedOption.match(/\$([0-9,]+(?:\.[0-9]{2})?)/);
+    if (match) {
+      const parsed = parseFloat(match[1].replace(/,/g, ""));
+      if (!isNaN(parsed) && parsed > 0) return parsed;
+    }
+  }
+  return item.price;
+}
+
 interface CartEntry {
   item: StoreItem;
   quantity: number;
@@ -133,6 +144,9 @@ export default function StorePage() {
 
   const addToCart = (item: StoreItem, immediateCheckout = false) => {
     const selectedOption = itemOptions[item.id] || (item.options ? item.options[0] : undefined);
+    const effectivePrice = getItemEffectivePrice(item, selectedOption);
+    const itemWithPrice: StoreItem = { ...item, price: effectivePrice };
+
     setCart((prev) => {
       const existing = prev.find(
         (c) => c.item.id === item.id && c.selectedOption === selectedOption
@@ -144,7 +158,7 @@ export default function StorePage() {
             : c
         );
       }
-      return [...prev, { item, quantity: 1, selectedOption }];
+      return [...prev, { item: itemWithPrice, quantity: 1, selectedOption }];
     });
 
     if (immediateCheckout) {
@@ -176,7 +190,7 @@ export default function StorePage() {
   };
 
   const totalItemsCount = cart.reduce((sum, c) => sum + c.quantity, 0);
-  const subtotal = cart.reduce((sum, c) => sum + c.item.price * c.quantity, 0);
+  const subtotal = cart.reduce((sum, c) => sum + getItemEffectivePrice(c.item, c.selectedOption) * c.quantity, 0);
   // Free shipping for convention packages, flat $8 for apparel/items
   const hasPhysicalGoods = cart.some((c) => c.item.category !== "Convention Packages");
   const shippingCost = cart.length === 0 ? 0 : hasPhysicalGoods ? 8 : 0;
@@ -456,7 +470,7 @@ export default function StorePage() {
 
                     <div className="store-card-body">
                       <div className="store-card-price-row">
-                        <span className="store-price">${item.price.toFixed(2)}</span>
+                        <span className="store-price">${getItemEffectivePrice(item, currentOption).toFixed(2)}</span>
                         <span className="store-stock-tag">In Stock</span>
                       </div>
 
@@ -577,7 +591,7 @@ export default function StorePage() {
                           </span>
                         )}
                         <span className="store-cart-item-price">
-                          ${entry.item.price.toFixed(2)} each
+                          ${getItemEffectivePrice(entry.item, entry.selectedOption).toFixed(2)} each
                         </span>
                         <div className="store-cart-qty-row">
                           <button
@@ -705,7 +719,7 @@ export default function StorePage() {
                         <span>
                           {c.quantity}x {c.item.title} {c.selectedOption ? `(${c.selectedOption})` : ""}
                         </span>
-                        <span>${(c.item.price * c.quantity).toFixed(2)}</span>
+                        <span>${(getItemEffectivePrice(c.item, c.selectedOption) * c.quantity).toFixed(2)}</span>
                       </div>
                     ))}
                   </div>
