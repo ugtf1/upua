@@ -108,7 +108,7 @@ export default function LandingEventsSection() {
             </div>
           </article>
 
-          {/* 3 Horizontal Stacked Cards (Right) */}
+          {/* 4 Horizontal Stacked Cards (Right) */}
           <div className="events-stack">
             {/* Event 1: Golf Outing */}
             <article className="event-stack-card">
@@ -118,7 +118,7 @@ export default function LandingEventsSection() {
                   alt="UPUA Annual National Golf Outing 2026"
                   fill
                   sizes="(max-width: 768px) 140px, 150px"
-                  style={{ objectFit: "contain", objectPosition: "center center", padding: "4px" }}
+                  style={{ objectFit: "cover", objectPosition: "center center" }}
                   className="event-img"
                 />
               </div>
@@ -148,7 +148,7 @@ export default function LandingEventsSection() {
                   alt="UPU Ohio Chapter Zoom Fundraiser"
                   fill
                   sizes="(max-width: 768px) 140px, 150px"
-                  style={{ objectFit: "contain", objectPosition: "center center", padding: "4px" }}
+                  style={{ objectFit: "cover", objectPosition: "center center" }}
                   className="event-img"
                 />
               </div>
@@ -178,7 +178,7 @@ export default function LandingEventsSection() {
                   alt="Convention Brochure Advertisement & Goodwill Messages"
                   fill
                   sizes="(max-width: 768px) 140px, 150px"
-                  style={{ objectFit: "contain", objectPosition: "center center", padding: "4px" }}
+                  style={{ objectFit: "cover", objectPosition: "center center" }}
                   className="event-img"
                 />
               </div>
@@ -196,6 +196,36 @@ export default function LandingEventsSection() {
                 </h4>
                 <div className="event-stack-location">
                   <MapPin size={13} /> Souvenir Brochure ($100 – $1,000)
+                </div>
+              </div>
+            </article>
+
+            {/* Event 4: Youth Leadership Symposium */}
+            <article className="event-stack-card">
+              <div className="event-stack-media" style={{ background: "#f8faf8" }}>
+                <Image
+                  src="/assets/youth-kevwe.jpeg"
+                  alt="UPUAYA National Youth Leadership & Career Symposium"
+                  fill
+                  sizes="(max-width: 768px) 140px, 150px"
+                  style={{ objectFit: "cover", objectPosition: "top 20% center" }}
+                  className="event-img"
+                />
+              </div>
+              <div className="event-stack-info">
+                <div className="event-meta">
+                  <span className="event-tag youth-tag">YOUTH WING</span>
+                  <span className="event-meta-item">
+                    <Calendar size={13} /> Oct 18 – 19, 2026
+                  </span>
+                </div>
+                <h4 className="event-stack-title">
+                  <Link href="/events">
+                    UPUAYA National Youth Leadership &amp; Career Symposium
+                  </Link>
+                </h4>
+                <div className="event-stack-location">
+                  <MapPin size={13} /> Houston, TX &amp; Virtual Stream
                 </div>
               </div>
             </article>

@@ -6530,25 +6530,27 @@ a {
   color: #175436;
 }
 
-/* 3 Horizontal Stacked Cards (Right) */
+/* 4 Horizontal Stacked Cards (Right) */
 .events-stack {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 14px;
   justify-content: space-between;
+  height: 100%;
 }
 
 .event-stack-card {
   background: #ffffff;
   border: 1px solid rgba(14, 61, 38, 0.08);
-  border-radius: 20px;
-  padding: 16px;
+  border-radius: 18px;
+  padding: 12px 16px;
   display: grid;
-  grid-template-columns: 140px 1fr;
-  gap: 20px;
+  grid-template-columns: 130px 1fr;
+  gap: 16px;
   align-items: center;
-  box-shadow: 0 8px 20px rgba(14, 61, 38, 0.05);
+  box-shadow: 0 6px 18px rgba(14, 61, 38, 0.05);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  flex: 1;
 }
 
 .event-stack-card:hover {
@@ -6558,9 +6560,9 @@ a {
 
 .event-stack-media {
   position: relative;
-  width: 140px;
-  height: 140px;
-  border-radius: 16px;
+  width: 130px;
+  height: 110px;
+  border-radius: 14px;
   overflow: hidden;
   background: #f0f5f1 !important;
   display: block !important;
@@ -6570,7 +6572,7 @@ a {
 .event-stack-media img,
 .event-stack-media .event-img {
   object-fit: cover !important;
-  object-position: center center !important;
+  object-position: center 25% !important;
   padding: 0 !important;
   width: 100% !important;
   height: 100% !important;
@@ -6579,15 +6581,16 @@ a {
 .event-stack-info {
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
 
 .event-stack-title {
   font-family: var(--font-heading);
-  font-size: 1.02rem;
+  font-size: 0.98rem;
   font-weight: 800;
   color: #111827;
-  line-height: 1.4;
-  margin: 6px 0;
+  line-height: 1.35;
+  margin: 4px 0;
 }
 
 .event-stack-title a {
@@ -6703,9 +6706,13 @@ a {
 @media (max-width: 1080px) {
   .events-grid {
     grid-template-columns: 1fr;
+    gap: 24px;
   }
   .event-feature-media {
     height: 300px;
+  }
+  .event-stack-card {
+    flex: initial;
   }
 }
 
