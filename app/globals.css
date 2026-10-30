@@ -8845,6 +8845,55 @@ a {
 }
 
 /* =========================================================
+   KEVTREX LENIS SMOOTH SCROLL & SPOTLIGHT SYSTEM
+   ========================================================= */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+.has-spotlight {
+  --spotlight-color: rgba(14, 61, 38, 0.12);
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.has-spotlight .nk-spotlight {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle var(--spotlight-size, 260px) at var(--spotlight-x, 50%) var(--spotlight-y, 50%),
+    var(--spotlight-color, rgba(14, 61, 38, 0.12)),
+    transparent 70%
+  );
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+  transition: opacity 0.35s ease;
+}
+
+.has-spotlight:hover .nk-spotlight {
+  opacity: 1;
+}
+
+/* =========================================================
    PREMIUM SCROLL REVEAL ANIMATIONS (Physics & Stagger)
    ========================================================= */
 .reveal-element {
