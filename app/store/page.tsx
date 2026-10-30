@@ -789,9 +789,9 @@ export default function StorePage() {
                 </div>
 
                 <div style={{ padding: "14px 18px", background: "#f0f7f3", borderRadius: "10px", fontSize: "13px", color: "#0e3d26", textAlign: "left", margin: "20px 0" }}>
-                  <strong>Next Steps for Convention Vendors &amp; Ads:</strong>
+                  <strong>Next Steps for Convention Ads &amp; Gala Passes:</strong>
                   <p style={{ margin: "4px 0 0", fontSize: "12.5px", color: "#345443" }}>
-                    If you purchased a convention vendor table or souvenir brochure ad, our National Secretariat team will email you within 24 hours to collect artwork, logos, and attendee passes.
+                    If you purchased a souvenir brochure ad or cultural gala passes, our National Secretariat team will email you within 24 hours with your confirmation details and registration credentials.
                   </p>
                 </div>
 

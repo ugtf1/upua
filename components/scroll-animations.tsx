@@ -1,247 +1,160 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Lenis from "lenis";
 
-// Register ScrollTrigger plugin with GSAP once on client
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
-
-// Selectors for automatic Kevtrex animation tagging across all pages
 const SECTION_HEADERS = [
   ".association-section-heading",
   ".ec-header",
+  ".bot-header",
   ".bot-grid-header",
   ".leaders-header",
   ".upuaya-exco-header",
   ".updates-header",
   ".events-header",
-  ".about-hero-copy",
+  ".page-hero-inner",
   ".landing-section-heading",
-  ".page-hero",
-  ".console-hero",
+  ".events-header-text",
+  ".about-mission-block",
+  ".programs-partner-text",
+  ".blog-featured-content",
+  ".store-donate-callout-inner",
+  ".upua-world-footer",
 ].join(", ");
 
 const CARD_ELEMENTS = [
   ".association-work-card",
   ".ec-officer-card",
+  ".bot-spotlight-card",
   ".bot-card",
   ".upuaya-officer-card",
   ".leader-card",
-  ".updates-blog-card",
-  ".landing-event-card",
+  ".update-feature-card",
+  ".update-stack-card",
+  ".event-feature-card",
+  ".event-stack-card",
   ".about-value-card",
   ".about-stat-card",
   ".leader-featured-card",
+  ".about-branch-card",
   ".program-feature-card",
   ".shelter-chapter-card",
+  ".blog-featured-card",
   ".blog-post-card",
   ".event-catalog-card",
   ".store-card",
-  ".panel-card",
-  ".dash-metrics-grid > *",
-  ".metrics-grid > *",
+  ".programs-list-inner article",
+  ".programs-stat",
+  ".join-community-card",
 ].join(", ");
+
+const PUBLIC_SECTIONS = ".figma-landing-page > section";
+const REVEAL_DISTANCE = 50;
 
 export default function ScrollAnimations() {
   const pathname = usePathname();
-  const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!("IntersectionObserver" in window)) return;
 
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let observer: IntersectionObserver;
+    const pending = new Set<HTMLElement>();
+    const initialized = new WeakSet<HTMLElement>();
+    const fadeOnlySections = new WeakSet<HTMLElement>();
+    const tweens = new Set<gsap.core.Tween>();
 
-    // 1. Initialize Lenis Smooth Scroll safely (Kevtrex Signature Smooth Momentum)
-    let lenis: Lenis | null = null;
-    let rafId: number | null = null;
+    const reveal = (element: HTMLElement, y: number, delay: number, fadeOnly = false) => {
+      if (initialized.has(element)) return;
+      initialized.add(element);
+      pending.delete(element);
 
-    if (!prefersReducedMotion) {
       try {
-        lenis = new Lenis({
-          duration: 1.1,
-          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-          touchMultiplier: 1.2,
-          infinite: false,
-        });
-
-        lenisRef.current = lenis;
-
-        // Connect Lenis to GSAP ScrollTrigger safely
-        lenis.on("scroll", () => {
-          ScrollTrigger.update();
-        });
-
-        const raf = (time: number) => {
-          lenis?.raf(time);
-          rafId = requestAnimationFrame(raf);
-        };
-        rafId = requestAnimationFrame(raf);
-      } catch (err) {
-        console.warn("Lenis init skipped:", err);
-      }
-    }
-
-    // Scroll to top on pathname change
-    if (lenis) {
-      lenis.scrollTo(0, { immediate: true });
-    } else {
-      window.scrollTo(0, 0);
-    }
-
-    // 2. Setup Spotlight Cursor Tracking via a single passive mousemove listener on document
-    const handleMouseMove = (e: MouseEvent) => {
-      const target = (e.target as HTMLElement)?.closest<HTMLElement>(".has-spotlight");
-      if (target) {
-        const rect = target.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        target.style.setProperty("--spotlight-x", `${x}px`);
-        target.style.setProperty("--spotlight-y", `${y}px`);
+        const tween = gsap.fromTo(
+          element,
+          fadeOnly ? { autoAlpha: 0 } : { autoAlpha: 0, y },
+          {
+            autoAlpha: 1,
+            ...(fadeOnly ? {} : { y: 0 }),
+            duration: 0.75,
+            delay,
+            ease: "power3.out",
+            onComplete: () => {
+              // Return transform/visibility control to the element's own styles.
+              gsap.set(element, { clearProps: "opacity,visibility,transform" });
+            },
+          },
+        );
+        tweens.add(tween);
+      } catch {
+        // A failed animation must never leave content hidden.
+        gsap.set(element, { clearProps: "opacity,visibility,transform" });
       }
     };
-    document.addEventListener("mousemove", handleMouseMove, { passive: true });
 
-    // Track active triggers for clean teardown
-    const triggers: ScrollTrigger[] = [];
-    const tweens: gsap.core.Tween[] = [];
-    const initializedElements = new WeakSet<Element>();
-
-    // 3. Bind Animations safely without recursive loops
-    function initAnimations() {
-      // Add spotlight class to cards
-      document.querySelectorAll<HTMLElement>(CARD_ELEMENTS).forEach((el) => {
-        if (!el.classList.contains("has-spotlight")) {
-          el.classList.add("has-spotlight");
-        }
-      });
-
-      // Target headers
-      document.querySelectorAll<HTMLElement>(SECTION_HEADERS).forEach((el) => {
-        if (el.closest(".association-hero") || el.closest(".hero-slider-container")) return;
-        if (initializedElements.has(el)) return;
-        initializedElements.add(el);
-
-        if (prefersReducedMotion) {
-          gsap.set(el, { opacity: 1, y: 0, clearProps: "all" });
-          return;
-        }
-
-        const tween = gsap.from(el, {
-          opacity: 0,
-          y: 36,
-          duration: 0.65,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: el,
-            start: "top 92%",
-            toggleActions: "play none none none",
-            once: true,
-          },
-        });
-        tweens.push(tween);
-        if (tween.scrollTrigger) triggers.push(tween.scrollTrigger);
-      });
-
-      // Target cards with stagger
-      document.querySelectorAll<HTMLElement>(CARD_ELEMENTS).forEach((el) => {
-        if (el.closest(".association-hero") || el.closest(".hero-slider-container")) return;
-        if (initializedElements.has(el)) return;
-        initializedElements.add(el);
-
-        if (prefersReducedMotion) {
-          gsap.set(el, { opacity: 1, y: 0, clearProps: "all" });
-          return;
-        }
-
-        let staggerDelay = 0.05;
-        if (el.parentElement) {
-          const siblings = Array.from(el.parentElement.children);
-          const index = siblings.indexOf(el);
-          if (index >= 0) {
-            staggerDelay = Math.min(0.35, (index % 4) * 0.08);
-          }
-        }
-
-        const tween = gsap.from(el, {
-          opacity: 0,
-          y: 40,
-          duration: 0.65,
-          delay: staggerDelay,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: el,
-            start: "top 92%",
-            toggleActions: "play none none none",
-            once: true,
-          },
-        });
-        tweens.push(tween);
-        if (tween.scrollTrigger) triggers.push(tween.scrollTrigger);
-      });
-
-      // Explicit [data-gsap-in] elements
-      document.querySelectorAll<HTMLElement>("[data-gsap-in]").forEach((el) => {
-        if (el.closest(".association-hero") || el.closest(".hero-slider-container")) return;
-        if (initializedElements.has(el)) return;
-        initializedElements.add(el);
-
-        if (prefersReducedMotion) {
-          gsap.set(el, { opacity: 1, y: 0, clearProps: "all" });
-          return;
-        }
-
-        try {
-          const inAttr = el.dataset.gsapIn || "{}";
-          const parsedIn = JSON.parse(inAttr.replace(/'/g, '"'));
-          const duration = parseFloat(el.dataset.gsapDuration || "0.65");
-          const delay = parseFloat(el.dataset.gsapDelay || "0");
-          const ease = el.dataset.gsapEase || "power2.out";
-
-          const tween = gsap.from(el, {
-            ...parsedIn,
-            duration,
-            delay,
-            ease,
-            scrollTrigger: {
-              trigger: el,
-              start: "top 90%",
-              toggleActions: "play none none none",
-              once: true,
-            },
-          });
-          tweens.push(tween);
-          if (tween.scrollTrigger) triggers.push(tween.scrollTrigger);
-        } catch {
-          // Ignore parse errors safely
-        }
-      });
-
-      // Refresh ScrollTrigger once safely
-      requestAnimationFrame(() => {
-        ScrollTrigger.refresh();
-      });
+    function getStagger(element: HTMLElement) {
+      const siblings = Array.from(element.parentElement?.children ?? []).filter(
+        (sibling): sibling is HTMLElement =>
+          sibling instanceof HTMLElement && sibling.matches(CARD_ELEMENTS),
+      );
+      const index = Math.max(0, siblings.indexOf(element));
+      return Math.min(0.32, index * 0.07);
     }
 
-    // Run animation scan once after DOM settles
-    const timer = setTimeout(initAnimations, 100);
+    const onIntersection: IntersectionObserverCallback = (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const element = entry.target as HTMLElement;
+        const isCard = element.matches(CARD_ELEMENTS);
+        const fadeOnly = fadeOnlySections.has(element);
+        const y = isCard ? REVEAL_DISTANCE : 36;
+        reveal(element, y, isCard ? getStagger(element) : 0, fadeOnly);
+        observer.unobserve(element);
+      });
+    };
+
+    observer = new IntersectionObserver(onIntersection, {
+      threshold: 0.01,
+      rootMargin: "0px 0px -24px 0px",
+    });
+
+    const scan = () => {
+      const candidates = document.querySelectorAll<HTMLElement>(
+        `${PUBLIC_SECTIONS}, ${SECTION_HEADERS}, ${CARD_ELEMENTS}`,
+      );
+
+      candidates.forEach((element) => {
+        if (initialized.has(element) || pending.has(element)) return;
+        if (element.closest(".upua-modal-backdrop, .association-hero .hero-slider-container")) return;
+
+        // Keep the whole section to a simple fade when its own cards or heading
+        // will animate separately, avoiding nested movement and layout conflict.
+        const isSection = element.matches(PUBLIC_SECTIONS);
+        const hasAnimatedContent = isSection && element.querySelector(`${SECTION_HEADERS}, ${CARD_ELEMENTS}`);
+        if (hasAnimatedContent) {
+          // The section is a fade-only parent; its children supply the movement.
+          fadeOnlySections.add(element);
+        }
+
+        pending.add(element);
+        observer.observe(element);
+      });
+    };
+
+    scan();
+    const mutations = new MutationObserver(() => {
+      scan();
+    });
+    mutations.observe(document.body, { childList: true, subtree: true });
 
     return () => {
-      clearTimeout(timer);
-      if (rafId !== null) {
-        cancelAnimationFrame(rafId);
-      }
-      document.removeEventListener("mousemove", handleMouseMove);
-      triggers.forEach((st) => st.kill());
-      tweens.forEach((tw) => tw.kill());
-      if (lenis) {
-        lenis.destroy();
-        lenisRef.current = null;
-      }
+      mutations.disconnect();
+      observer.disconnect();
+      tweens.forEach((tween) => tween.kill());
+      pending.forEach((element) => {
+        gsap.set(element, { clearProps: "opacity,visibility,transform" });
+      });
     };
   }, [pathname]);
 
