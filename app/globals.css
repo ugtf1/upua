@@ -8856,7 +8856,9 @@ html.lenis body {
   isolation: isolate;
 }
 
+.has-spotlight::after,
 .has-spotlight .nk-spotlight {
+  content: "";
   position: absolute;
   inset: 0;
   background: radial-gradient(
@@ -8870,6 +8872,7 @@ html.lenis body {
   transition: opacity 0.35s ease;
 }
 
+.has-spotlight:hover::after,
 .has-spotlight:hover .nk-spotlight {
   opacity: 1;
 }

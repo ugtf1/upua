@@ -6,7 +6,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 
-// Register ScrollTrigger plugin with GSAP
+// Register ScrollTrigger plugin with GSAP once on client
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
@@ -38,8 +38,10 @@ const CARD_ELEMENTS = [
   ".about-stat-card",
   ".leader-featured-card",
   ".program-feature-card",
-  ".store-product-card",
-  ".event-detail-card",
+  ".shelter-chapter-card",
+  ".blog-post-card",
+  ".event-catalog-card",
+  ".store-card",
   ".panel-card",
   ".dash-metrics-grid > *",
   ".metrics-grid > *",
@@ -54,115 +56,137 @@ export default function ScrollAnimations() {
 
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // 1. Initialize Lenis Smooth Scroll (Kevtrex Signature Inertial Glide)
+    // 1. Initialize Lenis Smooth Scroll safely (Kevtrex Signature Smooth Momentum)
     let lenis: Lenis | null = null;
+    let rafId: number | null = null;
+
     if (!prefersReducedMotion) {
-      lenis = new Lenis({
-        duration: 1.15,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        touchMultiplier: 1.2,
-        infinite: false,
-      });
+      try {
+        lenis = new Lenis({
+          duration: 1.1,
+          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          touchMultiplier: 1.2,
+          infinite: false,
+        });
 
-      lenisRef.current = lenis;
+        lenisRef.current = lenis;
 
-      // Connect Lenis to GSAP ScrollTrigger
-      lenis.on("scroll", ScrollTrigger.update);
+        // Connect Lenis to GSAP ScrollTrigger safely
+        lenis.on("scroll", () => {
+          ScrollTrigger.update();
+        });
 
-      const tickerCallback = (time: number) => {
-        lenis?.raf(time * 1000);
-      };
-
-      gsap.ticker.add(tickerCallback);
-      gsap.ticker.lagSmoothing(0);
+        const raf = (time: number) => {
+          lenis?.raf(time);
+          rafId = requestAnimationFrame(raf);
+        };
+        rafId = requestAnimationFrame(raf);
+      } catch (err) {
+        console.warn("Lenis init skipped:", err);
+      }
     }
 
     // Scroll to top on pathname change
-    lenis?.scrollTo(0, { immediate: true });
-
-    // Track initialized elements
-    const initializedElements = new WeakSet<Element>();
-    const triggers: ScrollTrigger[] = [];
-
-    // 2. Setup Spotlight Cursor Tracking (.has-spotlight)
-    function setupSpotlights() {
-      const spotlights = document.querySelectorAll<HTMLElement>(".has-spotlight");
-      spotlights.forEach((el) => {
-        if (el.dataset.spotlightReady) return;
-        el.dataset.spotlightReady = "true";
-
-        const size = el.dataset.spotlightSize || "260px";
-        const color = el.dataset.spotlightColor || "rgba(14, 61, 38, 0.14)";
-        el.style.setProperty("--spotlight-size", size);
-        el.style.setProperty("--spotlight-color", color);
-
-        if (!el.querySelector(".nk-spotlight")) {
-          const spot = document.createElement("div");
-          spot.className = "nk-spotlight";
-          el.appendChild(spot);
-        }
-
-        el.addEventListener("mousemove", (e: MouseEvent) => {
-          const rect = el.getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-          el.style.setProperty("--spotlight-x", `${x}px`);
-          el.style.setProperty("--spotlight-y", `${y}px`);
-        });
-
-        el.addEventListener("mouseleave", () => {
-          el.style.setProperty("--spotlight-x", "50%");
-          el.style.setProperty("--spotlight-y", "50%");
-        });
-      });
+    if (lenis) {
+      lenis.scrollTo(0, { immediate: true });
+    } else {
+      window.scrollTo(0, 0);
     }
 
-    // 3. Auto-tag and Bind Kevtrex [data-gsap-in] Animations
-    function scanAndAnimate() {
-      // Auto-tag section headers
-      document.querySelectorAll<HTMLElement>(SECTION_HEADERS).forEach((el) => {
-        if (!el.hasAttribute("data-gsap-in")) {
-          el.setAttribute("data-gsap-in", '{"opacity": 0, "y": 42}');
-          el.setAttribute("data-gsap-duration", "0.75");
-          el.setAttribute("data-gsap-ease", "power2.out");
-        }
-      });
+    // 2. Setup Spotlight Cursor Tracking via a single passive mousemove listener on document
+    const handleMouseMove = (e: MouseEvent) => {
+      const target = (e.target as HTMLElement)?.closest<HTMLElement>(".has-spotlight");
+      if (target) {
+        const rect = target.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        target.style.setProperty("--spotlight-x", `${x}px`);
+        target.style.setProperty("--spotlight-y", `${y}px`);
+      }
+    };
+    document.addEventListener("mousemove", handleMouseMove, { passive: true });
 
-      // Auto-tag cards with staggered delays and spotlight
+    // Track active triggers for clean teardown
+    const triggers: ScrollTrigger[] = [];
+    const tweens: gsap.core.Tween[] = [];
+    const initializedElements = new WeakSet<Element>();
+
+    // 3. Bind Animations safely without recursive loops
+    function initAnimations() {
+      // Add spotlight class to cards
       document.querySelectorAll<HTMLElement>(CARD_ELEMENTS).forEach((el) => {
         if (!el.classList.contains("has-spotlight")) {
           el.classList.add("has-spotlight");
         }
-
-        if (!el.hasAttribute("data-gsap-in")) {
-          // Calculate stagger offset among siblings
-          let staggerDelay = 0.08;
-          if (el.parentElement) {
-            const siblings = Array.from(el.parentElement.children);
-            const index = siblings.indexOf(el);
-            if (index >= 0) {
-              staggerDelay = Math.min(0.55, 0.06 + (index % 5) * 0.08);
-            }
-          }
-          el.setAttribute("data-gsap-in", '{"opacity": 0, "y": 48}');
-          el.setAttribute("data-gsap-delay", staggerDelay.toString());
-          el.setAttribute("data-gsap-duration", "0.7");
-          el.setAttribute("data-gsap-ease", "power2.out");
-        }
       });
 
-      // Bind spotlight mouse tracker
-      setupSpotlights();
+      // Target headers
+      document.querySelectorAll<HTMLElement>(SECTION_HEADERS).forEach((el) => {
+        if (el.closest(".association-hero") || el.closest(".hero-slider-container")) return;
+        if (initializedElements.has(el)) return;
+        initializedElements.add(el);
 
-      // Process all [data-gsap-in] elements exactly as done on Kevtrex
-      const elements = document.querySelectorAll<HTMLElement>("[data-gsap-in]");
-
-      elements.forEach((el) => {
-        // Never disrupt .association-hero layout or hero slider
-        if (el.closest(".association-hero") || el.closest(".hero-slider-container")) {
+        if (prefersReducedMotion) {
+          gsap.set(el, { opacity: 1, y: 0, clearProps: "all" });
           return;
         }
 
+        const tween = gsap.from(el, {
+          opacity: 0,
+          y: 36,
+          duration: 0.65,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: el,
+            start: "top 92%",
+            toggleActions: "play none none none",
+            once: true,
+          },
+        });
+        tweens.push(tween);
+        if (tween.scrollTrigger) triggers.push(tween.scrollTrigger);
+      });
+
+      // Target cards with stagger
+      document.querySelectorAll<HTMLElement>(CARD_ELEMENTS).forEach((el) => {
+        if (el.closest(".association-hero") || el.closest(".hero-slider-container")) return;
+        if (initializedElements.has(el)) return;
+        initializedElements.add(el);
+
+        if (prefersReducedMotion) {
+          gsap.set(el, { opacity: 1, y: 0, clearProps: "all" });
+          return;
+        }
+
+        let staggerDelay = 0.05;
+        if (el.parentElement) {
+          const siblings = Array.from(el.parentElement.children);
+          const index = siblings.indexOf(el);
+          if (index >= 0) {
+            staggerDelay = Math.min(0.35, (index % 4) * 0.08);
+          }
+        }
+
+        const tween = gsap.from(el, {
+          opacity: 0,
+          y: 40,
+          duration: 0.65,
+          delay: staggerDelay,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: el,
+            start: "top 92%",
+            toggleActions: "play none none none",
+            once: true,
+          },
+        });
+        tweens.push(tween);
+        if (tween.scrollTrigger) triggers.push(tween.scrollTrigger);
+      });
+
+      // Explicit [data-gsap-in] elements
+      document.querySelectorAll<HTMLElement>("[data-gsap-in]").forEach((el) => {
+        if (el.closest(".association-hero") || el.closest(".hero-slider-container")) return;
         if (initializedElements.has(el)) return;
         initializedElements.add(el);
 
@@ -174,70 +198,46 @@ export default function ScrollAnimations() {
         try {
           const inAttr = el.dataset.gsapIn || "{}";
           const parsedIn = JSON.parse(inAttr.replace(/'/g, '"'));
-          const duration = parseFloat(el.dataset.gsapDuration || "0.68");
+          const duration = parseFloat(el.dataset.gsapDuration || "0.65");
           const delay = parseFloat(el.dataset.gsapDelay || "0");
           const ease = el.dataset.gsapEase || "power2.out";
-          const start = el.dataset.gsapStart || "top 90%";
-          const end = el.dataset.gsapEnd || "bottom center";
-          const scrub = el.dataset.gsapScrub === "true" ? 1 : el.dataset.gsapScrub ? parseFloat(el.dataset.gsapScrub) : false;
 
-          const perspective = el.dataset.gsapPerspective;
-          if (perspective && el.parentElement) {
-            el.parentElement.style.perspective = perspective;
-          }
-
-          // If the element is already in the top viewport at page load, play immediately
-          const rect = el.getBoundingClientRect();
-          const isInitiallyVisible = rect.top >= 0 && rect.top <= window.innerHeight;
-
-          const anim = gsap.from(el, {
+          const tween = gsap.from(el, {
             ...parsedIn,
-            duration: duration,
-            delay: isInitiallyVisible ? delay * 0.5 : delay,
-            ease: ease,
-            clearProps: scrub ? "" : "transform",
-            paused: !isInitiallyVisible && !scrub,
-          });
-
-          if (!isInitiallyVisible || scrub) {
-            const st = ScrollTrigger.create({
+            duration,
+            delay,
+            ease,
+            scrollTrigger: {
               trigger: el,
-              start: start,
-              end: end,
-              scrub: scrub,
+              start: "top 90%",
               toggleActions: "play none none none",
-              onEnter: () => {
-                if (!scrub) anim.play();
-              },
-            });
-            triggers.push(st);
-          }
-        } catch (err) {
-          console.warn("Kevtrex gsap-in parse error on:", el, err);
+              once: true,
+            },
+          });
+          tweens.push(tween);
+          if (tween.scrollTrigger) triggers.push(tween.scrollTrigger);
+        } catch {
+          // Ignore parse errors safely
         }
       });
 
-      // Refresh ScrollTrigger calculations
-      ScrollTrigger.refresh();
+      // Refresh ScrollTrigger once safely
+      requestAnimationFrame(() => {
+        ScrollTrigger.refresh();
+      });
     }
 
-    // Run scan after initial render
-    const scanTimer = setTimeout(scanAndAnimate, 120);
-
-    // Watch for dynamic route transitions & portal tab switching
-    const mutationObserver = new MutationObserver(() => {
-      scanAndAnimate();
-    });
-
-    mutationObserver.observe(document.body, {
-      childList: true,
-      subtree: true,
-    });
+    // Run animation scan once after DOM settles
+    const timer = setTimeout(initAnimations, 100);
 
     return () => {
-      clearTimeout(scanTimer);
-      mutationObserver.disconnect();
+      clearTimeout(timer);
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+      }
+      document.removeEventListener("mousemove", handleMouseMove);
       triggers.forEach((st) => st.kill());
+      tweens.forEach((tw) => tw.kill());
       if (lenis) {
         lenis.destroy();
         lenisRef.current = null;
