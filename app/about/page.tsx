@@ -77,7 +77,7 @@ const executiveTeam = [
   {
     name: "Chief (Dr.) Mrs. Louisa Ukochovwera",
     role: "Deputy BOT Chair / President, UPU Ohio",
-    image: "/assets/Ohio-1.jpg",
+    image: "/assets/bot/louisa-ukochovwera.jpeg",
   },
 ];
 
