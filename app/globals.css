@@ -249,19 +249,11 @@ a {
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.mobile-nav-links a:hover {
+.mobile-nav-links a:hover,
+.mobile-nav-links a.mobile-nav-active {
   background: #f0f7f2;
   transform: translateX(4px);
   color: #0e3d26;
-}
-  border-radius: 8px;
-  transition: all 180ms ease;
-}
-
-.mobile-nav-links a:hover,
-.mobile-nav-links a.mobile-nav-active {
-  background: #e8f5ef;
-  color: #137459;
 }
 
 /* Mobile Screen layout: Logo on extreme left, Donate + Sign in in middle, Hamburger on extreme right */
@@ -4719,21 +4711,14 @@ a {
 }
 
 .hero-arrow-btn:hover {
-  background: rgba(255, 255, 255, 0.25);
-  border-color: rgba(255, 255, 255, 0.4);
+  background: #d7b524;
+  color: #0b3323;
+  border-color: #d7b524;
   transform: scale(1.08);
 }
 
 .hero-arrow-btn:active {
   transform: scale(0.95);
-}
-  padding: 0;
-}
-
-.hero-arrow-btn:hover {
-  background: #d7b524;
-  color: #0b3323;
-  border-color: #d7b524;
 }
 
 .association-hero-media img,
