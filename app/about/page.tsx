@@ -353,25 +353,24 @@ export default function AboutPage() {
             <p>Empowering dynamic Urhobo young professionals and students across the United States.</p>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "20px" }}>
+          <div className="ec-grid" style={{ marginBottom: "56px" }}>
             {youthWingExco.map((youth) => (
-              <div
-                key={youth.name}
-                style={{
-                  background: "#ffffff",
-                  border: "1px solid #d5e0e1",
-                  borderRadius: "12px",
-                  padding: "18px 14px",
-                  textAlign: "center",
-                }}
-              >
-                <div style={{ width: "80px", height: "80px", borderRadius: "50%", overflow: "hidden", position: "relative", margin: "0 auto 12px", border: "2px solid #e7c326" }}>
-                  <Image src={youth.image} alt={youth.name} fill style={{ objectFit: "cover" }} sizes="80px" />
+              <article className="ec-officer-card" key={youth.name}>
+                <div className="ec-card-media">
+                  <Image
+                    src={youth.image}
+                    alt={youth.name}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 20vw"
+                    className="ec-card-img"
+                  />
                 </div>
-                <h5 style={{ color: "#003e53", fontSize: "0.95rem", margin: "0 0 2px", fontWeight: 700 }}>{youth.name}</h5>
-                <span style={{ color: "#137459", fontSize: "11px", fontWeight: 700, display: "block", textTransform: "uppercase" }}>{youth.role}</span>
-                <small style={{ color: "#787878", fontSize: "11px" }}>{youth.chapter}</small>
-              </div>
+                <div className="ec-card-body">
+                  <h4 className="ec-officer-name">{youth.name}</h4>
+                  <p className="ec-officer-role">{youth.role}</p>
+                  <small style={{ color: "#607268", fontSize: "11px", marginTop: "4px" }}>{youth.chapter}</small>
+                </div>
+              </article>
             ))}
           </div>
         </div>

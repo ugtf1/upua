@@ -258,9 +258,8 @@ export default function BoardOfTrusteesSection() {
                   src={trustee.localPath}
                   alt={trustee.name}
                   fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 20vw"
                   className="bot-card-img"
-                  style={{ objectFit: "contain", objectPosition: "center center", padding: "10px" }}
                 />
                 <span className="bot-card-tag">{trustee.title}</span>
               </div>

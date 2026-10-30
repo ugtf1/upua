@@ -309,11 +309,15 @@ function LandingWork() {
   return (
     <section className="association-work-section" id="work" aria-labelledby="work-title">
       <div className="association-section-heading">
-        <p className="association-eyebrow">Our work</p>
-        <h2 id="work-title">
-          Programs built for a living association, not a <span className="heading-gold-accent">static directory.</span>
-        </h2>
-        <a className="association-text-link" href="#updates">View recent updates <ArrowRight size={16} /></a>
+        <div className="association-section-title-wrap">
+          <p className="association-eyebrow">Our work</p>
+          <h2 id="work-title">
+            Programs built for a living association, not a <span className="heading-gold-accent">static directory.</span>
+          </h2>
+        </div>
+        <a className="association-text-link" href="#updates">
+          <span>View recent updates</span> <ArrowRight size={16} />
+        </a>
       </div>
       <div className="association-work-grid">
         {associationProgramItems.map((item) => {
