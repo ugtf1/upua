@@ -513,7 +513,6 @@ export default function StorePage() {
                         fill
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px"
                         className="store-card-img"
-                        style={{ objectFit: "contain", objectPosition: "center center", padding: "12px" }}
                       />
                       {item.badge && (
                         <span className="store-badge">{item.badge}</span>

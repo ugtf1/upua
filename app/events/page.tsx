@@ -435,7 +435,7 @@ export default function EventsPage() {
                 src={featured.image}
                 alt={featured.title}
                 fill
-                style={{ objectFit: "contain", padding: "10px" }}
+                style={{ objectFit: "cover" }}
                 sizes="(max-width: 768px) 100vw, 420px"
                 priority
               />
@@ -628,7 +628,6 @@ export default function EventsPage() {
                       fill
                       sizes="(max-width: 640px) 100vw, 360px"
                       className="blog-card-img"
-                      style={{ objectFit: "contain", objectPosition: "center center", padding: "8px" }}
                     />
                     <div className="event-date-badge" style={{ position: "absolute", top: 12, left: 12, zIndex: 4 }}>
                       <span className="event-badge-month">{evt.monthShort}</span>
@@ -723,7 +722,7 @@ export default function EventsPage() {
                     src={selectedEvent.image}
                     alt={selectedEvent.title}
                     fill
-                    style={{ objectFit: "contain", objectPosition: "center center", padding: "10px" }}
+                    style={{ objectFit: "cover" }}
                     sizes="780px"
                   />
                   <div
@@ -754,7 +753,7 @@ export default function EventsPage() {
                   src={selectedEvent.image}
                   alt={selectedEvent.title}
                   fill
-                  style={{ objectFit: "contain", objectPosition: "center center", padding: "10px" }}
+                  style={{ objectFit: "cover" }}
                   sizes="780px"
                 />
               )}
