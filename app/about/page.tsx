@@ -386,7 +386,7 @@ export default function AboutPage() {
             <p>Grassroots Urhobo communities united under the UPUA Board of Trustees (BOT).</p>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "20px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 260px), 1fr))", gap: "20px" }}>
             {chapters.map((ch) => (
               <article key={ch.name} className="about-branch-card">
                 <div className="about-branch-header">
@@ -423,7 +423,7 @@ export default function AboutPage() {
             <p>Honoring our traditional heritage, ancient dynasties, and Royal Fathers.</p>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(270px, 1fr))", gap: "16px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 240px), 1fr))", gap: "16px" }}>
             {royalKingdoms.map((k) => (
               <div
                 key={k.name}
@@ -459,7 +459,7 @@ export default function AboutPage() {
             The sacred anthem echoing the royal lineage and eternal bond of all Urhobo people.
           </p>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "28px", textAlign: "left" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))", gap: "24px", textAlign: "left" }}>
             <div style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "14px", padding: "28px 24px" }}>
               <h4 style={{ color: "#e7c326", fontSize: "14px", textTransform: "uppercase", letterSpacing: "0.06em", margin: "0 0 14px" }}>
                 In Urhobo Language

@@ -261,7 +261,7 @@ export default function ProgramsPage() {
             </p>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "24px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 250px), 1fr))", gap: "20px" }}>
             {shelterChapters.map((sc) => (
               <article
                 key={sc.chapter}
@@ -296,7 +296,7 @@ export default function ProgramsPage() {
             <p>Practical interventions advancing education, healthcare, culture, and humanitarian welfare.</p>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: "32px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))", gap: "28px" }}>
             {mainPrograms.map((prog) => (
               <article
                 key={prog.id}

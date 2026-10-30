@@ -869,7 +869,7 @@ export default function EventsPage() {
                   <h4 style={{ color: "#0e3d26", fontSize: "15px", fontWeight: 800, marginBottom: "10px", display: "flex", alignItems: "center", gap: "6px" }}>
                     <Phone size={16} color="#0f6a4b" /> Contacts &amp; Registration Enquiries
                   </h4>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "10px" }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 200px), 1fr))", gap: "10px" }}>
                     {selectedEvent.contactInfo.map((c, i) => (
                       <div key={i} style={{ background: "#ffffff", border: "1px solid #d1d5db", borderRadius: "10px", padding: "12px 14px", fontSize: "13px" }}>
                         <strong style={{ color: "#0e3d26", display: "block", marginBottom: "4px" }}>{c.name}</strong>
