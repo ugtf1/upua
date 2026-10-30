@@ -61,8 +61,6 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-img,
-svg,
 video,
 canvas,
 audio,
@@ -74,7 +72,16 @@ object {
 }
 
 img {
+  max-width: 100%;
+}
+
+img:not([style*="position: absolute"]) {
   height: auto;
+}
+
+svg {
+  display: inline-block;
+  vertical-align: middle;
 }
 
 button,
@@ -4557,6 +4564,8 @@ a {
   object-position: center 25%;
   transform: scale(1.08);
   transition: transform 6s cubic-bezier(0.25, 1, 0.5, 1);
+  height: 100% !important;
+  width: 100% !important;
 }
 
 .hero-slide.active .hero-slide-img {
@@ -8764,48 +8773,6 @@ a {
   .store-form-row {
     flex-direction: column;
     gap: 12px;
-  }
-}
-
-/* =========================================================
-   PREMIUM SCROLL REVEAL SYSTEM (Silky, Physics-Based)
-   ========================================================= */
-[data-scroll-reveal="true"] {
-  opacity: 0;
-  transform: translateY(20px);
-  transition:
-    opacity 0.62s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.62s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: opacity, transform;
-}
-
-[data-scroll-reveal="true"][data-revealed="true"] {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-[data-scroll-reveal="true"][data-reveal-done="true"] {
-  transform: none;
-  will-change: auto;
-}
-
-[data-scroll-reveal-type="section-with-cards"] {
-  transform: none;
-}
-
-[data-scroll-reveal-type="card"] {
-  transition-delay: calc(var(--reveal-index, 0) * 55ms);
-}
-
-[data-scroll-reveal-type="section"] {
-  transition-delay: 30ms;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  [data-scroll-reveal="true"] {
-    opacity: 1 !important;
-    transform: none !important;
-    transition: none !important;
   }
 }
 
