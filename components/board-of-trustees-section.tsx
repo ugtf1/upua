@@ -261,13 +261,13 @@ export default function BoardOfTrusteesSection() {
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 20vw"
                   className="bot-card-img"
                 />
-                <span className="bot-card-tag">{trustee.title}</span>
               </div>
 
               <div className="bot-card-body">
                 <h4 className="bot-card-name">{trustee.name}</h4>
+                <p className="bot-card-role">{trustee.title}</p>
                 <p className="bot-card-chapter">
-                  <MapPin size={13} className="bot-pin-icon" />
+                  <MapPin size={12} className="bot-pin-icon" />
                   <span>{trustee.chapter}</span>
                 </p>
               </div>
