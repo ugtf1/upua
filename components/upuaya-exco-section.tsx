@@ -110,15 +110,15 @@ export default function UpuayaExcoSection() {
                   src={officer.image}
                   alt={officer.name}
                   fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 20vw"
                   className={`upuaya-card-img ${officer.isUpcoming ? "upuaya-logo-img" : ""}`}
                 />
-                <span className="upuaya-role-tag">{officer.role}</span>
               </div>
               <div className="upuaya-card-body">
                 <h3 className="upuaya-officer-name">{officer.name}</h3>
+                <p className="upuaya-officer-role">{officer.role}</p>
                 <div className="upuaya-chapter-row">
-                  <MapPin size={13} className="upuaya-chapter-icon" />
+                  <MapPin size={12} className="upuaya-chapter-icon" />
                   <span className="upuaya-chapter-text">{officer.chapter}</span>
                 </div>
               </div>
