@@ -78,7 +78,7 @@ const STORE_PRESET_GRAPHICS = [
   { label: "Convention Booth / Table", value: "/store/convention-booth.svg" },
   { label: "Full-Page Souvenir Brochure", value: "/store/brochure-full-page.svg" },
   { label: "Half-Page Souvenir Brochure", value: "/store/brochure-half-page.svg" },
-  { label: "Gala Banquet Ticket Pass", value: "/store/gala-ticket.svg" },
+  { label: "Gala Banquet Ticket Pass", value: "/store/national-cultural-gala-pass.jpg" },
   { label: "Ceremonial Sash & Beads", value: "/store/regalia-sash-coral.svg" },
   { label: "Heritage Crest Polo Shirt", value: "/store/apparel-polo.svg" },
   { label: "Urhobo Dictionary Book", value: "/store/book-dictionary.svg" },

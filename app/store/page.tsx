@@ -37,7 +37,6 @@ const storeCategories = [
   "All",
   "Convention Packages",
   "Apparel & Regalia",
-  "Books & Culture",
   "Accessories",
 ];
 
