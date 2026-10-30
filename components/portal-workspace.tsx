@@ -1384,7 +1384,7 @@ ${meeting.transcript}
         <main className="app-page-content">
           {/* TAB 1: OVERVIEW (ADMIN) */}
           {activeTab === "overview" && (
-            <>
+            <div key="overview" className="portal-tab-pane">
               {/* ORGFLO DASHBOARD WELCOME BANNER */}
               <div className="dash-welcome-banner">
                 <div style={{ zIndex: 1 }}>
@@ -1771,12 +1771,13 @@ ${meeting.transcript}
                   </div>
                 </div>
               </div>
-            </>
+            </div>
           )}
 
           {/* TAB 2: CHAPTERS & BREAKDOWN */}
           {activeTab === "chapters" && (
-            <div className="orgflo-card">
+            <div key="chapters" className="portal-tab-pane">
+              <div className="orgflo-card">
               <div className="orgflo-card-header">
                 <div>
                   <h2 style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: "1.45rem", fontWeight: 800, color: "var(--primary)" }}>
@@ -1869,11 +1870,12 @@ ${meeting.transcript}
                 </table>
               </div>
             </div>
+            </div>
           )}
 
           {/* TAB 3: TRANSACTIONS & LEDGER */}
           {activeTab === "ledger" && (
-            <div>
+            <div key="ledger" className="portal-tab-pane">
               {/* Header & Sub-Tab Switcher */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "14px" }}>
                 <div>
@@ -2117,7 +2119,7 @@ ${meeting.transcript}
 
           {/* TAB 4: MEETINGS & AI INTELLIGENCE */}
           {activeTab === "meetings" && (
-            <div>
+            <div key="meetings" className="portal-tab-pane">
               {/* Header */}
               <div style={{ marginBottom: "24px" }}>
                 <h2 style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: "1.45rem", fontWeight: 800, color: "var(--primary)" }}>
@@ -2406,7 +2408,7 @@ ${meeting.transcript}
             );
 
             return (
-              <div>
+              <div key="my_chapter" className="portal-tab-pane">
                 {/* Chapter Banner */}
                 <div className="dash-welcome-banner" style={{ marginBottom: "28px" }}>
                   <div>
@@ -2512,7 +2514,7 @@ ${meeting.transcript}
 
           {/* TAB 6: MY MEMBERSHIP (GENERAL MEMBER) */}
           {activeTab === "my_membership" && (
-            <div>
+            <div key="my_membership" className="portal-tab-pane">
               {/* Member Welcome Banner */}
               <div className="dash-welcome-banner" style={{ marginBottom: "28px" }}>
                 <div>
@@ -2680,7 +2682,7 @@ ${meeting.transcript}
             ] as const;
 
             return (
-              <div>
+              <div key="balances" className="portal-tab-pane">
                 {/* Page Welcome Banner */}
                 <div className="dash-welcome-banner" style={{ marginBottom: "28px" }}>
                   <div style={{ zIndex: 1 }}>
@@ -2907,7 +2909,7 @@ ${meeting.transcript}
               EDUCATIONAL: { background: "#0284c7", color: "#fff" },
             };
             return (
-              <div>
+              <div key="shop" className="portal-tab-pane">
                 {/* Banner */}
                 <div className="dash-welcome-banner" style={{ marginBottom: "28px" }}>
                   <div style={{ zIndex: 1, width: "100%" }}>
@@ -3473,7 +3475,7 @@ ${meeting.transcript}
             ];
 
             return (
-              <div>
+              <div key="reports" className="portal-tab-pane">
                 {/* Banner */}
                 <div className="dash-welcome-banner" style={{ marginBottom: "28px" }}>
                   <div style={{ zIndex: 1 }}>
@@ -3600,8 +3602,8 @@ ${meeting.transcript}
 
       {/* SHOP CHECKOUT MODAL */}
       {shopCheckoutOpen && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)", zIndex: 2100, display: "flex", alignItems: "center", justifyContent: "center", padding: "16px" }} onClick={() => setShopCheckoutOpen(false)}>
-          <div style={{ background: "#fff", borderRadius: "20px", maxWidth: "520px", width: "100%", overflow: "hidden", boxShadow: "0 25px 60px rgba(0,0,0,0.3)", maxHeight: "92vh", display: "flex", flexDirection: "column" }} onClick={e => e.stopPropagation()}>
+        <div className="upua-modal-backdrop" style={{ zIndex: 2100 }} onClick={() => setShopCheckoutOpen(false)}>
+          <div className="upua-modal-box" style={{ maxWidth: "520px", width: "100%", overflow: "hidden", maxHeight: "92vh", display: "flex", flexDirection: "column", padding: 0 }} onClick={e => e.stopPropagation()}>
             <div style={{ background: "linear-gradient(135deg,#0e3d26,#165637)", color: "#fff", padding: "22px 28px", flexShrink: 0 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
                 <span style={{ background: "rgba(255,255,255,0.18)", color: "#fff", fontSize: "0.72rem", fontWeight: 800, padding: "4px 12px", borderRadius: "9999px" }}>SECURE CHECKOUT</span>
@@ -3686,11 +3688,13 @@ ${meeting.transcript}
       ============================================================ */}
       {balancePayModal?.open && (
         <div
-          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)", zIndex: 2000, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" }}
+          className="upua-modal-backdrop"
+          style={{ zIndex: 2000 }}
           onClick={() => setBalancePayModal(null)}
         >
           <div
-            style={{ background: "#ffffff", borderRadius: "20px", maxWidth: "480px", width: "100%", overflow: "hidden", boxShadow: "0 25px 60px rgba(0,0,0,0.3)" }}
+            className="upua-modal-box"
+            style={{ maxWidth: "480px", width: "100%", overflow: "hidden", padding: 0 }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
@@ -3802,17 +3806,16 @@ ${meeting.transcript}
 
       {/* MEETING INTELLIGENCE DETAIL MODAL */}
       {selectedMeeting && (
-        <div className="app-sidebar-backdrop" onClick={() => setSelectedMeeting(null)}>
+        <div className="upua-modal-backdrop" onClick={() => setSelectedMeeting(null)}>
           <div
-            className="orgflo-card"
+            className="upua-modal-box"
             onClick={(e) => e.stopPropagation()}
             style={{
               maxWidth: "820px",
               width: "92%",
-              margin: "60px auto",
-              maxHeight: "85vh",
+              maxHeight: "88vh",
               overflowY: "auto",
-              boxShadow: "0 25px 60px rgba(0,0,0,0.3)",
+              padding: 0,
             }}
           >
             {/* Modal Header Banner */}
@@ -3943,8 +3946,8 @@ ${meeting.transcript}
 
       {/* ADMIN MODAL: NEW CHAPTER */}
       {isNewChapterOpen && (
-        <div className="app-sidebar-backdrop" onClick={() => setIsNewChapterOpen(false)}>
-          <div className="orgflo-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "520px", width: "90%", margin: "80px auto", padding: "32px" }}>
+        <div className="upua-modal-backdrop" onClick={() => setIsNewChapterOpen(false)}>
+          <div className="upua-modal-box" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "520px", width: "90%", padding: "32px" }}>
             <h2 style={{ color: "#0e3d26", fontSize: "1.4rem", margin: "0 0 16px", fontFamily: "var(--font-heading)", fontWeight: 800 }}>
               Add New UPUA Chapter
             </h2>
@@ -4001,8 +4004,8 @@ ${meeting.transcript}
 
       {/* ADMIN MODAL: NEW PAYMENT */}
       {isNewPaymentOpen && (
-        <div className="app-sidebar-backdrop" onClick={() => setIsNewPaymentOpen(false)}>
-          <div className="orgflo-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "520px", width: "90%", margin: "80px auto", padding: "32px" }}>
+        <div className="upua-modal-backdrop" onClick={() => setIsNewPaymentOpen(false)}>
+          <div className="upua-modal-box" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "520px", width: "90%", padding: "32px" }}>
             <h2 style={{ color: "#0e3d26", fontSize: "1.4rem", margin: "0 0 16px", fontFamily: "var(--font-heading)", fontWeight: 800 }}>
               Record Income Payment
             </h2>
@@ -4065,8 +4068,8 @@ ${meeting.transcript}
 
       {/* ADMIN MODAL: NEW EXPENSE */}
       {isNewExpenseOpen && (
-        <div className="app-sidebar-backdrop" onClick={() => setIsNewExpenseOpen(false)}>
-          <div className="orgflo-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "520px", width: "90%", margin: "80px auto", padding: "32px" }}>
+        <div className="upua-modal-backdrop" onClick={() => setIsNewExpenseOpen(false)}>
+          <div className="upua-modal-box" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "520px", width: "90%", padding: "32px" }}>
             <h2 style={{ color: "#c5221f", fontSize: "1.4rem", margin: "0 0 16px", fontFamily: "var(--font-heading)", fontWeight: 800 }}>
               Record Expense Entry
             </h2>
@@ -4129,18 +4132,15 @@ ${meeting.transcript}
           ADMIN MODAL: ADD / EDIT STORE ITEM
       ======================================================== */}
       {isStoreModalOpen && (
-        <div className="app-sidebar-backdrop" onClick={() => setIsStoreModalOpen(false)}>
+        <div className="upua-modal-backdrop" onClick={() => setIsStoreModalOpen(false)}>
           <div
-            className="orgflo-card"
+            className="upua-modal-box"
             onClick={(e) => e.stopPropagation()}
             style={{
               maxWidth: "680px",
               width: "92%",
-              margin: "40px auto",
               maxHeight: "90vh",
               overflowY: "auto",
-              boxShadow: "0 25px 60px rgba(0,0,0,0.35)",
-              borderRadius: "20px",
               padding: 0,
             }}
           >
@@ -4384,17 +4384,14 @@ ${meeting.transcript}
           ADMIN MODAL: DELETE STORE ITEM CONFIRMATION
       ======================================================== */}
       {deleteStoreCandidate && (
-        <div className="app-sidebar-backdrop" onClick={() => setDeleteStoreCandidate(null)}>
+        <div className="upua-modal-backdrop" onClick={() => setDeleteStoreCandidate(null)}>
           <div
-            className="orgflo-card"
+            className="upua-modal-box confirm-delete-modal"
             onClick={(e) => e.stopPropagation()}
             style={{
               maxWidth: "480px",
               width: "90%",
-              margin: "120px auto",
               padding: "28px",
-              borderRadius: "18px",
-              boxShadow: "0 20px 50px rgba(0,0,0,0.3)",
               textAlign: "center",
             }}
           >

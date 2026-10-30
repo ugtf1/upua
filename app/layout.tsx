@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next";
 const outfit = { variable: "--font-heading-opt" };
 const plusJakartaSans = { variable: "--font-main-opt" };
 import "./globals.css";
+import ScrollReveal from "@/components/scroll-reveal";
 
 export const viewport: Viewport = {
   themeColor: "#0e3d26",
@@ -87,7 +88,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${outfit.variable} ${plusJakartaSans.variable}`}>
-      <body suppressHydrationWarning>{children}</body>
+      <body suppressHydrationWarning>
+        <ScrollReveal />
+        {children}
+      </body>
     </html>
   );
 }

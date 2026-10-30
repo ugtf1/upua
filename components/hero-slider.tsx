@@ -107,11 +107,13 @@ export default function HeroSlider() {
       {/* Slide Floating Caption Card (Bottom Right) */}
       <div className="hero-slide-floating-card">
         {HERO_SLIDES[currentIndex].badge && (
-          <div className="hero-slide-badge">
+          <div key={`badge-${currentIndex}`} className="hero-slide-badge hero-text-fade">
             <span>{HERO_SLIDES[currentIndex].badge}</span>
           </div>
         )}
-        <p className="hero-slide-caption">{HERO_SLIDES[currentIndex].caption}</p>
+        <p key={`caption-${currentIndex}`} className="hero-slide-caption hero-text-fade">
+          {HERO_SLIDES[currentIndex].caption}
+        </p>
 
         {/* Carousel Indicators & Controls */}
         <div className="hero-slider-controls">

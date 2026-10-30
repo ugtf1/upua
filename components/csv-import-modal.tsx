@@ -111,8 +111,11 @@ export default function CSVImportModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-      <div className="relative w-full max-w-2xl rounded-2xl border border-gray-100 bg-white shadow-2xl">
+    <div className="upua-modal-backdrop" onClick={onClose} role="dialog" aria-modal="true">
+      <div
+        className="upua-modal-box relative w-full max-w-2xl rounded-2xl border border-gray-100 bg-white shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Modal Header */}
         <div className="flex items-center justify-between border-b border-gray-100 px-6 py-5">
           <div className="flex items-center space-x-3">
