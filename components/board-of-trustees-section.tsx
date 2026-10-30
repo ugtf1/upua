@@ -234,7 +234,7 @@ export default function BoardOfTrusteesSection() {
                 fill
                 sizes="(max-width: 768px) 100vw, 320px"
                 className="bot-spotlight-img"
-                style={{ objectFit: "cover", objectPosition: "center 20%" }}
+                style={{ objectFit: "cover", objectPosition: "center top" }}
                 priority
               />
               <div className="bot-spotlight-pill">

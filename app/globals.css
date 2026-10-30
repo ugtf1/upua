@@ -5986,7 +5986,7 @@ a {
 .leader-arch-frame img {
   object-fit: contain !important;
   object-position: center bottom !important;
-  padding: 6px 4px 0 !important;
+  padding: 24px 10px 0 !important;
 }
 
 /* Executive Committee Cards: contain officer portraits cleanly */
@@ -7740,7 +7740,8 @@ a {
 }
 
 .bot-spotlight-img {
-  object-fit: cover;
+  object-fit: cover !important;
+  object-position: top center !important;
 }
 
 .bot-spotlight-pill {
@@ -7840,10 +7841,11 @@ a {
   object-fit: cover !important;
   object-position: top center !important;
   transition: transform 0.4s ease;
+  transform-origin: center bottom;
 }
 
 .bot-card:hover .bot-card-img {
-  transform: scale(1.05);
+  transform: scale(1.04);
 }
 
 .bot-card-body {
@@ -8060,10 +8062,11 @@ a {
   object-fit: cover !important;
   object-position: top center !important;
   transition: transform 0.4s ease;
+  transform-origin: center bottom;
 }
 
 .upuaya-officer-card:hover .upuaya-card-img {
-  transform: scale(1.05);
+  transform: scale(1.04);
 }
 
 .upuaya-logo-img {
