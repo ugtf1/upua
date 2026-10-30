@@ -488,7 +488,7 @@ export default function PortalWorkspace() {
       console.error("Microphone access error:", err);
       setMicError(
         err?.name === "NotAllowedError" || err?.message?.includes("Permission")
-          ? "Microphone access was denied. Please allow microphone permissions in your browser address bar."
+          ? "Microphone access was denied. Click the mic/camera icon in your browser address bar, select 'Allow', then refresh the page."
           : "Unable to access microphone. You can type or paste minutes notes below to generate AI summary."
       );
     }
