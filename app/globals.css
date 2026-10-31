@@ -5957,7 +5957,7 @@ a {
 /* ── EC Card Media height on small phones ── */
 @media (max-width: 480px) {
   .ec-card-media {
-    height: 200px;
+    height: 340px !important;
   }
 }
 
@@ -8965,6 +8965,73 @@ a {
   font-weight: 600;
   font-size: 13.5px;
   letter-spacing: -0.01em;
+}
+
+/* =========================================================
+   MOBILE PORTRAIT ORIENTATION FOR LEADERSHIP & TRUSTEES CARDS
+   (Chapter Presidents & Trustees, Meet The EC, UPUAYA Youth Exco, About Page Leaders)
+   ========================================================= */
+@media (max-width: 768px) {
+  /* BOT Chapter Presidents & Trustees Cards */
+  .bot-card-media {
+    height: 360px !important;
+  }
+  .bot-card-img {
+    object-fit: cover !important;
+    object-position: top center !important;
+  }
+
+  /* Meet The Executive Committee (EC) Cards & About Page Executive Teams */
+  .ec-card-media {
+    height: 360px !important;
+  }
+  .ec-card-media img,
+  .ec-card-img {
+    object-fit: contain !important;
+    object-position: center bottom !important;
+  }
+
+  /* About Page Top Leaders Featured Cards (President Ogaga & Chairman Uwhubetine) */
+  .leader-featured-card {
+    grid-template-columns: 1fr !important;
+  }
+  .leader-portrait-wrap {
+    height: 380px !important;
+    max-width: 320px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+  }
+  .leader-portrait-wrap img {
+    object-fit: contain !important;
+    object-position: center bottom !important;
+    padding: 12px 10px 0 !important;
+  }
+
+  /* UPUAYA Youth Wing EXCO Cards */
+  .upuaya-card-media {
+    height: 360px !important;
+  }
+  .upuaya-card-img {
+    object-fit: cover !important;
+    object-position: top center !important;
+  }
+  .upuaya-logo-img {
+    object-fit: contain !important;
+    object-position: center !important;
+    padding: 30px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .bot-card-media,
+  .ec-card-media,
+  .upuaya-card-media {
+    height: 340px !important;
+  }
+  .leader-portrait-wrap {
+    height: 350px !important;
+    max-width: 290px !important;
+  }
 }
 
 

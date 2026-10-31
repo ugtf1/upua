@@ -137,7 +137,7 @@ const blogPosts: BlogPost[] = [
     date: "January 25, 2024",
     readTime: "3 min read",
     author: "UPUAYA Council",
-    image: "/assets/youth-kevwe.jpeg",
+    image: "/assets/youth-kevwe.jpg",
     excerpt:
       "Led by Youth President Oghenekevwe Ajueyitsi and council executives from Arizona, Ohio, Texas, and DMV, UPUAYA launched collegiate mentorship networks and professional forums connecting young Urhobo scholars.",
     featured: false,

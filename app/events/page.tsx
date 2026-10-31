@@ -227,7 +227,7 @@ const eventsData: EventItem[] = [
     location: "Houston, TX & Virtual Stream",
     venueName: "Marriott Westchase & Zoom Global Live",
     address: "2900 Briarpark Dr, Houston, TX 77042",
-    image: "/assets/youth-kevwe.jpeg",
+    image: "/assets/youth-kevwe.jpg",
     excerpt:
       "Convening young Urhobo scholars, innovators, engineers, and corporate leaders across North America. Featuring high-impact panels on AI & tech careers, medical residencies, finance, and cultural pride in the diaspora.",
     registrationUrl: "https://upuamerica.org/calendar/",

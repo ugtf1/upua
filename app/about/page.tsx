@@ -86,7 +86,7 @@ const youthWingExco = [
     name: "Oghenekevwe Ajueyitsi",
     role: "Youth Wing President",
     chapter: "UPU DMV",
-    image: "/assets/youth-kevwe.jpeg",
+    image: "/assets/youth-kevwe.jpg",
   },
   {
     name: "Praise Asanudje",

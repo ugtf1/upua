@@ -21,6 +21,8 @@ const SECTION_HEADERS = [
   ".blog-featured-content",
   ".store-donate-callout-inner",
   ".upua-world-footer",
+  ".page-hero-content",
+  ".programs-list-heading",
 ].join(", ");
 
 const CARD_ELEMENTS = [
@@ -47,10 +49,30 @@ const CARD_ELEMENTS = [
   ".programs-list-inner article",
   ".programs-stat",
   ".join-community-card",
+  ".program-card",
+  ".pillar-card",
+  ".chapter-pill",
+  ".store-trust-item",
 ].join(", ");
 
-const PUBLIC_SECTIONS = ".figma-landing-page > section";
-const REVEAL_DISTANCE = 50;
+// Matches main sections across Home, About, Programs, Events, Blog, and Store
+const PUBLIC_SECTIONS = [
+  ".figma-landing-page > section",
+  "main > section",
+  ".about-mission-section",
+  ".about-values-section",
+  ".about-exec-section",
+  ".about-branches-section",
+  ".about-cta-section",
+  ".programs-list-section",
+  ".programs-partner-section",
+  ".blog-featured-section",
+  ".blog-grid-section",
+  ".store-catalog-section",
+  ".store-donate-callout-section",
+].join(", ");
+
+const REVEAL_DISTANCE = 42;
 
 export default function ScrollAnimations() {
   const pathname = usePathname();
@@ -73,13 +95,15 @@ export default function ScrollAnimations() {
       try {
         const tween = gsap.fromTo(
           element,
-          fadeOnly ? { autoAlpha: 0 } : { autoAlpha: 0, y },
+          fadeOnly
+            ? { opacity: 0 }
+            : { opacity: 0, y, scale: 0.98 },
           {
-            autoAlpha: 1,
-            ...(fadeOnly ? {} : { y: 0 }),
-            duration: 0.75,
+            opacity: 1,
+            ...(fadeOnly ? {} : { y: 0, scale: 1 }),
+            duration: 0.85,
             delay,
-            ease: "power3.out",
+            ease: "power2.out",
             onComplete: () => {
               // Return transform/visibility control to the element's own styles.
               gsap.set(element, { clearProps: "opacity,visibility,transform" });
@@ -99,7 +123,7 @@ export default function ScrollAnimations() {
           sibling instanceof HTMLElement && sibling.matches(CARD_ELEMENTS),
       );
       const index = Math.max(0, siblings.indexOf(element));
-      return Math.min(0.32, index * 0.07);
+      return Math.min(0.36, index * 0.08);
     }
 
     const onIntersection: IntersectionObserverCallback = (entries) => {
@@ -108,15 +132,15 @@ export default function ScrollAnimations() {
         const element = entry.target as HTMLElement;
         const isCard = element.matches(CARD_ELEMENTS);
         const fadeOnly = fadeOnlySections.has(element);
-        const y = isCard ? REVEAL_DISTANCE : 36;
+        const y = isCard ? REVEAL_DISTANCE : 28;
         reveal(element, y, isCard ? getStagger(element) : 0, fadeOnly);
         observer.unobserve(element);
       });
     };
 
     observer = new IntersectionObserver(onIntersection, {
-      threshold: 0.01,
-      rootMargin: "0px 0px -24px 0px",
+      threshold: 0.08,
+      rootMargin: "0px 0px -50px 0px",
     });
 
     const scan = () => {
@@ -126,14 +150,13 @@ export default function ScrollAnimations() {
 
       candidates.forEach((element) => {
         if (initialized.has(element) || pending.has(element)) return;
-        if (element.closest(".upua-modal-backdrop, .association-hero .hero-slider-container")) return;
+        // Do not animate internal admin modals or hero sliders
+        if (element.closest(".upua-modal-backdrop, .app-layout, .hero-slider-container, .page-hero")) return;
 
-        // Keep the whole section to a simple fade when its own cards or heading
-        // will animate separately, avoiding nested movement and layout conflict.
+        // Keep section to a clean fade when its own child cards or headers animate separately
         const isSection = element.matches(PUBLIC_SECTIONS);
         const hasAnimatedContent = isSection && element.querySelector(`${SECTION_HEADERS}, ${CARD_ELEMENTS}`);
         if (hasAnimatedContent) {
-          // The section is a fade-only parent; its children supply the movement.
           fadeOnlySections.add(element);
         }
 

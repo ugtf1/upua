@@ -66,7 +66,7 @@ export default function LandingEventsSection() {
                   boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
                 }}
               >
-                👉 Click Flyer to Register on Donately
+                Click Flyer to Register on Donately
               </div>
             </a>
             <div className="event-feature-info">
@@ -204,7 +204,7 @@ export default function LandingEventsSection() {
             <article className="event-stack-card">
               <div className="event-stack-media" style={{ background: "#f8faf8" }}>
                 <Image
-                  src="/assets/youth-kevwe.jpeg"
+                  src="/assets/youth-kevwe.jpg"
                   alt="UPUAYA National Youth Leadership & Career Symposium"
                   fill
                   sizes="(max-width: 768px) 140px, 150px"
