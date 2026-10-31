@@ -1341,9 +1341,10 @@ ${meeting.transcript}
             </div>
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-            {/* OrgFlo Role Pill */}
+          <div className="app-header-actions" style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+            {/* OrgFlo Role Pill — hidden on mobile to prevent header overflow */}
             <span
+              className="app-header-role-pill"
               style={{
                 background: user.role === "admin" ? "#e6f4ea" : "#e8f0fe",
                 color: user.role === "admin" ? "#137333" : "#1a73e8",
@@ -1360,10 +1361,10 @@ ${meeting.transcript}
               {user.role.toUpperCase()} ROLE
             </span>
 
-            {/* OrgFlo Gold Donate Pill Button */}
+            {/* OrgFlo Gold Donate Pill Button — hidden on mobile to prevent header overflow */}
             <button
               type="button"
-              className="btn-orgflo-gold"
+              className="btn-orgflo-gold app-header-donate-btn"
               onClick={() => setDonationModalOpen(true)}
             >
               <Heart size={14} fill="currentColor" /> Donate ($50+)

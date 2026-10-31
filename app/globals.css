@@ -4126,6 +4126,7 @@ a {
   position: sticky;
   top: 0;
   z-index: 80;
+  overflow: hidden; /* prevent right-side overflow on small screens */
 }
 
 .app-mobile-menu-toggle {
@@ -4422,6 +4423,12 @@ a {
 
   .app-mobile-menu-toggle {
     display: flex;
+  }
+
+  /* Hide role pill and donate button on mobile to prevent horizontal overflow */
+  .app-header-role-pill,
+  .app-header-donate-btn {
+    display: none !important;
   }
 
   .app-header-copy h3,
