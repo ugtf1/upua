@@ -3,7 +3,6 @@ import type { Metadata, Viewport } from "next";
 const outfit = { variable: "--font-heading-opt" };
 const plusJakartaSans = { variable: "--font-main-opt" };
 import "./globals.css";
-import ScrollAnimations from "@/components/scroll-animations";
 
 export const viewport: Viewport = {
   themeColor: "#0e3d26",
@@ -89,7 +88,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" className={`${outfit.variable} ${plusJakartaSans.variable}`}>
       <body suppressHydrationWarning>
-        <ScrollAnimations />
         {children}
       </body>
     </html>
