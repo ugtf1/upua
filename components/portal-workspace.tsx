@@ -422,6 +422,14 @@ export default function PortalWorkspace() {
     setLiveTranscript("");
     audioChunksRef.current = [];
 
+    // Close mobile sidebar before requesting mic — mobile Chrome blocks permission
+    // dialogs when fixed/overlaid elements are present on the page.
+    setMobileNavOpen(false);
+
+    // Small delay to let any overlay/backdrop animate out before the browser
+    // shows its permission prompt (avoids "overlay detected" rejection on Android).
+    await new Promise((resolve) => setTimeout(resolve, 150));
+
     try {
       if (typeof window === "undefined" || !navigator.mediaDevices?.getUserMedia) {
         setMicError("Microphone recording is not supported in this browser environment. You can enter meeting notes manually below.");
@@ -486,9 +494,12 @@ export default function PortalWorkspace() {
       }, 1000);
     } catch (err: any) {
       console.error("Microphone access error:", err);
+      const isMobile = typeof navigator !== "undefined" && /Mobi|Android/i.test(navigator.userAgent);
       setMicError(
         err?.name === "NotAllowedError" || err?.message?.includes("Permission")
-          ? "Microphone access was denied. Click the mic/camera icon in your browser address bar, select 'Allow', then refresh the page."
+          ? isMobile
+            ? "Microphone access was denied. On mobile, go to your browser Settings → Site Settings → Microphone and allow this site, then try again."
+            : "Microphone access was denied. Click the mic/camera icon in your browser address bar, select 'Allow', then refresh the page."
           : "Unable to access microphone. You can type or paste minutes notes below to generate AI summary."
       );
     }
