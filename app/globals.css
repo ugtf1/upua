@@ -9035,13 +9035,28 @@ a {
   }
 }
 
-/* Scroll animations disabled per user request to investigate scroll glitching */
-.scroll-reveal,
+/* =========================================================
+   LIGHT SMOOTH SCROLL REVEAL (MOBILE-FRIENDLY & GLITCH-FREE)
+   Starting from Youth Leadership Wing UPUAYA EXCO onwards
+   ========================================================= */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.55s ease-out, transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
 .scroll-reveal.revealed {
-  opacity: 1 !important;
-  transform: none !important;
-  transition: none !important;
-  will-change: auto !important;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }
 
 
