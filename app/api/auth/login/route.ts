@@ -18,6 +18,11 @@ export async function POST(request: Request) {
       userName = "Chief Samuel Ogaga (President)";
       chapterId = null;
       chapterName = "National Secretariat";
+    } else if (cleanEmail === "editor@upuamerica.org" || role === "editor") {
+      userRole = "editor";
+      userName = "UPUA Website Editor";
+      chapterId = null;
+      chapterName = "National Communications";
     } else if (cleanEmail.includes("chapter") || cleanEmail === "chapter.houston@upuamerica.org" || role === "chapter") {
       userRole = "chapter";
       userName = "Chief Godspower Oniovosa (Houston President)";

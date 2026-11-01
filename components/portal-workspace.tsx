@@ -55,15 +55,17 @@ import {
   Pencil,
   ExternalLink,
   Layers,
+  Globe,
 } from "lucide-react";
 import DonationModal from "@/components/donation-modal";
+import EditorPanel from "@/components/editor-panel";
 import DuesModal from "@/components/dues-modal";
 import CSVImportModal, { ImportType } from "@/components/csv-import-modal";
 import { ChapterData, PaymentRecord, ExpenseRecord, MeetingRecord, MemberRecord } from "@/lib/data-service";
 import type { StoreItem, StoreCategory } from "@/types";
 import { seedStoreItems } from "@/lib/seed-data";
 
-export type Role = "admin" | "chapter" | "member";
+export type Role = "admin" | "chapter" | "member" | "editor";
 
 interface AuthUser {
   id: string;
@@ -98,7 +100,7 @@ const STORE_CATEGORIES_LIST: StoreCategory[] = [
 export default function PortalWorkspace() {
   // Authentication State
   const [user, setUser] = useState<AuthUser | null>(null);
-  const [activeTab, setActiveTab] = useState<"overview" | "chapters" | "ledger" | "meetings" | "my_chapter" | "my_membership" | "balances" | "shop" | "reports">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "chapters" | "ledger" | "meetings" | "my_chapter" | "my_membership" | "balances" | "shop" | "reports" | "site_editor">("overview");
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [meetingsSubmenuOpen, setMeetingsSubmenuOpen] = useState(true);
 
@@ -383,6 +385,7 @@ export default function PortalWorkspace() {
     if (user?.role === "admin") setActiveTab("overview");
     else if (user?.role === "chapter") setActiveTab("my_chapter");
     else if (user?.role === "member") setActiveTab("my_membership");
+    else if (user?.role === "editor") setActiveTab("site_editor");
   }, [user]);
 
   // Demo Login Helper
@@ -412,6 +415,16 @@ export default function PortalWorkspace() {
         role: "member",
         chapterId: "c-houston",
         chapterName: "UPA Houston",
+      });
+    }
+    if (role === "editor") {
+      setUser({
+        id: "u-editor",
+        name: "UPUA Website Editor",
+        email: "editor@upuamerica.org",
+        role: "editor",
+        chapterId: null,
+        chapterName: "National Communications",
       });
     }
   }
@@ -904,6 +917,41 @@ ${meeting.transcript}
               </div>
               <ArrowRight size={18} color="#0e3d26" />
             </button>
+
+            {/* Website Editor login card */}
+            <button
+              type="button"
+              onClick={() => handleLoginAs("editor")}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                background: "#ffffff",
+                border: "1.5px solid #e1eae3",
+                borderRadius: "16px",
+                padding: "16px 20px",
+                cursor: "pointer",
+                textAlign: "left",
+                transition: "all 0.2s ease",
+              }}
+            >
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <span style={{ fontSize: "16px" }}>✏️</span>
+                  <strong style={{ color: "#0e3d26", fontSize: "0.95rem", fontWeight: 800 }}>Website Editor</strong>
+                  <span
+                    className="badge badge-active"
+                    style={{ fontSize: "0.68rem", background: "#e8f5e9", color: "#137333", borderRadius: "6px", padding: "2px 8px", fontWeight: 700 }}
+                  >
+                    Content CMS
+                  </span>
+                </div>
+                <small style={{ color: "#526359", fontSize: "0.8rem", display: "block", marginTop: "4px" }}>
+                  Edit public website content, images, headings &amp; captions
+                </small>
+              </div>
+              <ArrowRight size={18} color="#0e3d26" />
+            </button>
           </div>
 
           <div
@@ -1021,6 +1069,8 @@ ${meeting.transcript}
                 ? "Admin Console"
                 : user.role === "chapter"
                 ? "Chapter Console"
+                : user.role === "editor"
+                ? "Editor Console"
                 : "Member Portal"}
             </div>
           </Link>
@@ -1242,6 +1292,21 @@ ${meeting.transcript}
                 </button>
               </>
             )}
+
+            {user.role === "editor" && (
+              <>
+                <button
+                  type="button"
+                  className={`app-sidebar-link ${activeTab === "site_editor" ? "active" : ""}`}
+                  onClick={() => {
+                    setActiveTab("site_editor");
+                    setMobileNavOpen(false);
+                  }}
+                >
+                  <Globe size={18} /> Website Content
+                </button>
+              </>
+            )}
           </nav>
         </div>
 
@@ -1333,6 +1398,8 @@ ${meeting.transcript}
               <h3>
                 {user.role === "admin"
                   ? "UPUA National Executive Workspace"
+                  : user.role === "editor"
+                  ? "Website Content Editor"
                   : user.chapterName
                   ? `${user.chapterName} Workspace`
                   : "Member Portal"}
@@ -3609,6 +3676,11 @@ ${meeting.transcript}
               </div>
             );
           })()}
+
+          {/* TAB: SITE EDITOR (EDITOR ROLE) */}
+          {activeTab === "site_editor" && user.role === "editor" && (
+            <EditorPanel />
+          )}
         </main>
       </div>
 
