@@ -51,7 +51,7 @@ const OFFICERS: Officer[] = [
     id: "ec-7",
     name: "Mr. Efe Shemi",
     role: "National Treasurer",
-    image: "/assets/shemi.jpg",
+    image: "/assets/shemi.png",
   },
   {
     id: "ec-8",
@@ -69,7 +69,7 @@ const OFFICERS: Officer[] = [
     id: "ec-10",
     name: "Mr. Onoerhime Okagbare",
     role: "Financial Secretary",
-    image: "/assets/okagbare.jpg",
+    image: "/assets/okagbare.png",
   },
   {
     id: "ec-11",
