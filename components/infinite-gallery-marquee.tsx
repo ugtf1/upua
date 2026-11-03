@@ -6,21 +6,20 @@ import Image from "next/image";
 interface MarqueeItem {
   id: string;
   image: string;
-  title: string;
-  tag: string;
+  alt: string;
 }
 
 const MARQUEE_ITEMS: MarqueeItem[] = [
-  { id: "m1", image: "/assets/slide2/3.jpeg", title: "National Assembly & Cultural Gala", tag: "Tradition" },
-  { id: "m2", image: "/assets/slide2/4.jpeg", title: "Board of Trustees Convocation", tag: "Leadership" },
-  { id: "m3", image: "/assets/slide2/5.jpeg", title: "Executive Dignitaries Session", tag: "Convention" },
-  { id: "m4", image: "/assets/slide2/6.jpeg", title: "Urhobo Cultural Attire & Regalia", tag: "Heritage" },
-  { id: "m5", image: "/assets/slide2/7.jpeg", title: "Women in Leadership Initiative", tag: "Empowerment" },
-  { id: "m6", image: "/assets/slide2/8.jpeg", title: "Diaspora Cultural Celebration", tag: "Unity" },
-  { id: "m7", image: "/assets/slide2/10.jpeg", title: "Educational & Cultural Research", tag: "Education" },
-  { id: "m8", image: "/assets/slide2/12.jpeg", title: "Financial Audit & Stewardship", tag: "Governance" },
-  { id: "m9", image: "/assets/slide2/13.jpeg", title: "Youth Wing & Assembly Speakers", tag: "Youth" },
-  { id: "m10", image: "/assets/slide2/14.jpeg", title: "Humanitarian & Community Welfare", tag: "Impact" },
+  { id: "m1", image: "/assets/slide2/3.jpeg",  alt: "UPU chapter members at a women's shelter" },
+  { id: "m2", image: "/assets/slide2/4.jpeg",  alt: "Volunteers donating supplies to shelter residents" },
+  { id: "m3", image: "/assets/slide2/5.jpeg",  alt: "Community outreach and welfare event" },
+  // { id: "m4", image: "/assets/slide2/6.jpeg",  alt: "UPUA women's initiative gathering" },
+  { id: "m5", image: "/assets/slide2/7.jpeg",  alt: "Women in leadership and empowerment program" },
+  { id: "m6", image: "/assets/slide2/8.jpeg",  alt: "Diaspora giving back to local communities" },
+  { id: "m7", image: "/assets/slide2/10.jpeg", alt: "Educational support for shelter residents" },
+  { id: "m8", image: "/assets/slide2/12.jpeg", alt: "Financial stewardship and humanitarian aid" },
+  { id: "m9", image: "/assets/slide2/13.jpeg", alt: "Youth wing community welfare activities" },
+  { id: "m10", image: "/assets/slide2/14.jpeg", alt: "Humanitarian and community welfare outreach" },
 ];
 
 export default function InfiniteGalleryMarquee() {
@@ -28,9 +27,18 @@ export default function InfiniteGalleryMarquee() {
   const items = [...MARQUEE_ITEMS, ...MARQUEE_ITEMS];
 
   return (
-    <section className="infinite-marquee-section" aria-label="UPUA Cultural & Leadership Gallery">
+    <section className="infinite-marquee-section" aria-label="Women in Shelter Initiative Gallery">
       <div className="marquee-ambient-glow" />
-      
+
+      {/* Section header */}
+      <div className="marquee-section-header">
+        <h2 className="marquee-section-title">Women in Shelter Initiative</h2>
+        <p className="marquee-section-subtitle">
+          Across North America, UPU chapters are giving back, donating time, resources and love
+          to women&apos;s shelters in their communities.
+        </p>
+      </div>
+
       {/* Infinite scrolling track */}
       <div className="infinite-marquee-track">
         {items.map((item, index) => (
@@ -38,16 +46,11 @@ export default function InfiniteGalleryMarquee() {
             <div className="marquee-card-image-wrap">
               <Image
                 src={item.image}
-                alt={item.title}
+                alt={item.alt}
                 fill
                 sizes="(max-width: 768px) 240px, 320px"
                 className="marquee-card-img"
               />
-              <div className="marquee-card-overlay" />
-              <div className="marquee-card-tag">{item.tag}</div>
-            </div>
-            <div className="marquee-card-content">
-              <h4 className="marquee-card-title">{item.title}</h4>
             </div>
           </div>
         ))}
