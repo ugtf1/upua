@@ -49,23 +49,24 @@ class GitHubCMSService {
     this.token = GITHUB_TOKEN;
   }
 
-  public isConfigured(): boolean {
-    return !!this.token;
+  public isConfigured(overrideToken?: string): boolean {
+    return !!(overrideToken || this.token);
   }
 
-  public getRepoInfo() {
+  public getRepoInfo(overrideToken?: string) {
     return {
       owner: this.owner,
       repo: this.repo,
       branch: this.branch,
-      hasToken: !!this.token,
+      hasToken: !!(overrideToken || this.token),
     };
   }
 
-  private getHeaders(): Record<string, string> {
+  private getHeaders(overrideToken?: string): Record<string, string> {
+    const activeToken = overrideToken || this.token;
     return {
       Accept: "application/vnd.github+json",
-      Authorization: `Bearer ${this.token}`,
+      Authorization: `Bearer ${activeToken}`,
       "X-GitHub-Api-Version": "2022-11-28",
       "User-Agent": "UPUA-CMS-Engine/1.0",
     };
@@ -104,18 +105,21 @@ class GitHubCMSService {
     }
   }
 
-  // "?"? Atomic Git Commit: Creates blobs, tree, commit, and updates ref "?"?"?"?
+  // 🚀 Atomic Git Commit: Creates blobs, tree, commit, and updates ref ─────────
   public async commitFilesToGitHub(
     files: StagedFile[],
-    commitMessage: string
+    commitMessage: string,
+    overrideToken?: string
   ): Promise<{ success: boolean; commitSha?: string; error?: string }> {
     // 1. Always write locally first so the local server/container sees changes immediately
     for (const f of files) {
       this.writeLocalFile(f.path, f.content, f.encoding || "utf-8");
     }
 
+    const activeToken = overrideToken || this.token;
+
     // 2. If no GitHub token configured (e.g. offline dev), return success for local write
-    if (!this.token) {
+    if (!activeToken) {
       return {
         success: true,
         commitSha: "local-staged-" + Date.now().toString(16),
@@ -127,7 +131,7 @@ class GitHubCMSService {
 
       // A. Get branch head reference
       const refRes = await fetch(`${baseUrl}/git/ref/heads/${this.branch}`, {
-        headers: this.getHeaders(),
+        headers: this.getHeaders(activeToken),
       });
       if (!refRes.ok) {
         throw new Error(`Failed to fetch branch ref: ${refRes.status} ${await refRes.text()}`);
@@ -137,7 +141,7 @@ class GitHubCMSService {
 
       // B. Get parent commit to extract base tree
       const parentCommitRes = await fetch(`${baseUrl}/git/commits/${parentCommitSha}`, {
-        headers: this.getHeaders(),
+        headers: this.getHeaders(activeToken),
       });
       if (!parentCommitRes.ok) {
         throw new Error(`Failed to fetch parent commit: ${parentCommitRes.status}`);
@@ -151,7 +155,7 @@ class GitHubCMSService {
         const isBase64 = file.encoding === "base64";
         const blobRes = await fetch(`${baseUrl}/git/blobs`, {
           method: "POST",
-          headers: this.getHeaders(),
+          headers: this.getHeaders(activeToken),
           body: JSON.stringify({
             content: file.content,
             encoding: isBase64 ? "base64" : "utf-8",
@@ -172,7 +176,7 @@ class GitHubCMSService {
       // D. Create new tree
       const treeRes = await fetch(`${baseUrl}/git/trees`, {
         method: "POST",
-        headers: this.getHeaders(),
+        headers: this.getHeaders(activeToken),
         body: JSON.stringify({
           base_tree: baseTreeSha,
           tree: treeItems,
@@ -186,7 +190,7 @@ class GitHubCMSService {
       // E. Create commit
       const commitRes = await fetch(`${baseUrl}/git/commits`, {
         method: "POST",
-        headers: this.getHeaders(),
+        headers: this.getHeaders(activeToken),
         body: JSON.stringify({
           message: commitMessage,
           tree: treeData.sha,
@@ -201,7 +205,7 @@ class GitHubCMSService {
       // F. Update branch reference (points master to the new commit)
       const updateRefRes = await fetch(`${baseUrl}/git/refs/heads/${this.branch}`, {
         method: "PATCH",
-        headers: this.getHeaders(),
+        headers: this.getHeaders(activeToken),
         body: JSON.stringify({
           sha: commitData.sha,
           force: false,
@@ -224,8 +228,8 @@ class GitHubCMSService {
     }
   }
 
-  // "?"? Get Live Deployment Status for both Vercel & Google Cloud Run "?"?"?
-  public async getDeploymentStatus(): Promise<DeploymentStatus> {
+  // 🚀 Get Live Deployment Status for both Vercel & Google Cloud Run ──────────
+  public async getDeploymentStatus(overrideToken?: string): Promise<DeploymentStatus> {
     const fallback: DeploymentStatus = {
       commitSha: "unknown",
       commitMessage: "Latest release",
@@ -245,7 +249,9 @@ class GitHubCMSService {
       },
     };
 
-    if (!this.token) {
+    const activeToken = overrideToken || this.token;
+
+    if (!activeToken) {
       return fallback;
     }
 
@@ -254,7 +260,7 @@ class GitHubCMSService {
 
       // 1. Fetch latest commit on master
       const commitRes = await fetch(`${baseUrl}/commits/${this.branch}`, {
-        headers: this.getHeaders(),
+        headers: this.getHeaders(activeToken),
         cache: "no-store",
       });
       if (commitRes.ok) {
@@ -266,7 +272,7 @@ class GitHubCMSService {
 
         // 2. Fetch Check Runs for this commit (Vercel automatically posts Check Runs)
         const checksRes = await fetch(`${baseUrl}/commits/${cData.sha}/check-runs`, {
-          headers: this.getHeaders(),
+          headers: this.getHeaders(activeToken),
           cache: "no-store",
         });
         if (checksRes.ok) {
@@ -299,7 +305,7 @@ class GitHubCMSService {
       const workflowRes = await fetch(
         `${baseUrl}/actions/workflows/deploy-gcloud.yml/runs?per_page=1`,
         {
-          headers: this.getHeaders(),
+          headers: this.getHeaders(activeToken),
           cache: "no-store",
         }
       );

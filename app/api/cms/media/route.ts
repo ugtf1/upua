@@ -55,6 +55,7 @@ export async function GET() {
 // POST /api/cms/media — Uploads an image or replaces an existing media file
 export async function POST(req: NextRequest) {
   try {
+    const clientToken = req.headers.get("x-github-token")?.trim() || "";
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
     const category = (formData.get("category") as string) || "general";
@@ -75,57 +76,81 @@ export async function POST(req: NextRequest) {
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
+    const base64Content = buffer.toString("base64");
 
-    // If replacing an existing specific image URL
+    // Case 1: Replacing an existing specific image URL in-place
     if (targetUrl && targetUrl.startsWith("/")) {
       const sanitizedRel = targetUrl.replace(/^\/+/, "").replace(/\.\./g, "");
       const fullTarget = path.join(process.cwd(), "public", sanitizedRel);
       const publicDir = path.join(process.cwd(), "public");
 
-      // Verify path is inside public/
+      let writtenLocally = false;
       if (fullTarget.startsWith(publicDir)) {
-        const targetDir = path.dirname(fullTarget);
-        if (!fs.existsSync(targetDir)) {
-          fs.mkdirSync(targetDir, { recursive: true });
+        try {
+          const targetDir = path.dirname(fullTarget);
+          if (!fs.existsSync(targetDir)) {
+            fs.mkdirSync(targetDir, { recursive: true });
+          }
+          fs.writeFileSync(fullTarget, buffer);
+          writtenLocally = true;
+        } catch {
+          // Read-only filesystem on Vercel
+          writtenLocally = false;
         }
-        fs.writeFileSync(fullTarget, buffer);
-
-        // Stage for GitHub atomic commit
-        const gitRelPath = path.join("public", sanitizedRel).replace(/\\/g, "/");
-        githubCMS.writeLocalFile(gitRelPath, buffer.toString("base64"), "base64");
-
-        return NextResponse.json({
-          success: true,
-          replaced: true,
-          url: targetUrl,
-          filename: path.basename(sanitizedRel),
-          sizeBytes: buffer.length,
-        });
       }
+
+      const gitRelPath = path.join("public", sanitizedRel).replace(/\\/g, "/");
+
+      // If on Vercel (read-only FS) and token is available, commit image to GitHub
+      if (!writtenLocally && githubCMS.isConfigured(clientToken)) {
+        await githubCMS.commitFilesToGitHub(
+          [{ path: gitRelPath, content: base64Content, encoding: "base64" }],
+          `CMS Media: Replace ${path.basename(sanitizedRel)}`,
+          clientToken
+        );
+      }
+
+      return NextResponse.json({
+        success: true,
+        replaced: true,
+        url: targetUrl,
+        filename: path.basename(sanitizedRel),
+        sizeBytes: buffer.length,
+      });
     }
 
-    // Standard new file upload
+    // Case 2: Standard new file upload
     const cleanName = file.name
       .toLowerCase()
       .replace(/[^a-z0-9.]+/g, "-")
       .replace(/^-+|-+$/g, "");
     const safeFilename = `${Date.now()}-${cleanName}`;
-
-    // Target path in public/assets/cms
     const relFolder = path.join("public", "assets", "cms", category);
     const targetDir = path.join(process.cwd(), relFolder);
-    if (!fs.existsSync(targetDir)) {
-      fs.mkdirSync(targetDir, { recursive: true });
+
+    let writtenLocally = false;
+    try {
+      if (!fs.existsSync(targetDir)) {
+        fs.mkdirSync(targetDir, { recursive: true });
+      }
+      const targetFilePath = path.join(targetDir, safeFilename);
+      fs.writeFileSync(targetFilePath, buffer);
+      writtenLocally = true;
+    } catch {
+      // Read-only filesystem
+      writtenLocally = false;
     }
 
-    const targetFilePath = path.join(targetDir, safeFilename);
-    fs.writeFileSync(targetFilePath, buffer);
-
     const publicUrl = `/assets/cms/${category}/${safeFilename}`;
-
-    // Also stage for GitHub commit
     const relGitPath = path.join(relFolder, safeFilename).replace(/\\/g, "/");
-    githubCMS.writeLocalFile(relGitPath, buffer.toString("base64"), "base64");
+
+    if (!writtenLocally && githubCMS.isConfigured(clientToken)) {
+      await githubCMS.commitFilesToGitHub(
+        [{ path: relGitPath, content: base64Content, encoding: "base64" }],
+        `CMS Media: Upload ${safeFilename}`,
+        clientToken
+      );
+    }
 
     return NextResponse.json({
       success: true,

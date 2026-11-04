@@ -16,10 +16,26 @@
     ]
   },
   "stats": [
-    { "label": "Years of Service", "value": "32+", "subtext": "Continuous diaspora service" },
-    { "label": "Active Chapters", "value": "20", "subtext": "Across USA & Canada" },
-    { "label": "Community Impact", "value": "15k+", "subtext": "Families assisted annually" },
-    { "label": "Active Programs", "value": "6", "subtext": "Signature civic initiatives" }
+    {
+      "label": "Years of Service",
+      "value": "32+",
+      "subtext": "Continuous diaspora service"
+    },
+    {
+      "label": "Active Chapters",
+      "value": "20",
+      "subtext": "Across USA & Canada"
+    },
+    {
+      "label": "Community Impact",
+      "value": "15k+",
+      "subtext": "Families assisted annually"
+    },
+    {
+      "label": "Active Programs",
+      "value": "6",
+      "subtext": "Signature civic initiatives"
+    }
   ],
   "marquee": {
     "title": "Women in Shelter Initiative",

@@ -41,18 +41,9 @@ function readJsonFile<T>(relativePath: string, fallback: T): T {
 }
 
 function writeJsonFile<T>(relativePath: string, data: T): boolean {
-  try {
-    const fullPath = getContentFilePath(relativePath);
-    const dir = path.dirname(fullPath);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-    fs.writeFileSync(fullPath, JSON.stringify(data, null, 2), "utf-8");
-    return true;
-  } catch (err) {
-    console.error(`[ContentService] Failed to write ${relativePath}:`, err);
-    return false;
-  }
+  const jsonContent = JSON.stringify(data, null, 2);
+  // Use githubCMS.writeLocalFile which handles dir creation and error logging
+  return githubCMS.writeLocalFile(`content/${relativePath}`, jsonContent);
 }
 
 // In-memory cache for legacy ContentSection blocks
@@ -172,8 +163,8 @@ export const ContentService = {
     return writeJsonFile<T>("global/site-settings.json", data);
   },
 
-  // "?"? Atomic Publish to GitHub (triggers Vercel + Cloud Run) "?"?"?"?"?"?"?"?"?"?"?
-  async publishToGitHub(commitMessage: string) {
+  // 🚀 Atomic Publish to GitHub (triggers Vercel + Cloud Run) ──────────────────
+  async publishToGitHub(commitMessage: string, overrideToken?: string) {
     const stagedFiles: Array<{ path: string; content: string }> = [];
 
     const contentDir = path.join(process.cwd(), "content");
@@ -196,7 +187,7 @@ export const ContentService = {
 
     collectFiles(contentDir, process.cwd());
 
-    return await githubCMS.commitFilesToGitHub(stagedFiles, commitMessage);
+    return await githubCMS.commitFilesToGitHub(stagedFiles, commitMessage, overrideToken);
   },
 
   // "?"? Legacy Sections & Blocks API (Preserves Full Backwards Compatibility) "?"?"?

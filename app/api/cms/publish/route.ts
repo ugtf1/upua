@@ -4,16 +4,20 @@ import { ContentService } from "@/lib/content-service";
 // POST /api/cms/publish — Commits all staged content & media changes to GitHub master
 export async function POST(req: NextRequest) {
   try {
+    const clientToken = req.headers.get("x-github-token")?.trim() || "";
     const body = await req.json().catch(() => ({}));
-    const message = body.message || `CMS: Publish website content update (${new Date().toLocaleDateString()})`;
+    const message =
+      body.commitMessage ||
+      body.message ||
+      `CMS: Publish website content update (${new Date().toLocaleDateString()})`;
 
-    const result = await ContentService.publishToGitHub(message);
+    const result = await ContentService.publishToGitHub(message, clientToken);
 
     if (!result.success) {
       return NextResponse.json(
         {
           success: false,
-          error: result.error || "GitHub commit failed. Check GITHUB_TOKEN permissions.",
+          error: result.error || "GitHub commit failed. Check your GitHub Token and permissions.",
         },
         { status: 500 }
       );

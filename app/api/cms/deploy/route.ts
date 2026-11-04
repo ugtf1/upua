@@ -1,11 +1,12 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { githubCMS } from "@/lib/github-cms";
 
 // GET /api/cms/deploy — Returns live deployment status of Vercel and Google Cloud Run
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
-    const status = await githubCMS.getDeploymentStatus();
-    const repoInfo = githubCMS.getRepoInfo();
+    const clientToken = req.headers.get("x-github-token")?.trim() || "";
+    const status = await githubCMS.getDeploymentStatus(clientToken);
+    const repoInfo = githubCMS.getRepoInfo(clientToken);
 
     return NextResponse.json({
       success: true,

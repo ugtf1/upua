@@ -18,6 +18,7 @@ import {
   Info,
   Users,
   Shield,
+  ShieldCheck,
   Building,
   Crown,
   Calendar,
@@ -463,6 +464,12 @@ export default function EditorPanel() {
   const [isPublishing, setIsPublishing] = useState(false);
   const [publishMessage, setPublishMessage] = useState("");
 
+  // GitHub Personal Access Token management for Vercel/Cloud Run
+  const [githubToken, setGithubToken] = useState("");
+  const [isTestingToken, setIsTestingToken] = useState(false);
+  const [tokenStatus, setTokenStatus] = useState<"unknown" | "valid" | "invalid">("unknown");
+  const [showTokenInput, setShowTokenInput] = useState(false);
+
   // Modal for Image Picker / Replacer
   const [imagePickerTarget, setImagePickerTarget] = useState<{
     currentUrl: string;
@@ -557,18 +564,41 @@ export default function EditorPanel() {
     loadAllContent();
   }, [loadAllContent]);
 
-  // Save content handler
+  // Load saved GitHub token from localStorage on mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("upua_cms_github_token") || "";
+      if (saved) {
+        setGithubToken(saved);
+        setTokenStatus("valid");
+      }
+    }
+  }, []);
+
+  function getActiveGitHubToken(): string {
+    return githubToken || (typeof window !== "undefined" ? localStorage.getItem("upua_cms_github_token") || "" : "");
+  }
+
+  // Save content handler (supports local dev + Vercel GitHub commits)
   async function saveContent(type: "page" | "collection" | "global", name: string, data: any) {
     try {
+      const token = getActiveGitHubToken();
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (token) headers["x-github-token"] = token;
+
       const res = await fetch("/api/cms/content", {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify({ type, name, data }),
       });
       const json = await res.json();
       if (json.success) {
-        showToast("success", `Saved changes for ${name}`);
+        const dest = json.savedVia === "github" ? " (committed to GitHub)" : "";
+        showToast("success", `Saved changes for ${name}${dest}`);
       } else {
+        if (json.code === "MISSING_GITHUB_TOKEN") {
+          setActiveTab("deploy");
+        }
         showToast("error", json.error || "Save failed");
       }
     } catch (err: any) {
@@ -580,16 +610,21 @@ export default function EditorPanel() {
   async function handlePublish() {
     setIsPublishing(true);
     try {
+      const token = getActiveGitHubToken();
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (token) headers["x-github-token"] = token;
+
       const res = await fetch("/api/cms/publish", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify({
           commitMessage: publishMessage.trim() || `CMS update by Website Editor on ${new Date().toLocaleDateString()}`,
         }),
       });
       const json = await res.json();
       if (json.success) {
-        showToast("success", `Published commit ${json.commitSha.slice(0, 7)} to master! Deploying to Vercel and Cloud Run...`);
+        const shortSha = (json.commitSha || "").slice(0, 7) || "latest";
+        showToast("success", `Published commit ${shortSha} to master! Deploying to Vercel and Cloud Run...`);
         setPublishMessage("");
       } else {
         showToast("error", json.error || "Publish failed");
@@ -607,8 +642,13 @@ export default function EditorPanel() {
       const fd = new FormData();
       fd.append("file", file);
       fd.append("category", "general");
+      const token = getActiveGitHubToken();
+      const headers: Record<string, string> = {};
+      if (token) headers["x-github-token"] = token;
+
       const res = await fetch("/api/cms/media", {
         method: "POST",
+        headers,
         body: fd,
       });
       const json = await res.json();
@@ -636,8 +676,13 @@ export default function EditorPanel() {
       const fd = new FormData();
       fd.append("file", file);
       fd.append("targetUrl", targetUrl);
+      const token = getActiveGitHubToken();
+      const headers: Record<string, string> = {};
+      if (token) headers["x-github-token"] = token;
+
       const res = await fetch("/api/cms/media", {
         method: "POST",
+        headers,
         body: fd,
       });
       const json = await res.json();
@@ -956,6 +1001,49 @@ export default function EditorPanel() {
           </button>
         </div>
       </div>
+
+      {/* GitHub Token Notice banner */}
+      {!githubToken && (
+        <div
+          style={{
+            background: "#fef9e7",
+            border: "1px solid #f9e29f",
+            borderRadius: "8px",
+            padding: "8px 14px",
+            marginBottom: "14px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            gap: "8px",
+            fontSize: "0.8rem",
+            color: "#8a5800",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <AlertCircle size={15} />
+            <span>
+              <strong>Vercel Live Editor Notice:</strong> To save edits on the live site, configure your GitHub Personal Access Token in the <strong>Publish &amp; Deploy</strong> tab.
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setActiveTab("deploy")}
+            style={{
+              background: "#8a5800",
+              color: "#ffffff",
+              border: "none",
+              borderRadius: "5px",
+              padding: "4px 10px",
+              fontSize: "0.72rem",
+              fontWeight: 700,
+              cursor: "pointer",
+            }}
+          >
+            Configure Token
+          </button>
+        </div>
+      )}
 
       {/* Toast Notification */}
       {toast && (
@@ -2715,6 +2803,133 @@ export default function EditorPanel() {
       {/* ========================================================================= */}
       {activeTab === "deploy" && (
         <div style={{ display: "flex", flexDirection: "column", gap: "20px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
+          {/* GitHub Connection & Credentials Card */}
+          <div className="panel-card" style={{ background: "#ffffff", borderRadius: "12px", padding: "20px", border: "1.5px solid #137333", width: "100%", maxWidth: "100%", minWidth: 0, boxSizing: "border-box" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "10px", marginBottom: "8px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <span style={{ fontSize: "1.3rem" }}>🔐</span>
+                <div>
+                  <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.15rem", fontWeight: 800 }}>GitHub Connection &amp; Commit Token</h3>
+                  <p style={{ margin: "2px 0 0", color: "#526359", fontSize: "0.8rem" }}>
+                    Repository: <strong>ugtf1/upua</strong> · Branch: <strong>master</strong>
+                  </p>
+                </div>
+              </div>
+              <span
+                style={{
+                  background: (githubToken || deployStatus?.repo?.hasToken) ? "#e6f4ea" : "#fef7e0",
+                  color: (githubToken || deployStatus?.repo?.hasToken) ? "#137333" : "#b06000",
+                  border: `1px solid ${(githubToken || deployStatus?.repo?.hasToken) ? "#ceead6" : "#fdd663"}`,
+                  padding: "4px 10px",
+                  borderRadius: "9999px",
+                  fontSize: "0.75rem",
+                  fontWeight: 800,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px",
+                }}
+              >
+                {(githubToken || deployStatus?.repo?.hasToken) ? "✓ GitHub Connected" : "⚠️ GitHub Token Required for Vercel"}
+              </span>
+            </div>
+
+            <p style={{ color: "#526359", fontSize: "0.85rem", margin: "0 0 14px", lineHeight: 1.5 }}>
+              On Vercel, serverless file storage is read-only. Providing a GitHub Personal Access Token allows the CMS to write JSON content and upload images directly to your GitHub repository, immediately triggering automatic redeployment to Vercel and Google Cloud Run.
+            </p>
+
+            <div style={{ marginBottom: "12px" }}>
+              <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
+                GitHub Personal Access Token (PAT)
+              </label>
+              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                <input
+                  type={showTokenInput ? "text" : "password"}
+                  placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                  value={githubToken}
+                  onChange={(e) => {
+                    setGithubToken(e.target.value);
+                    if (typeof window !== "undefined") {
+                      if (e.target.value.trim()) {
+                        localStorage.setItem("upua_cms_github_token", e.target.value.trim());
+                      } else {
+                        localStorage.removeItem("upua_cms_github_token");
+                      }
+                    }
+                  }}
+                  style={{
+                    flex: "1 1 280px",
+                    maxWidth: "100%",
+                    boxSizing: "border-box",
+                    padding: "8px 12px",
+                    borderRadius: "6px",
+                    border: "1.5px solid #d4dfd7",
+                    fontSize: "0.85rem",
+                    fontFamily: "monospace",
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowTokenInput(!showTokenInput)}
+                  style={{
+                    background: "#f0f4f1",
+                    border: "1px solid #d4dfd7",
+                    color: "#0e3d26",
+                    padding: "8px 12px",
+                    borderRadius: "6px",
+                    fontSize: "0.78rem",
+                    fontWeight: 700,
+                    cursor: "pointer",
+                  }}
+                >
+                  {showTokenInput ? "Hide" : "Show"}
+                </button>
+                <button
+                  type="button"
+                  disabled={!githubToken || isTestingToken}
+                  onClick={async () => {
+                    setIsTestingToken(true);
+                    try {
+                      const res = await fetch("/api/cms/deploy", {
+                        headers: { "x-github-token": githubToken.trim() },
+                      });
+                      const json = await res.json();
+                      if (json.repo?.hasToken) {
+                        setTokenStatus("valid");
+                        showToast("success", "GitHub Token verified! Repo access confirmed.");
+                      } else {
+                        setTokenStatus("invalid");
+                        showToast("error", "Token failed to authenticate with GitHub repository.");
+                      }
+                    } catch {
+                      showToast("error", "Failed to test GitHub connection.");
+                    } finally {
+                      setIsTestingToken(false);
+                    }
+                  }}
+                  style={{
+                    background: "#0e3d26",
+                    color: "#ffffff",
+                    border: "none",
+                    padding: "8px 16px",
+                    borderRadius: "6px",
+                    fontSize: "0.78rem",
+                    fontWeight: 700,
+                    cursor: (!githubToken || isTestingToken) ? "not-allowed" : "pointer",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "6px",
+                  }}
+                >
+                  {isTestingToken ? <Loader2 size={13} className="animate-spin" /> : <ShieldCheck size={13} />}
+                  Test Connection
+                </button>
+              </div>
+              <p style={{ margin: "6px 0 0", fontSize: "0.72rem", color: "#666" }}>
+                Need a token? <a href="https://github.com/settings/tokens/new?scopes=repo&description=UPUA+CMS+Editor" target="_blank" rel="noopener noreferrer" style={{ color: "#0e3d26", fontWeight: 700, textDecoration: "underline" }}>Click here to generate a GitHub Token with repo permissions</a>.
+              </p>
+            </div>
+          </div>
+
           {/* One-Click Publish Card */}
           <div className="panel-card" style={{ background: "#ffffff", borderRadius: "12px", padding: "20px", border: "1.5px solid #d4af37", width: "100%", maxWidth: "100%", minWidth: 0, boxSizing: "border-box" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
@@ -2788,7 +3003,10 @@ export default function EditorPanel() {
               <button
                 type="button"
                 onClick={() => {
-                  fetch("/api/cms/deploy")
+                  const token = getActiveGitHubToken();
+                  const headers: Record<string, string> = {};
+                  if (token) headers["x-github-token"] = token;
+                  fetch("/api/cms/deploy", { headers })
                     .then((r) => r.json())
                     .then((json) => {
                       if (json.status) setDeployStatus(json.status);
