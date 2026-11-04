@@ -80,6 +80,19 @@ const OFFICERS: Officer[] = [
 ];
 
 export default function ExecutiveCommitteeGrid() {
+  const [officers, setOfficers] = React.useState<Officer[]>(OFFICERS);
+
+  React.useEffect(() => {
+    fetch("/api/cms/content?type=collection&name=organization/executive-committee")
+      .then((r) => r.json())
+      .then((res) => {
+        if (res.data && Array.isArray(res.data) && res.data.length > 0) {
+          setOfficers(res.data);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <section className="executive-committee-section" id="executive-committee" aria-labelledby="ec-heading">
       <div className="ec-container">
@@ -93,7 +106,7 @@ export default function ExecutiveCommitteeGrid() {
         </div>
 
         <div className="ec-grid">
-          {OFFICERS.map((officer) => (
+          {officers.map((officer) => (
             <article className="ec-officer-card" key={officer.id}>
               <div className="ec-card-media">
                 <Image

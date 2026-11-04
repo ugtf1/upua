@@ -1,0 +1,66 @@
+{
+  "hero": {
+    "badge": "Okugbe · Egba · Voyan Robaro",
+    "heading": "Urhobo Progress Union America",
+    "subheading": "Unity. Strength. Progress.",
+    "description": "The umbrella body of all Urhobo sons and daughters across North America — advocating for cultural pride, community development, and homeland progress.",
+    "ctaPrimaryLabel": "Explore Our Work",
+    "ctaPrimaryUrl": "#work",
+    "ctaSecondaryLabel": "Join UPUA",
+    "ctaSecondaryUrl": "/portal",
+    "carouselImages": [
+      "/upuahero.png",
+      "/assets/Congress-1.jpg",
+      "/assets/slide2/3.jpeg",
+      "/assets/slide2/7.jpeg"
+    ]
+  },
+  "stats": [
+    { "label": "Years of Service", "value": "32+", "subtext": "Continuous diaspora service" },
+    { "label": "Active Chapters", "value": "20", "subtext": "Across USA & Canada" },
+    { "label": "Community Impact", "value": "15k+", "subtext": "Families assisted annually" },
+    { "label": "Active Programs", "value": "6", "subtext": "Signature civic initiatives" }
+  ],
+  "marquee": {
+    "title": "Women in Shelter Initiative",
+    "subtitle": "Across North America, UPU chapters are giving back, donating time, resources and love to women's shelters in their communities."
+  },
+  "mission": {
+    "eyebrow": "Why UPUA exists",
+    "heading": "Uniting Urhobo people across North America and advancing our ancestral homeland.",
+    "description": "For over three decades, Urhobo Progress Union America has stood as the unified voice and civic engine for tens of thousands of Urhobo immigrants, families, and professionals across the United States and Canada.",
+    "bulletPoints": [
+      "Fostering deep cultural heritage and Urhobo language fluency across generations.",
+      "Providing immediate humanitarian relief and healthcare missions to Urhoboland.",
+      "Empowering youth through tech mentorship, scholarships, and professional networking.",
+      "Promoting civic responsibility, brotherhood, and active philanthropy in our North American cities."
+    ]
+  },
+  "work": {
+    "badge": "Our Mission",
+    "heading": "What We Do",
+    "description": "UPUA leads transformative programs across North America, serving as the strategic voice for Urhobo people in the diaspora."
+  },
+  "leadershipSection": {
+    "badge": "Union Governance",
+    "heading": "Leaders who keep the union moving",
+    "description": "Dedicated trustees, national executives, and chapter leaders committed to transparency, servant leadership, and the advancement of the Urhobo nation."
+  },
+  "updatesSection": {
+    "badge": "News & Stories",
+    "heading": "Updates from UPU America",
+    "description": "Stay informed on national initiatives, humanitarian relief missions, and community milestones from our chapters."
+  },
+  "eventsSection": {
+    "badge": "Convocations & Galas",
+    "heading": "Upcoming Events & Convention",
+    "description": "Connect with fellow Urhobo people at our annual national conventions, leadership symposiums, and regional cultural celebrations."
+  },
+  "worldwideCommunity": {
+    "heading": "Global Urhobo Community",
+    "description": "From Alaska to Florida, California to New York, UPUA connects Urhobo people in every corner of North America to our ancestral roots in Delta State, Nigeria.",
+    "newsletterTitle": "Stay Connected with UPUA",
+    "newsletterDescription": "Receive official announcements, convention registration alerts, and quarterly executive updates directly to your inbox.",
+    "newsletterButtonText": "Subscribe to Updates"
+  }
+}

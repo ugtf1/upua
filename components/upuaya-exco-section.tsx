@@ -83,6 +83,19 @@ const UPUAYA_OFFICERS: ExcoMember[] = [
 ];
 
 export default function UpuayaExcoSection() {
+  const [officers, setOfficers] = React.useState<ExcoMember[]>(UPUAYA_OFFICERS);
+
+  React.useEffect(() => {
+    fetch("/api/cms/content?type=collection&name=organization/youth-leadership")
+      .then((r) => r.json())
+      .then((res) => {
+        if (res.data && Array.isArray(res.data) && res.data.length > 0) {
+          setOfficers(res.data);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <section className="upuaya-exco-section" id="upuaya-exco" aria-labelledby="upuaya-exco-heading">
       <div className="upuaya-exco-container">
@@ -100,7 +113,7 @@ export default function UpuayaExcoSection() {
         </div>
 
         <div className="upuaya-exco-grid">
-          {UPUAYA_OFFICERS.map((officer) => (
+          {officers.map((officer) => (
             <article
               className={`upuaya-officer-card ${officer.isUpcoming ? "upuaya-card-upcoming" : ""}`}
               key={officer.id}

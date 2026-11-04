@@ -185,9 +185,21 @@ const TRUSTEES: Trustee[] = [
 
 export default function BoardOfTrusteesSection() {
   const [showAll, setShowAll] = useState(false);
+  const [trusteesList, setTrusteesList] = useState<Trustee[]>(TRUSTEES);
 
-  // Show first 12 initially, with a clean "View All 24 Trustees" toggle
-  const displayedTrustees = showAll ? TRUSTEES : TRUSTEES.slice(0, 12);
+  React.useEffect(() => {
+    fetch("/api/cms/content?type=collection&name=organization/trustees")
+      .then((r) => r.json())
+      .then((res) => {
+        if (res.data && Array.isArray(res.data) && res.data.length > 0) {
+          setTrusteesList(res.data);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  // Show first 12 initially, with a clean "View All" toggle
+  const displayedTrustees = showAll ? trusteesList : trusteesList.slice(0, 12);
 
   return (
     <section className="bot-section" id="board-of-trustees" aria-labelledby="bot-heading">

@@ -1,0 +1,20 @@
+{
+  "siteName": "Urhobo Progress Union America",
+  "shortName": "UPUA",
+  "tagline": "Okugbe, Egba, Voyan Robaro (Unity, Strength and Progress)",
+  "logo": "/upua-logo.png",
+  "contactEmail": "info@upuamerica.org",
+  "contactPhone": "+1 (832) 555-UPUA",
+  "headquarters": "North America Operations · United States & Canada",
+  "donateUrl": "https://campaigns.donately.com/t005/landing?account_subdomain=upuamerica&campaign_id=cmp_3bf0af489f59",
+  "socialLinks": {
+    "facebook": "https://facebook.com/upuamerica",
+    "twitter": "https://twitter.com/upuamerica",
+    "instagram": "https://instagram.com/upuamerica",
+    "youtube": "https://youtube.com/@upuamerica"
+  },
+  "footer": {
+    "description": "The umbrella organization of all Urhobo people and associations in North America. Dedicated to cultural preservation, youth empowerment, and homeland advancement.",
+    "copyright": "© 2026 Urhobo Progress Union America (UPUA). All Rights Reserved. 501(c)(3) Non-Profit Organization."
+  }
+}

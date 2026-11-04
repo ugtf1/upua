@@ -187,9 +187,21 @@ const blogPosts: BlogPost[] = [
 ];
 
 export default function BlogPage() {
+  const [posts, setPosts] = useState<BlogPost[]>(blogPosts);
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
+
+  useEffect(() => {
+    fetch("/api/cms/content?type=collection&name=blog/articles")
+      .then((r) => r.json())
+      .then((res) => {
+        if (res.data && Array.isArray(res.data) && res.data.length > 0) {
+          setPosts(res.data);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   // Close modal on Escape key press
   useEffect(() => {
@@ -200,7 +212,7 @@ export default function BlogPage() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  const filteredPosts = blogPosts.filter((post) => {
+  const filteredPosts = posts.filter((post) => {
     const matchCategory = activeCategory === "All" || post.category === activeCategory;
     const matchSearch =
       post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -208,7 +220,7 @@ export default function BlogPage() {
     return matchCategory && matchSearch;
   });
 
-  const featured = blogPosts.find((p) => p.featured) || blogPosts[0];
+  const featured = posts.find((p) => p.featured) || posts[0];
 
   return (
     <div className="figma-landing-page">

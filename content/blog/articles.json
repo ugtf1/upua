@@ -1,0 +1,58 @@
+[
+  {
+    "id": "women-in-shelter-national",
+    "slug": "across-north-america-upua-chapters-unite-for-women-in-shelter-initiative",
+    "title": "Across North America: UPUA Chapters Unite for Women in Shelter Initiative",
+    "category": "Community",
+    "date": "2024-06-28",
+    "displayDate": "June 28, 2024",
+    "readTime": "4 min read",
+    "author": "UPUA Communications",
+    "image": "/assets/DMV-6.jpg",
+    "excerpt": "From Southern California and Chicagoland to Delaware Valley, Michigan, and the DMV, UPUA chapters mobilized nationwide to donate essential hygiene packages, clothing, supplies, and warmth to local women's shelters.",
+    "featured": true,
+    "tags": ["Community Outreach", "Women in Shelter", "Humanitarian", "North America Chapters"],
+    "content": [
+      "In a coordinated nationwide display of humanitarian service, chapters of the Urhobo Progress Union America (UPUA) across sixteen metropolitan areas have conducted in-person donation drives at women's emergency shelters.",
+      "The Women in Shelter Initiative was designed to support women and children escaping domestic hardship, displacement, and economic vulnerability. Chapter delegations delivered hundreds of custom hygiene packs containing personal care products, warm blankets, winter garments, and infant care necessities.",
+      "National leadership praised the initiative, emphasizing that the Urhobo culture has always held community generosity and care for the vulnerable as sacred duties. Municipal officials in Detroit, Columbus, and Washington D.C. expressed sincere gratitude to UPUA for their sustained civic leadership.",
+      "UPUA plans to expand the initiative to all active North American chapters, establishing permanent philanthropic partnerships with certified shelter organizations across the United States and Canada."
+    ]
+  },
+  {
+    "id": "convention-announcement-2026",
+    "slug": "dallas-fort-worth-confirmed-as-host-city-for-32nd-annual-upua-convention",
+    "title": "Dallas-Fort Worth Confirmed as Host City for 32nd Annual National Convention",
+    "category": "Convention",
+    "date": "2026-01-15",
+    "displayDate": "January 15, 2026",
+    "readTime": "3 min read",
+    "author": "National Secretariat",
+    "image": "/assets/Congress-1.jpg",
+    "featured": false,
+    "tags": ["National Convention", "Dallas", "Cultural Gala", "Governance"],
+    "content": [
+      "The National Executive Committee of the Urhobo Progress Union America is thrilled to announce that the 32nd Annual National Convention and Cultural Gala will be staged in the heart of Texas at the prestigious Hilton Anatole Dallas over Labor Day Weekend 2026.",
+      "Delegates from over twenty chapters across the United States and Canada, accompanied by traditional monarchs, dignitaries, and cultural performers from Nigeria, will converge for four days of intensive assembly deliberations, youth symposiums, and cultural banquets.",
+      "Hotel reservation links and official delegate packages are now open through the UPUA portal. Early bird registration is strongly recommended as hotel room blocks are strictly limited."
+    ]
+  },
+  {
+    "id": "stem-ai-initiative-launch",
+    "slug": "empowering-next-gen-youth-through-stem-and-ai-bootcamps",
+    "title": "Empowering Next-Gen Youth Through STEM & Artificial Intelligence Bootcamps",
+    "category": "Programs",
+    "date": "2025-11-10",
+    "displayDate": "November 10, 2025",
+    "readTime": "5 min read",
+    "author": "UPUAYA Youth Directorate",
+    "image": "/update-stem.jpg",
+    "featured": false,
+    "tags": ["STEM", "AI", "Youth Empowerment", "Education"],
+    "content": [
+      "In our continuing commitment to education and technological progress, the UPUAYA Youth Wing has successfully rolled out its hybrid STEM & Artificial Intelligence bootcamp series.",
+      "Over 1,200 participants from across Delta State and North America attended intensive virtual coding workshops, learning fundamentals of machine learning models, modern web development, and cloud data architecture.",
+      "Mentored by senior software architects and engineering leaders at global tech corporations, participants built practical solutions to address regional infrastructure, agriculture, and educational hurdles."
+    ]
+  }
+]

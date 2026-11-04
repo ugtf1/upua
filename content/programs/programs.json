@@ -1,0 +1,182 @@
+{
+  "shelterChapters": [
+    { "chapter": "DC, Maryland & Virginia (UPUDMV)", "location": "Washington DC, MD, VA", "image": "/assets/DMV-6.jpg" },
+    { "chapter": "Michigan (UPUMI)", "location": "Detroit, Michigan", "image": "/assets/Michigan-2.jpg" },
+    { "chapter": "Ohio (UPU Ohio)", "location": "Columbus & Cleveland, OH", "image": "/assets/Ohio-1.jpg" },
+    { "chapter": "Southern California (UPUSC)", "location": "Los Angeles & San Diego, CA", "image": "/assets/SolCal-4.jpg" },
+    { "chapter": "Chicagoland (UPUC)", "location": "Chicago, Illinois", "image": "/assets/ChicagoLand-1x.jpg" },
+    { "chapter": "Delaware Valley (UPUDV)", "location": "PA, DE & NJ", "image": "/assets/Delaware-1.jpg" },
+    { "chapter": "Great Kansas City (Waado)", "location": "Kansas City, MO / KS", "image": "/assets/wadoo-1.jpg" },
+    { "chapter": "Minnesota (UPUM)", "location": "Minneapolis & St. Paul, MN", "image": "/assets/Minnesota-3.jpg" }
+  ],
+  "programs": [
+    {
+      "id": "women-shelter",
+      "slug": "women-in-shelter-initiative",
+      "title": "Women in Shelter Initiative",
+      "category": "Signature Community Action",
+      "summary": "Across North America, UPUA chapters actively give back by donating time, resources, essential hygiene kits, food supplies, and compassion to women's shelters in their host American cities.",
+      "featuredImage": "/assets/DMV-6.jpg",
+      "impact": "16+ Host Cities Reached Nationwide",
+      "accent": "#0e3d26",
+      "featured": true,
+      "order": 1,
+      "details": [
+        "Coordinated outreach across 16 UPUA North American chapters",
+        "Direct delivery of personal hygiene packs, clothing, and blankets",
+        "Supporting mothers and vulnerable children in emergency transitional housing",
+        "Strengthening community partnership with municipal shelter directors"
+      ],
+      "objectives": [
+        "Demonstrate Urhobo cultural philanthropy and active civic duty in our North American host towns.",
+        "Provide emergency care packs, hygiene products, and winter items to vulnerable families.",
+        "Establish permanent annual charitable partnerships between local UPUA chapters and verified municipal shelters."
+      ],
+      "fullWriteup": [
+        "The Women in Shelter Initiative is UPUA's signature continental humanitarian campaign. Believing deeply in the ancient Urhobo cultural code of communal empathy ('Urhoro ro' vwe, Urhoro ro' we' — your doorstep is my doorstep), our delegations visit local family and women's emergency shelters across North America.",
+        "Each chapter assembles and delivers customized emergency care bundles, provides food pantry items, and donates critical funds to support operational needs during harsh winter months and emergency transitions.",
+        "From Southern California and Minnesota to Michigan, Ohio, Texas, and the Mid-Atlantic DMV, chapter leaders and members personally meet shelter administrators, demonstrating the generosity, respect, and solidarity of the Urhobo people."
+      ]
+    },
+    {
+      "id": "stem-ai",
+      "slug": "stem-and-ai-training-urhoboland",
+      "title": "STEM and Artificial Intelligence Training in Urhoboland",
+      "category": "Youth & Education Empowerment",
+      "summary": "Equipping youth across Urhoboland and the diaspora with cutting-edge software engineering, artificial intelligence literacy, data analytics, and digital economy career skills.",
+      "featuredImage": "/update-stem.jpg",
+      "impact": "1,200+ Students & Developers Trained",
+      "accent": "#1a5336",
+      "featured": true,
+      "order": 2,
+      "details": [
+        "Hands-on Python, AI prompts, and software development bootcamps",
+        "Distribution of donated laptops and reliable solar power connectivity",
+        "Mentorship by leading Urhobo diaspora tech professionals in the US & Canada",
+        "Pathways to remote employment and global tech internships"
+      ],
+      "objectives": [
+        "Bridge the digital divide for young boys and girls across all 24 Urhobo kingdoms.",
+        "Train high-potential secondary school and university students in practical computing and artificial intelligence.",
+        "Connect homeland students with diaspora engineers, data scientists, and executives for long-term career mentorship."
+      ],
+      "fullWriteup": [
+        "In the 21st century, technological sovereignty is cultural sovereignty. UPUA's STEM and Artificial Intelligence Initiative directly finances and coordinates immersive technology academies across Delta State and North America.",
+        "Through diaspora donations, we provide laptops, reliable internet access points, and interactive curriculum covering machine learning foundations, web engineering, cloud computing, and digital entrepreneurship.",
+        "By empowering Urhobo youth with globally competitive tools, we ensure our young generation transforms from technology consumers into high-earning innovators and community problem solvers."
+      ]
+    },
+    {
+      "id": "medical-outreach",
+      "slug": "medical-outreach-and-health-missions",
+      "title": "Medical Outreach and Health Missions",
+      "category": "Homeland Health & Wellness",
+      "summary": "Annual medical missions deploying qualified diaspora doctors, pharmacists, and nurses to rural Urhobo communities to provide free healthcare, screenings, and vital pharmaceuticals.",
+      "featuredImage": "/update-outreach.jpg",
+      "impact": "15,000+ Consultations & Free Prescriptions",
+      "accent": "#0e3d26",
+      "featured": true,
+      "order": 3,
+      "details": [
+        "Free cardiovascular, diabetes, and hypertension screenings",
+        "Prescription medication distribution and pharmacy dispensaries",
+        "Vision testing, reading glasses distribution, and cataract triage",
+        "Preventative health education workshops in rural clinics"
+      ],
+      "objectives": [
+        "Bring world-class medical consultation to rural villages lacking access to primary healthcare clinics.",
+        "Supply hospitals and health centers across Urhoboland with life-saving medications and medical consumables.",
+        "Engage diaspora healthcare practitioners in direct philanthropic homeland service."
+      ],
+      "fullWriteup": [
+        "Healthcare accessibility is among the most urgent priorities in our homeland. UPUA organizes comprehensive volunteer health missions where Urhobo physicians, nurses, and clinical experts travel to Delta State.",
+        "Working alongside local healthcare personnel, our medical teams conduct hundreds of free surgeries, dispense vital chronic disease medications, and test for high blood pressure, glaucoma, and diabetes.",
+        "Our missions have saved thousands of lives, prevented blindness through early cataract intervention, and equipped community maternity clinics with essential delivery and infant care supplies."
+      ]
+    },
+    {
+      "id": "humanitarian-relief",
+      "slug": "humanitarian-relief-okuama-idps",
+      "title": "Humanitarian Relief and Support for Okuama IDPs",
+      "category": "Emergency & Crisis Response",
+      "summary": "Rapid mobilization of emergency aid, building materials, clean water purification, and trauma counseling for displaced citizens and families affected by homeland crises.",
+      "featuredImage": "/assets/slide2/14.jpeg",
+      "impact": "$120,000+ Relief Fund Mobilized",
+      "accent": "#8b1e1e",
+      "featured": true,
+      "order": 4,
+      "details": [
+        "Direct emergency food rations, infant nutrition, and clean water supplies",
+        "Emergency shelter kits, bedding, and temporary shelter logistics",
+        "Advocacy and legal representation support for displaced citizens",
+        "Rebuilding fund for community schools and primary healthcare post"
+      ],
+      "objectives": [
+        "Deliver immediate emergency nutrition and shelter supplies to displaced families and children.",
+        "Provide psychological first aid, trauma counseling, and community healing support.",
+        "Advocate peacefully and relentlessly at national and international levels for permanent safety and resettlement."
+      ],
+      "fullWriteup": [
+        "When tragedy struck Okuama and neighboring communities, UPUA immediately activated its Emergency Crisis Relief Protocol. Within days, our North American chapters rallied members, organizations, and well-wishers to assemble an emergency relief fund.",
+        "We coordinated with on-the-ground relief teams to ensure displaced mothers, children, and elderly residents in temporary camps received daily food, clean drinking water, hygiene products, and critical medication.",
+        "UPUA continues to champion sustainable reconstruction, rehabilitation of displaced families back to their ancestral homes, and the rebuilding of destroyed schools and healthcare facilities."
+      ]
+    },
+    {
+      "id": "national-convention",
+      "slug": "annual-national-convention-and-cultural-gala",
+      "title": "Annual National Convention and Cultural Gala",
+      "category": "National Unity & Cultural Splendor",
+      "summary": "The premier gathering of Urhobo sons, daughters, traditional rulers, and friends of Urhobo from across the globe for strategic governance, youth congress, and cultural showcase.",
+      "featuredImage": "/assets/Congress-1.jpg",
+      "impact": "Annual Flagship Gathering (32+ Years)",
+      "accent": "#0e3d26",
+      "featured": true,
+      "order": 5,
+      "details": [
+        "National Executive Assembly & Board of Trustees legislative sessions",
+        "Youth Leadership Summit & professional networking symposiums",
+        "Grand Cultural Banquet, traditional regalia procession, and awards gala",
+        "Homeland economic investment roundtables and keynote lectures"
+      ],
+      "objectives": [
+        "Gather all North American chapters and global delegates to set strategic legislative and developmental priorities.",
+        "Celebrate Urhobo royal heritage, traditional dances, cuisine, and coral bead regalia in the diaspora.",
+        "Honor distinguished Urhobo achievers, scholars, and public servants making global impact."
+      ],
+      "fullWriteup": [
+        "For over three decades, the UPUA Annual National Convention has stood as the pinnacle celebration of Urhobo unity and heritage in the Americas. Hosted each year in a different landmark metropolitan city, the convention draws thousands of attendees.",
+        "Over four action-packed days, delegates deliberate on homeland governance, review audited financial statements, elect leaders, and host the celebrated Urhobo Youth Congress.",
+        "The convention culminates in the breathtaking National Cultural Banquet and Gala Night — an unforgettable evening of traditional monarchical pageantry, world-class Urhobo music, culinary feasts, and community honors."
+      ]
+    },
+    {
+      "id": "language-preservation",
+      "slug": "urhobo-language-preservation-cultural-education",
+      "title": "Urhobo Language Preservation and Cultural Education",
+      "category": "Heritage & Linguistics",
+      "summary": "Preserving the linguistic integrity of Urhobo through digital dictionary projects, weekend dialect academies, children's storybooks, and cultural immersion webinars.",
+      "featuredImage": "/assets/slide2/10.jpeg",
+      "impact": "2,500+ Children & Adults Enrolled in Language Labs",
+      "accent": "#b8860b",
+      "featured": true,
+      "order": 6,
+      "details": [
+        "Online interactive Urhobo language classes for diaspora children and adults",
+        "Publication and distribution of bilingual Urhobo-English learning books",
+        "Digital audio pronunciation archive of traditional idioms and folklore",
+        "Cultural webinars on traditional marriage rites, monarchical protocols, and music"
+      ],
+      "objectives": [
+        "Ensure our native tongue thrives vigorously across second and third-generation diaspora children.",
+        "Create accessible digital multimedia tools for self-paced Urhobo language fluency.",
+        "Document traditional folklore, proverbs, and philosophical heritage for posterity."
+      ],
+      "fullWriteup": [
+        "A people without their mother tongue are like a river without its source. UPUA is dedicated to the enduring preservation and vitality of the Urhobo language in the diaspora and homeland.",
+        "Through our Cultural Education Directorate, we sponsor virtual weekend language academies taught by certified native linguists, where diaspora youth learn grammar, conversational fluency, and pronunciation.",
+        "We also sponsor the distribution of Urhobo dictionaries, children's animated folklore videos, and cultural symposiums on our royal dynasties, ensuring the glory of Urhobo heritage endures for generations."
+      ]
+    }
+  ]
+}

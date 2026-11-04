@@ -190,7 +190,19 @@ const mainPrograms: ProgramItem[] = [
 ];
 
 export default function ProgramsPage() {
+  const [programs, setPrograms] = useState<ProgramItem[]>(mainPrograms);
+  const [shelters, setShelters] = useState(shelterChapters);
   const [selectedProgram, setSelectedProgram] = useState<ProgramItem | null>(null);
+
+  useEffect(() => {
+    fetch("/api/cms/content?type=collection&name=programs/programs")
+      .then((r) => r.json())
+      .then((res) => {
+        if (res.data?.programs?.length) setPrograms(res.data.programs);
+        if (res.data?.shelterChapters?.length) setShelters(res.data.shelterChapters);
+      })
+      .catch(() => {});
+  }, []);
 
   // Close modal on Escape key press
   useEffect(() => {
@@ -262,7 +274,7 @@ export default function ProgramsPage() {
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 250px), 1fr))", gap: "20px" }}>
-            {shelterChapters.map((sc) => (
+            {shelters.map((sc) => (
               <article
                 key={sc.chapter}
                 className="shelter-chapter-card"
@@ -297,7 +309,7 @@ export default function ProgramsPage() {
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))", gap: "28px" }}>
-            {mainPrograms.map((prog) => (
+            {programs.map((prog) => (
               <article
                 key={prog.id}
                 style={{

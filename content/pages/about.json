@@ -1,0 +1,47 @@
+{
+  "hero": {
+    "badge": "About UPUA",
+    "heading": "Urhobo Progress Union America",
+    "subheading": "The supreme cultural and developmental body of Urhobo people resident across North America.",
+    "motto": "Okugbe, Egba, Voyan Robaro (Unity, Strength and Progress)"
+  },
+  "history": {
+    "heading": "Our History & Purpose",
+    "accreditation": "UPUA is a duly incorporated 501(c)(3) non-profit tax-exempt cultural and humanitarian institution operating under the laws of the United States of America.",
+    "body": [
+      "The Urhobo Progress Union America (UPUA) is the umbrella organization representing all Urhobo associations, chapters, families, and people residing across the United States and Canada.",
+      "Rooted in the century-old lineage of the worldwide Urhobo Progress Union founded in 1931, UPUA serves as the supreme beacon of Urhobo culture, language, solidarity, and socio-economic advancement in North America.",
+      "Over the decades, UPUA has built bridges of fraternity between diaspora communities and our ancestral homeland in Delta State, Nigeria — sponsoring schools, providing emergency humanitarian relief, advocating for indigenous environmental rights, and mentoring the next generation of global leaders."
+    ]
+  },
+  "missionVision": {
+    "missionHeading": "Our Mission",
+    "mission": "To unite all Urhobo people and associations in North America into one cohesive, forward-looking brotherhood; to preserve and celebrate our rich monarchical heritage and language; and to mobilize human and financial capital for the educational, economic, and civic elevation of Urhoboland and our host communities.",
+    "visionHeading": "Our Vision",
+    "vision": "A vibrant, self-sustaining global Urhobo diaspora renowned for cultural pride, institutional excellence, academic achievement, and permanent developmental impact across North America and Urhoboland."
+  },
+  "nationalAnthem": {
+    "heading": "The Urhobo National Anthem",
+    "subheading": "The sacred anthem echoing the royal lineage and eternal bond of all Urhobo people.",
+    "urhoboLyrics": [
+      "Urhobo eh, Orere r'Ivie sa-a.",
+      "Urhobo eh, Orere r'Ivie sa-a.",
+      "Urhobo kokore Ogbare eh,",
+      "Urhobo eh, Orere r'Ivie sa-a.",
+      "Obo r'Urhobo jevwe na,",
+      "Aso 'fa jevwe otio ye-eh.",
+      "Edefa me rhiakpo, Urhobo me wan rhe,",
+      "Urhobo eh, Orere r'Ivie sa-a Anoma-a."
+    ],
+    "englishTranslation": [
+      "Urhobo hail! Land of royal monarchies and dignity.",
+      "Urhobo hail! Land of royal monarchies and dignity.",
+      "Let all Urhobos gather in unbreakable unity,",
+      "Urhobo hail! Land of royal monarchies and dignity.",
+      "The boundless love I have for Urhobo,",
+      "No other nation compares under the sun.",
+      "When next I reincarnate into this mortal earth,",
+      "It is through Urhobo that I shall surely return!"
+    ]
+  }
+}

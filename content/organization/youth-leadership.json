@@ -1,0 +1,77 @@
+[
+  {
+    "id": "upuaya-1",
+    "name": "Oghenekevwe Ajueyitsi",
+    "role": "President",
+    "chapter": "UPU DMV",
+    "image": "/assets/upuaya/kevwe.jpg",
+    "order": 1
+  },
+  {
+    "id": "upuaya-2",
+    "name": "Praise Asanudje",
+    "role": "Vice President",
+    "chapter": "Urhobo/Isoko Ass. Arizona",
+    "image": "/assets/upuaya/praise.jpg",
+    "order": 2
+  },
+  {
+    "id": "upuaya-3",
+    "name": "Favour Okotie",
+    "role": "Secretary",
+    "chapter": "UPU Ohio",
+    "image": "/assets/upuaya/favour.jpg",
+    "order": 3
+  },
+  {
+    "id": "upuaya-4",
+    "name": "Jess Oghenefejiro Ikporo",
+    "role": "Asst. Secretary",
+    "chapter": "UPU Midland/Odessa, TX",
+    "image": "/assets/upuaya/jess.jpg",
+    "order": 4
+  },
+  {
+    "id": "upuaya-5",
+    "name": "Eguolor Sam-Ogaga",
+    "role": "Treasurer",
+    "chapter": "Urhobo/Isoko Ass of Middle Tennessee",
+    "image": "/assets/upuaya/eguolor.jpg",
+    "order": 5
+  },
+  {
+    "id": "upuaya-6",
+    "name": "Ufuoma Agarin",
+    "role": "Social/Publicity Secretary",
+    "chapter": "UPU DMV",
+    "image": "/assets/upuaya/ufuoma.jpg",
+    "order": 6
+  },
+  {
+    "id": "upuaya-7",
+    "name": "Coming Soon",
+    "role": "Financial Secretary",
+    "chapter": "Diaspora Youth Wing",
+    "image": "/upua-logo.png",
+    "isUpcoming": true,
+    "order": 7
+  },
+  {
+    "id": "upuaya-8",
+    "name": "Coming Soon",
+    "role": "Director of Programs",
+    "chapter": "Diaspora Youth Wing",
+    "image": "/upua-logo.png",
+    "isUpcoming": true,
+    "order": 8
+  },
+  {
+    "id": "upuaya-9",
+    "name": "Coming Soon",
+    "role": "Director of Welfare",
+    "chapter": "Diaspora Youth Wing",
+    "image": "/upua-logo.png",
+    "isUpcoming": true,
+    "order": 9
+  }
+]

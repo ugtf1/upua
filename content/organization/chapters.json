@@ -1,0 +1,202 @@
+[
+  {
+    "id": "c-norcal",
+    "name": "Urhobo Progress Union, Northern California (UPUNC)",
+    "abbreviation": "UPUNC",
+    "president": "Chief Gabriel Oghwe-Akateme",
+    "region": "West Coast",
+    "location": "San Francisco & Bay Area, CA",
+    "website": "",
+    "order": 1
+  },
+  {
+    "id": "c-socal",
+    "name": "Urhobo Progress Union of Southern California (UPUSC)",
+    "abbreviation": "UPUSC",
+    "president": "Mr. Felix Agbabune",
+    "region": "West Coast",
+    "location": "Los Angeles & San Diego, CA",
+    "website": "",
+    "order": 2
+  },
+  {
+    "id": "c-houston",
+    "name": "Urhobo Progressive Association (UPA), Houston",
+    "abbreviation": "UPA Houston",
+    "president": "Chief Godspower Oniovosa",
+    "region": "Texas / South",
+    "location": "Houston, Texas",
+    "website": "https://upahouston.org/",
+    "order": 3
+  },
+  {
+    "id": "c-midessa",
+    "name": "Urhobo Progressive Union, Midland/Odessa, Texas",
+    "abbreviation": "UPU Midessa",
+    "president": "Chief Mrs. Vivian Ikporo",
+    "region": "Texas / South",
+    "location": "Midland & Odessa, TX",
+    "website": "https://upumidessa.org",
+    "order": 4
+  },
+  {
+    "id": "c-dmv",
+    "name": "Urhobo Progress Union of DC, Maryland & Virginia (UPUDMV)",
+    "abbreviation": "UPUDMV",
+    "president": "Chief Paul Otu",
+    "region": "Mid-Atlantic",
+    "location": "Washington DC, MD, VA",
+    "website": "https://upudmv.org/",
+    "order": 5
+  },
+  {
+    "id": "c-georgia",
+    "name": "Urhobo Association of Georgia (UAG)",
+    "abbreviation": "UAG",
+    "president": "Mr. Thomas Uwhubetine",
+    "region": "Southeast",
+    "location": "Atlanta, Georgia",
+    "website": "",
+    "order": 6
+  },
+  {
+    "id": "c-chicago",
+    "name": "Urhobo Progress Union Chicagoland (UPUC)",
+    "abbreviation": "UPUC",
+    "president": "Dr. Bernard Rerri",
+    "region": "Midwest",
+    "location": "Chicago, Illinois",
+    "website": "",
+    "order": 7
+  },
+  {
+    "id": "c-tristate",
+    "name": "Urhobo Association (UA) of New York, New Jersey & Connecticut",
+    "abbreviation": "UA Tri-State",
+    "president": "Mrs. Agatha Osagie-Erese",
+    "region": "Northeast",
+    "location": "NY, NJ & CT",
+    "website": "",
+    "order": 8
+  },
+  {
+    "id": "c-connecticut",
+    "name": "Urhobo Congress (UC) of Connecticut",
+    "abbreviation": "UC Connecticut",
+    "president": "Mr. Charles Ovwasa",
+    "region": "Northeast",
+    "location": "Connecticut",
+    "website": "",
+    "order": 9
+  },
+  {
+    "id": "c-delaware",
+    "name": "Urhobo Progress Union, Delaware Valley (UPUDV - PA, DE, NJ)",
+    "abbreviation": "UPUDV",
+    "president": "Engr. Akpovoke Shaire / Mrs. Elizabeth Jamaho",
+    "region": "Northeast",
+    "location": "Philadelphia, PA, DE & NJ",
+    "website": "",
+    "order": 10
+  },
+  {
+    "id": "c-ohio",
+    "name": "Urhobo Progress Union of Ohio",
+    "abbreviation": "UPU Ohio",
+    "president": "Chief (Dr.) Mrs. Louisa Ukochovwera",
+    "region": "Midwest",
+    "location": "Columbus & Cleveland, OH",
+    "website": "",
+    "order": 11
+  },
+  {
+    "id": "c-michigan",
+    "name": "Urhobo Progress Union, Michigan (UPUMI)",
+    "abbreviation": "UPUMI",
+    "president": "Mr. Paul Edirin Warrence",
+    "region": "Midwest",
+    "location": "Detroit, Michigan",
+    "website": "",
+    "order": 12
+  },
+  {
+    "id": "c-minnesota",
+    "name": "Urhobo Progressive Union of Minnesota (UPUM)",
+    "abbreviation": "UPUM",
+    "president": "Mrs. Ejiro Egi",
+    "region": "Midwest",
+    "location": "Minneapolis & St. Paul, MN",
+    "website": "http://upumn.org/",
+    "order": 13
+  },
+  {
+    "id": "c-tennessee",
+    "name": "Urhobo Association of Middle Tennessee (UAMT)",
+    "abbreviation": "UAMT",
+    "president": "Mr. Jacob Akpoyovware",
+    "region": "Southeast",
+    "location": "Nashville, TN",
+    "website": "",
+    "order": 14
+  },
+  {
+    "id": "c-florida",
+    "name": "Urhobo Progress Union of Central Florida",
+    "abbreviation": "UPU Florida",
+    "president": "Mr. Kelvin Oteri",
+    "region": "Southeast",
+    "location": "Orlando & Tampa, FL",
+    "website": "",
+    "order": 15
+  },
+  {
+    "id": "c-louisiana",
+    "name": "Urhobo Progress Union, Louisiana",
+    "abbreviation": "UPU Louisiana",
+    "president": "Dr. Deborah Sobotie-Damijo",
+    "region": "South",
+    "location": "New Orleans & Baton Rouge, LA",
+    "website": "",
+    "order": 16
+  },
+  {
+    "id": "c-kansascity",
+    "name": "Waado Progressive Union of Great Kansas City",
+    "abbreviation": "Waado Kansas",
+    "president": "Mr. Odafe Alexander Akortha",
+    "region": "Midwest",
+    "location": "Kansas City, MO / KS",
+    "website": "",
+    "order": 17
+  },
+  {
+    "id": "c-massachusetts",
+    "name": "Urhobo Cultural and Social Change Society (USCSC) Massachusetts",
+    "abbreviation": "USCSC Mass",
+    "president": "Mr. Gordon Sekegor",
+    "region": "Northeast",
+    "location": "Boston, MA",
+    "website": "",
+    "order": 18
+  },
+  {
+    "id": "c-stlouis",
+    "name": "Urhobo Cultural Association (UCA), St. Louis, Missouri",
+    "abbreviation": "UCA St. Louis",
+    "president": "Mr. Emmanuel Obiebi",
+    "region": "Midwest",
+    "location": "St. Louis, MO",
+    "website": "",
+    "order": 19
+  },
+  {
+    "id": "c-arizona",
+    "name": "Urhobo-Isoko Association of Arizona",
+    "abbreviation": "UIA Arizona",
+    "president": "Chief Alexander Joel",
+    "region": "Southwest",
+    "location": "Phoenix, AZ",
+    "website": "",
+    "order": 20
+  }
+]

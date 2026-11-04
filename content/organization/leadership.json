@@ -1,0 +1,22 @@
+[
+  {
+    "id": "leader-president",
+    "name": "Chief Samuel Ogaga",
+    "title": "National President, UPUA",
+    "tagline": "\"Okugbe, Egba, Voyan Robaro\" (Unity, Strength and Progress)",
+    "bio": "Serving as the National President of Urhobo Progress Union America, Chief Samuel Ogaga leads the association with a passion for uniting all Urhobo people across North America and preserving the core cultural values, languages, and development of Urhoboland.",
+    "image": "/assets/president.png",
+    "order": 1,
+    "featured": true
+  },
+  {
+    "id": "leader-bot-chair",
+    "name": "Mr. Thomas Uwhubetine",
+    "title": "Chairman, Board of Trustees (BOT)",
+    "tagline": "MBA, Accountant, RN (retired), JP – President, Urhobo Association of Georgia",
+    "bio": "“My mission is to move our union forward as attested by our motto: Okugbe, Egba, Voyan Robaro and in the spirit embedded in our national anthem: Edefa me rh'akpo, Urhobo me warhe (when I reincarnate, I will come through Urhobo). It is time to move UPUA to its rightful place in the 21st century with its own permanent house, offices, and global impact.”",
+    "image": "/assets/chairman.png",
+    "order": 2,
+    "featured": true
+  }
+]

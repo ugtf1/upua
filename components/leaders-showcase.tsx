@@ -4,6 +4,37 @@ import React from "react";
 import Image from "next/image";
 
 export default function LeadersShowcase() {
+  const [leaders, setLeaders] = React.useState<any[]>([
+    {
+      name: "Chief Samuel Ogaga",
+      title: "National President, UPUA",
+      tagline: "‘Okugbe, Egba, Voyan Robaro’ (Unity, Strength and Progress)",
+      bio: "Serving as the National President of Urhobo Progress Union America, Chief Samuel Ogaga leads the association with a passion for uniting all Urhobo people across North America and preserving the core cultural values, languages, and development of Urhoboland.",
+      image: "/assets/president.png",
+    },
+    {
+      name: "Mr. Thomas Uwhubetine",
+      title: "Chairman, Board of Trustees (BOT)",
+      tagline: "MBA, Accountant, RN (retired), JP - President, Urhobo Association of Georgia",
+      bio: "My mission is to move our union forward as attested by our motto: Okugbe, Egba, Voyan Robaro and in the spirit embedded in our national anthem: Edefa me rh’akpo, Urhobo me warhe (when I reincarnate, I will come through Urhobo). It is time to move UPUA to its rightful place in the 21st century with its own permanent house, offices, and global impact.",
+      image: "/assets/chairman.png",
+    },
+  ]);
+
+  React.useEffect(() => {
+    fetch("/api/cms/content?type=collection&name=organization/leadership")
+      .then((r) => r.json())
+      .then((res) => {
+        if (res.data && Array.isArray(res.data) && res.data.length >= 2) {
+          setLeaders(res.data);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const pres = leaders[0] || {};
+  const botChair = leaders[1] || {};
+
   return (
     <section className="leaders-showcase-section" id="leadership" aria-labelledby="leaders-heading">
       <div className="leaders-container">
@@ -24,8 +55,8 @@ export default function LeadersShowcase() {
             <div className="leader-arch-media">
               <div className="leader-arch-frame">
                 <Image
-                  src="/assets/president.png"
-                  alt="Chief Samuel Ogaga - National President, UPUA"
+                  src={pres.image || "/assets/president.png"}
+                  alt={`${pres.name} - ${pres.title}`}
                   fill
                   priority
                   sizes="(max-width: 768px) 100vw, 240px"
@@ -36,15 +67,11 @@ export default function LeadersShowcase() {
             <div className="leader-body">
               <div className="leader-role-badge">
                 <span className="badge-dot" />
-                <span>National President, UPUA</span>
+                <span>{pres.title || "National President, UPUA"}</span>
               </div>
-              <h3 className="leader-name">Chief Samuel Ogaga</h3>
-              <p className="leader-motto">
-                &lsquo;Okugbe, Egba, Voyan Robaro&rsquo; (Unity, Strength and Progress)
-              </p>
-              <p className="leader-bio">
-                Serving as the National President of Urhobo Progress Union America, Chief Samuel Ogaga leads the association with a passion for uniting all Urhobo people across North America and preserving the core cultural values, languages, and development of Urhoboland.
-              </p>
+              <h3 className="leader-name">{pres.name}</h3>
+              <p className="leader-motto">{pres.tagline}</p>
+              <p className="leader-bio">{pres.bio}</p>
             </div>
           </article>
 
@@ -53,8 +80,8 @@ export default function LeadersShowcase() {
             <div className="leader-arch-media">
               <div className="leader-arch-frame">
                 <Image
-                  src="/assets/chairman.png"
-                  alt="Mr. Thomas Uwhubetine - Chairman, Board of Trustees"
+                  src={botChair.image || "/assets/chairman.png"}
+                  alt={`${botChair.name} - ${botChair.title}`}
                   fill
                   priority
                   sizes="(max-width: 768px) 100vw, 240px"
@@ -65,15 +92,11 @@ export default function LeadersShowcase() {
             <div className="leader-body">
               <div className="leader-role-badge">
                 <span className="badge-dot" />
-                <span>Chairman, Board of Trustees (BOT)</span>
+                <span>{botChair.title || "Chairman, Board of Trustees (BOT)"}</span>
               </div>
-              <h3 className="leader-name">Mr. Thomas Uwhubetine</h3>
-              <p className="leader-credentials">
-                MBA, Accountant, RN (retired), JP - President, Urhobo Association of Georgia
-              </p>
-              <p className="leader-bio">
-                My mission is to move our union forward as attested by our motto: Okugbe, Egba, Voyan Robaro and in the spirit embedded in our national anthem: Edefa me rh&rsquo;akpo, Urhobo me warhe (when I reincarnate, I will come through Urhobo). It is time to move UPUA to its rightful place in the 21st century with its own permanent house, offices, and global impact.
-              </p>
+              <h3 className="leader-name">{botChair.name}</h3>
+              <p className="leader-credentials">{botChair.tagline}</p>
+              <p className="leader-bio">{botChair.bio}</p>
             </div>
           </article>
         </div>

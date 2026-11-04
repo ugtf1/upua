@@ -23,6 +23,26 @@ const MARQUEE_ITEMS: MarqueeItem[] = [
 ];
 
 export default function InfiniteGalleryMarquee() {
+  const [headerInfo, setHeaderInfo] = React.useState({
+    title: "Women in Shelter Initiative",
+    subtitle:
+      "Across North America, UPU chapters are giving back, donating time, resources and love to women's shelters in their communities.",
+  });
+
+  React.useEffect(() => {
+    fetch("/api/cms/content?type=page&name=home")
+      .then((r) => r.json())
+      .then((res) => {
+        if (res.data?.marquee) {
+          setHeaderInfo({
+            title: res.data.marquee.title || headerInfo.title,
+            subtitle: res.data.marquee.subtitle || headerInfo.subtitle,
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   // Duplicate array for seamless infinite marquee scroll
   const items = [...MARQUEE_ITEMS, ...MARQUEE_ITEMS];
 
@@ -32,11 +52,8 @@ export default function InfiniteGalleryMarquee() {
 
       {/* Section header */}
       <div className="marquee-section-header">
-        <h2 className="marquee-section-title">Women in Shelter Initiative</h2>
-        <p className="marquee-section-subtitle">
-          Across North America, UPU chapters are giving back, donating time, resources and love
-          to women&apos;s shelters in their communities.
-        </p>
+        <h2 className="marquee-section-title" data-cms-field="home.marquee.title">{headerInfo.title}</h2>
+        <p className="marquee-section-subtitle" data-cms-field="home.marquee.subtitle">{headerInfo.subtitle}</p>
       </div>
 
       {/* Infinite scrolling track */}

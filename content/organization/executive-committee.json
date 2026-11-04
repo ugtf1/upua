@@ -1,0 +1,90 @@
+[
+  {
+    "id": "ec-1",
+    "name": "Chief Samuel Ogaga",
+    "role": "National President",
+    "image": "/assets/president.png",
+    "department": "Executive Leadership",
+    "order": 1
+  },
+  {
+    "id": "ec-2",
+    "name": "Chief Dr. Mrs. Eunice Eruvwetere",
+    "role": "Vice President",
+    "image": "/assets/Eruvwetere.jpg",
+    "department": "Executive Leadership",
+    "order": 2
+  },
+  {
+    "id": "ec-3",
+    "name": "Chief Godwin Ikporo",
+    "role": "Secretary-General",
+    "image": "/assets/ikporo.jpg",
+    "department": "Secretariat",
+    "order": 3
+  },
+  {
+    "id": "ec-4",
+    "name": "Ms. Eguonor Tuoyo",
+    "role": "Assistant Secretary",
+    "image": "/assets/tuoyo.jpg",
+    "department": "Secretariat",
+    "order": 4
+  },
+  {
+    "id": "ec-5",
+    "name": "Mrs. Evelyn Obire-Egbe (Sosime)",
+    "role": "Director of Membership & Welfare",
+    "image": "/assets/Obire-Egbe.jpg",
+    "department": "Membership & Welfare",
+    "order": 5
+  },
+  {
+    "id": "ec-6",
+    "name": "Dr. Abel Okuma",
+    "role": "Director of Research & Culture",
+    "image": "/assets/okuma.jpg",
+    "department": "Research & Culture",
+    "order": 6
+  },
+  {
+    "id": "ec-7",
+    "name": "Mr. Efe Shemi",
+    "role": "National Treasurer",
+    "image": "/assets/shemi.png",
+    "department": "Treasury & Finance",
+    "order": 7
+  },
+  {
+    "id": "ec-8",
+    "name": "Hon. Oghenetega JohnGold",
+    "role": "Speaker",
+    "image": "/assets/johnGold.jpg",
+    "department": "Assembly",
+    "order": 8
+  },
+  {
+    "id": "ec-9",
+    "name": "Chief Eric Ogbafedje Okoko",
+    "role": "Director of Publicity",
+    "image": "/assets/okoko.jpg",
+    "department": "Publicity & Media",
+    "order": 9
+  },
+  {
+    "id": "ec-10",
+    "name": "Mr. Onoerhime Okagbare",
+    "role": "Financial Secretary",
+    "image": "/assets/okagbare.png",
+    "department": "Treasury & Finance",
+    "order": 10
+  },
+  {
+    "id": "ec-11",
+    "name": "Mrs. Betty Ajueyitsi",
+    "role": "Director of Development",
+    "image": "/assets/ajueyitsi.jpg",
+    "department": "Community Development",
+    "order": 11
+  }
+]

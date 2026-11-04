@@ -360,9 +360,21 @@ const eventsData: EventItem[] = [
 ];
 
 export default function EventsPage() {
+  const [events, setEvents] = useState<EventItem[]>(eventsData);
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
+
+  useEffect(() => {
+    fetch("/api/cms/content?type=collection&name=events/events")
+      .then((r) => r.json())
+      .then((res) => {
+        if (res.data && Array.isArray(res.data) && res.data.length > 0) {
+          setEvents(res.data);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   // Close modal on Escape key press
   useEffect(() => {
@@ -373,7 +385,7 @@ export default function EventsPage() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  const filteredEvents = eventsData.filter((event) => {
+  const filteredEvents = events.filter((event) => {
     const matchCategory = activeCategory === "All" || event.category === activeCategory;
     const matchSearch =
       event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -382,7 +394,7 @@ export default function EventsPage() {
     return matchCategory && matchSearch;
   });
 
-  const featured = eventsData.find((e) => e.featured) || eventsData[0];
+  const featured = events.find((e) => e.featured) || events[0];
 
   return (
     <div className="figma-landing-page">

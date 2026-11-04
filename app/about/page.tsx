@@ -4,6 +4,7 @@ import Link from "next/link";
 import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
 import { Heart, Globe, Users, Shield, Award, Landmark, BookOpen, ExternalLink } from "lucide-react";
+import { ContentService } from "@/lib/content-service";
 
 export const metadata: Metadata = {
   title: "About Us – Urhobo Progress Union America",
@@ -174,6 +175,10 @@ const royalKingdoms = [
 ];
 
 export default function AboutPage() {
+  const liveLeaders = ContentService.getCollection("organization/leadership", topLeaders);
+  const liveChapters = ContentService.getCollection("organization/chapters", chapters);
+  const liveKingdoms = ContentService.getCollection("organization/kingdoms", royalKingdoms);
+
   return (
     <div className="figma-landing-page">
       <SiteHeader />
@@ -276,7 +281,7 @@ export default function AboutPage() {
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "36px", marginBottom: "56px" }}>
-            {topLeaders.map((leader, index) => (
+            {liveLeaders.map((leader: any, index: number) => (
               <div key={leader.name} className="leader-featured-card">
                 <div className="leader-portrait-wrap">
                   <Image
@@ -387,7 +392,7 @@ export default function AboutPage() {
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 260px), 1fr))", gap: "20px" }}>
-            {chapters.map((ch) => (
+            {liveChapters.map((ch: any) => (
               <article key={ch.name} className="about-branch-card">
                 <div className="about-branch-header">
                   <span className="about-branch-dot" />
@@ -424,7 +429,7 @@ export default function AboutPage() {
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 240px), 1fr))", gap: "16px" }}>
-            {royalKingdoms.map((k) => (
+            {liveKingdoms.map((k: any) => (
               <div
                 key={k.name}
                 style={{
