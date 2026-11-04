@@ -52,12 +52,13 @@ export async function GET() {
   }
 }
 
-// POST /api/cms/media — Uploads an image to public/assets/cms
+// POST /api/cms/media — Uploads an image or replaces an existing media file
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
     const category = (formData.get("category") as string) || "general";
+    const targetUrl = formData.get("targetUrl") as string | null;
 
     if (!file) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
@@ -72,9 +73,38 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Sanitize filename
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
+
+    // If replacing an existing specific image URL
+    if (targetUrl && targetUrl.startsWith("/")) {
+      const sanitizedRel = targetUrl.replace(/^\/+/, "").replace(/\.\./g, "");
+      const fullTarget = path.join(process.cwd(), "public", sanitizedRel);
+      const publicDir = path.join(process.cwd(), "public");
+
+      // Verify path is inside public/
+      if (fullTarget.startsWith(publicDir)) {
+        const targetDir = path.dirname(fullTarget);
+        if (!fs.existsSync(targetDir)) {
+          fs.mkdirSync(targetDir, { recursive: true });
+        }
+        fs.writeFileSync(fullTarget, buffer);
+
+        // Stage for GitHub atomic commit
+        const gitRelPath = path.join("public", sanitizedRel).replace(/\\/g, "/");
+        githubCMS.writeLocalFile(gitRelPath, buffer.toString("base64"), "base64");
+
+        return NextResponse.json({
+          success: true,
+          replaced: true,
+          url: targetUrl,
+          filename: path.basename(sanitizedRel),
+          sizeBytes: buffer.length,
+        });
+      }
+    }
+
+    // Standard new file upload
     const cleanName = file.name
       .toLowerCase()
       .replace(/[^a-z0-9.]+/g, "-")
@@ -99,6 +129,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       success: true,
+      replaced: false,
       url: publicUrl,
       filename: safeFilename,
       sizeBytes: buffer.length,
