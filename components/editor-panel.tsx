@@ -766,12 +766,38 @@ export default function EditorPanel() {
     onChange: (newUrl: string) => void;
   }) {
     return (
-      <div style={{ marginBottom: "14px" }}>
-        <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
+      <div style={{ marginBottom: "12px", width: "100%", maxWidth: "100%", minWidth: 0, boxSizing: "border-box" }}>
+        <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
           {label}
         </label>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px", background: "#f8faf8", padding: "10px", borderRadius: "8px", border: "1px solid #e1eae3" }}>
-          <div style={{ width: "64px", height: "64px", position: "relative", borderRadius: "6px", overflow: "hidden", background: "#e5ece7", flexShrink: 0, border: "1px solid #d4dfd7" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            background: "#f8faf8",
+            padding: "8px 10px",
+            borderRadius: "8px",
+            border: "1px solid #e1eae3",
+            width: "100%",
+            maxWidth: "100%",
+            minWidth: 0,
+            boxSizing: "border-box",
+            flexWrap: "wrap",
+          }}
+        >
+          <div
+            style={{
+              width: "52px",
+              height: "52px",
+              position: "relative",
+              borderRadius: "6px",
+              overflow: "hidden",
+              background: "#e5ece7",
+              flexShrink: 0,
+              border: "1px solid #d4dfd7",
+            }}
+          >
             {currentUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -788,7 +814,7 @@ export default function EditorPanel() {
               </div>
             )}
           </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ flex: "1 1 180px", minWidth: 0, maxWidth: "100%", boxSizing: "border-box" }}>
             <input
               type="text"
               value={currentUrl || ""}
@@ -796,11 +822,13 @@ export default function EditorPanel() {
               placeholder="/assets/..."
               style={{
                 width: "100%",
-                padding: "6px 10px",
-                fontSize: "0.8rem",
+                maxWidth: "100%",
+                boxSizing: "border-box",
+                padding: "6px 8px",
+                fontSize: "0.78rem",
                 borderRadius: "6px",
                 border: "1px solid #d4dfd7",
-                marginBottom: "6px",
+                marginBottom: "5px",
               }}
             />
             <button
@@ -811,16 +839,16 @@ export default function EditorPanel() {
                 color: "#ffffff",
                 border: "none",
                 borderRadius: "6px",
-                padding: "5px 12px",
-                fontSize: "0.75rem",
+                padding: "5px 10px",
+                fontSize: "0.72rem",
                 fontWeight: 700,
                 cursor: "pointer",
                 display: "inline-flex",
                 alignItems: "center",
-                gap: "5px",
+                gap: "4px",
               }}
             >
-              <Camera size={13} /> Replace Image
+              <Camera size={12} /> Replace Image
             </button>
           </div>
         </div>
@@ -829,33 +857,47 @@ export default function EditorPanel() {
   }
 
   return (
-    <div className="cms-workspace-container" style={{ padding: "24px 0", maxWidth: "1280px", margin: "0 auto" }}>
+    <div
+      className="cms-workspace-container"
+      style={{
+        width: "100%",
+        maxWidth: "100%",
+        minWidth: 0,
+        boxSizing: "border-box",
+        padding: "8px 0 32px",
+        overflowX: "hidden",
+      }}
+    >
       {/* Header Banner */}
       <div
         style={{
           background: "linear-gradient(135deg, #0e3d26 0%, #175e3c 100%)",
           color: "#ffffff",
-          borderRadius: "16px",
-          padding: "24px 32px",
-          marginBottom: "24px",
+          borderRadius: "14px",
+          padding: "20px 24px",
+          marginBottom: "20px",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
           flexWrap: "wrap",
-          gap: "16px",
-          boxShadow: "0 8px 30px rgba(14, 61, 38, 0.15)",
+          gap: "14px",
+          width: "100%",
+          maxWidth: "100%",
+          minWidth: 0,
+          boxSizing: "border-box",
+          boxShadow: "0 6px 20px rgba(14, 61, 38, 0.12)",
         }}
       >
-        <div>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "6px" }}>
+        <div style={{ flex: "1 1 300px", minWidth: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px", flexWrap: "wrap" }}>
             <span
               style={{
                 background: "rgba(212, 175, 55, 0.2)",
                 color: "#f7df72",
                 border: "1px solid rgba(212, 175, 55, 0.4)",
-                fontSize: "0.72rem",
+                fontSize: "0.7rem",
                 fontWeight: 800,
-                padding: "3px 10px",
+                padding: "2px 8px",
                 borderRadius: "9999px",
                 letterSpacing: "0.05em",
                 textTransform: "uppercase",
@@ -863,17 +905,17 @@ export default function EditorPanel() {
             >
               Live Visual CMS
             </span>
-            <span style={{ color: "#c3ded0", fontSize: "0.82rem" }}>All content stored in GitHub master · Dual Vercel + Cloud Run</span>
+            <span style={{ color: "#c3ded0", fontSize: "0.78rem" }}>GitHub Master · Dual Vercel + Cloud Run</span>
           </div>
-          <h2 style={{ fontFamily: "var(--font-heading)", fontSize: "1.75rem", margin: "0 0 4px", fontWeight: 800 }}>
+          <h2 style={{ fontFamily: "var(--font-heading)", fontSize: "1.5rem", margin: "0 0 4px", fontWeight: 800 }}>
             Website Content &amp; Media Studio
           </h2>
-          <p style={{ color: "rgba(255, 255, 255, 0.85)", fontSize: "0.9rem", margin: 0 }}>
-            Visual editing for writeups, headings, executive leadership, chapters, kingdoms, and media replacement.
+          <p style={{ color: "rgba(255, 255, 255, 0.85)", fontSize: "0.85rem", margin: 0 }}>
+            Visual editing for writeups, headings, leadership, chapters, kingdoms, and in-place media replacement.
           </p>
         </div>
 
-        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", flexShrink: 0 }}>
           <Link
             href="/"
             target="_blank"
@@ -881,9 +923,9 @@ export default function EditorPanel() {
               background: "rgba(255, 255, 255, 0.12)",
               color: "#ffffff",
               border: "1px solid rgba(255, 255, 255, 0.25)",
-              borderRadius: "10px",
-              padding: "10px 16px",
-              fontSize: "0.84rem",
+              borderRadius: "8px",
+              padding: "8px 14px",
+              fontSize: "0.8rem",
               fontWeight: 700,
               display: "inline-flex",
               alignItems: "center",
@@ -891,7 +933,7 @@ export default function EditorPanel() {
               textDecoration: "none",
             }}
           >
-            <Globe size={15} /> View Live Website
+            <Globe size={14} /> View Live Website
           </Link>
           <button
             type="button"
@@ -900,9 +942,9 @@ export default function EditorPanel() {
               background: "#d4af37",
               color: "#0e3d26",
               border: "none",
-              borderRadius: "10px",
-              padding: "10px 18px",
-              fontSize: "0.84rem",
+              borderRadius: "8px",
+              padding: "8px 16px",
+              fontSize: "0.8rem",
               fontWeight: 800,
               display: "inline-flex",
               alignItems: "center",
@@ -910,7 +952,7 @@ export default function EditorPanel() {
               cursor: "pointer",
             }}
           >
-            <Send size={15} /> Publish to GitHub
+            <Send size={14} /> Publish to GitHub
           </button>
         </div>
       </div>
@@ -920,35 +962,42 @@ export default function EditorPanel() {
         <div
           style={{
             position: "fixed",
-            top: "24px",
-            right: "24px",
+            top: "20px",
+            right: "20px",
             zIndex: 9999999,
             background: toast.type === "success" ? "#0e3d26" : toast.type === "error" ? "#b91c1c" : "#1e40af",
             color: "#ffffff",
-            padding: "12px 20px",
-            borderRadius: "10px",
-            boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
+            padding: "10px 18px",
+            borderRadius: "8px",
+            boxShadow: "0 8px 20px rgba(0,0,0,0.2)",
             display: "flex",
             alignItems: "center",
-            gap: "10px",
-            fontSize: "0.9rem",
+            gap: "8px",
+            fontSize: "0.85rem",
             fontWeight: 600,
+            maxWidth: "90vw",
           }}
         >
-          {toast.type === "success" ? <CheckCircle2 size={18} /> : toast.type === "error" ? <AlertCircle size={18} /> : <Info size={18} />}
+          {toast.type === "success" ? <CheckCircle2 size={16} /> : toast.type === "error" ? <AlertCircle size={16} /> : <Info size={16} />}
           <span>{toast.message}</span>
         </div>
       )}
 
-      {/* Navigation Tabs Bar */}
+      {/* Navigation Tabs Bar — Scrollable without breaking parent width */}
       <div
         style={{
           display: "flex",
           gap: "8px",
           overflowX: "auto",
-          paddingBottom: "12px",
-          marginBottom: "24px",
+          width: "100%",
+          maxWidth: "100%",
+          minWidth: 0,
+          boxSizing: "border-box",
+          paddingBottom: "10px",
+          marginBottom: "20px",
           borderBottom: "1px solid #e1eae3",
+          WebkitOverflowScrolling: "touch",
+          scrollbarWidth: "thin",
         }}
       >
         {[
@@ -975,20 +1024,22 @@ export default function EditorPanel() {
               style={{
                 display: "inline-flex",
                 alignItems: "center",
-                gap: "8px",
-                padding: "10px 16px",
-                borderRadius: "10px",
+                gap: "6px",
+                padding: "8px 14px",
+                borderRadius: "8px",
                 background: isActive ? "#0e3d26" : "#ffffff",
                 color: isActive ? "#ffffff" : "#526359",
                 border: isActive ? "1.5px solid #0e3d26" : "1.5px solid #e1eae3",
-                fontSize: "0.84rem",
+                fontSize: "0.8rem",
                 fontWeight: isActive ? 800 : 600,
                 cursor: "pointer",
                 whiteSpace: "nowrap",
+                flexShrink: 0,
+                boxSizing: "border-box",
                 transition: "all 0.15s ease",
               }}
             >
-              <Icon size={16} />
+              <Icon size={14} />
               {t.label}
             </button>
           );
@@ -999,110 +1050,110 @@ export default function EditorPanel() {
       {/* 1. TAB: HOME PAGE WRITEUPS & HERO SECTION                                 */}
       {/* ========================================================================= */}
       {activeTab === "home" && (
-        <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "20px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
           {/* Hero Banner Section */}
-          <div className="panel-card" style={{ background: "#ffffff", borderRadius: "14px", padding: "24px", border: "1px solid #e1eae3" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+          <div className="panel-card" style={{ background: "#ffffff", borderRadius: "12px", padding: "20px", border: "1px solid #e1eae3", width: "100%", maxWidth: "100%", minWidth: 0, boxSizing: "border-box" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px", flexWrap: "wrap", gap: "10px" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <span style={{ fontSize: "1.2rem" }}>🌟</span>
-                <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.15rem", fontWeight: 800 }}>Home Hero Section</h3>
+                <span style={{ fontSize: "1.1rem" }}>🌟</span>
+                <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.1rem", fontWeight: 800 }}>Home Hero Section</h3>
               </div>
               <button
                 type="button"
                 className="btn-primary"
                 onClick={() => saveContent("page", "home", homeData)}
-                style={{ padding: "8px 16px", fontSize: "0.82rem" }}
+                style={{ padding: "8px 16px", fontSize: "0.8rem" }}
               >
                 <Save size={14} /> Save Home Page
               </button>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "16px" }}>
-              <div>
-                <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))", gap: "16px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
+              <div style={{ minWidth: 0, width: "100%" }}>
+                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
                   Hero Eyebrow / Cultural Motto
                 </label>
                 <input
                   type="text"
                   value={homeData.hero?.badge || ""}
                   onChange={(e) => setHomeData({ ...homeData, hero: { ...homeData.hero, badge: e.target.value } })}
-                  style={{ width: "100%", padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.85rem", marginBottom: "12px" }}
+                  style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "8px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.82rem", marginBottom: "10px" }}
                 />
 
-                <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
+                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
                   Main Organization Heading
                 </label>
                 <input
                   type="text"
                   value={homeData.hero?.heading || ""}
                   onChange={(e) => setHomeData({ ...homeData, hero: { ...homeData.hero, heading: e.target.value } })}
-                  style={{ width: "100%", padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.95rem", fontWeight: 800, color: "#0e3d26", marginBottom: "12px" }}
+                  style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "8px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.9rem", fontWeight: 800, color: "#0e3d26", marginBottom: "10px" }}
                 />
 
-                <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
+                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
                   Subheading
                 </label>
                 <input
                   type="text"
                   value={homeData.hero?.subheading || ""}
                   onChange={(e) => setHomeData({ ...homeData, hero: { ...homeData.hero, subheading: e.target.value } })}
-                  style={{ width: "100%", padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.85rem", marginBottom: "12px" }}
+                  style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "8px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.82rem", marginBottom: "10px" }}
                 />
 
-                <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
+                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
                   Hero Description Paragraph
                 </label>
                 <textarea
                   rows={3}
                   value={homeData.hero?.description || ""}
                   onChange={(e) => setHomeData({ ...homeData, hero: { ...homeData.hero, description: e.target.value } })}
-                  style={{ width: "100%", padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.85rem", marginBottom: "12px" }}
+                  style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "8px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.82rem", marginBottom: "10px" }}
                 />
               </div>
 
-              <div>
-                <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
-                  Primary CTA Label &amp; URL
+              <div style={{ minWidth: 0, width: "100%" }}>
+                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
+                  Primary CTA (Button Text &amp; Link)
                 </label>
-                <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 130px), 1fr))", gap: "8px", marginBottom: "10px" }}>
                   <input
                     type="text"
                     value={homeData.hero?.ctaPrimaryLabel || ""}
                     onChange={(e) => setHomeData({ ...homeData, hero: { ...homeData.hero, ctaPrimaryLabel: e.target.value } })}
                     placeholder="Button Text"
-                    style={{ flex: 1, padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.85rem" }}
+                    style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "7px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.8rem" }}
                   />
                   <input
                     type="text"
                     value={homeData.hero?.ctaPrimaryUrl || ""}
                     onChange={(e) => setHomeData({ ...homeData, hero: { ...homeData.hero, ctaPrimaryUrl: e.target.value } })}
                     placeholder="URL Link"
-                    style={{ flex: 1, padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.85rem" }}
+                    style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "7px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.8rem" }}
                   />
                 </div>
 
-                <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
-                  Secondary CTA Label &amp; URL
+                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
+                  Secondary CTA (Button Text &amp; Link)
                 </label>
-                <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 130px), 1fr))", gap: "8px", marginBottom: "14px" }}>
                   <input
                     type="text"
                     value={homeData.hero?.ctaSecondaryLabel || ""}
                     onChange={(e) => setHomeData({ ...homeData, hero: { ...homeData.hero, ctaSecondaryLabel: e.target.value } })}
                     placeholder="Button Text"
-                    style={{ flex: 1, padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.85rem" }}
+                    style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "7px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.8rem" }}
                   />
                   <input
                     type="text"
                     value={homeData.hero?.ctaSecondaryUrl || ""}
                     onChange={(e) => setHomeData({ ...homeData, hero: { ...homeData.hero, ctaSecondaryUrl: e.target.value } })}
                     placeholder="URL Link"
-                    style={{ flex: 1, padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.85rem" }}
+                    style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "7px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.8rem" }}
                   />
                 </div>
 
                 {/* Hero Rotating Slides */}
-                <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#0e3d26", marginBottom: "6px" }}>
+                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "6px" }}>
                   Hero Background Images (Rotating Slides)
                 </label>
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
@@ -1124,69 +1175,69 @@ export default function EditorPanel() {
           </div>
 
           {/* Infinite Marquee Writeup */}
-          <div className="panel-card" style={{ background: "#ffffff", borderRadius: "14px", padding: "24px", border: "1px solid #e1eae3" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
-              <span style={{ fontSize: "1.2rem" }}>🎗️</span>
-              <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.15rem", fontWeight: 800 }}>Cultural Marquee Banner</h3>
+          <div className="panel-card" style={{ background: "#ffffff", borderRadius: "12px", padding: "20px", border: "1px solid #e1eae3", width: "100%", maxWidth: "100%", minWidth: 0, boxSizing: "border-box" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px" }}>
+              <span style={{ fontSize: "1.1rem" }}>🎗️</span>
+              <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.1rem", fontWeight: 800 }}>Cultural Marquee Banner</h3>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "16px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))", gap: "12px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
               <div>
-                <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
+                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
                   Marquee Title
                 </label>
                 <input
                   type="text"
                   value={homeData.marquee?.title || ""}
                   onChange={(e) => setHomeData({ ...homeData, marquee: { ...homeData.marquee, title: e.target.value } })}
-                  style={{ width: "100%", padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.85rem", fontWeight: 700 }}
+                  style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "8px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.82rem", fontWeight: 700 }}
                 />
               </div>
               <div>
-                <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
+                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
                   Marquee Subtitle
                 </label>
                 <input
                   type="text"
                   value={homeData.marquee?.subtitle || ""}
                   onChange={(e) => setHomeData({ ...homeData, marquee: { ...homeData.marquee, subtitle: e.target.value } })}
-                  style={{ width: "100%", padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.85rem" }}
+                  style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "8px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.82rem" }}
                 />
               </div>
             </div>
           </div>
 
           {/* Mission & Why UPUA Exists */}
-          <div className="panel-card" style={{ background: "#ffffff", borderRadius: "14px", padding: "24px", border: "1px solid #e1eae3" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
-              <span style={{ fontSize: "1.2rem" }}>🌍</span>
-              <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.15rem", fontWeight: 800 }}>Why UPUA Exists Section</h3>
+          <div className="panel-card" style={{ background: "#ffffff", borderRadius: "12px", padding: "20px", border: "1px solid #e1eae3", width: "100%", maxWidth: "100%", minWidth: 0, boxSizing: "border-box" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px" }}>
+              <span style={{ fontSize: "1.1rem" }}>🌍</span>
+              <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.1rem", fontWeight: 800 }}>Why UPUA Exists Section</h3>
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
               <div>
-                <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>Eyebrow Tag</label>
+                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>Eyebrow Tag</label>
                 <input
                   type="text"
                   value={homeData.mission?.eyebrow || ""}
                   onChange={(e) => setHomeData({ ...homeData, mission: { ...homeData.mission, eyebrow: e.target.value } })}
-                  style={{ width: "100%", padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.85rem" }}
+                  style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "8px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.82rem" }}
                 />
               </div>
               <div>
-                <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>Heading</label>
+                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>Heading</label>
                 <input
                   type="text"
                   value={homeData.mission?.heading || ""}
                   onChange={(e) => setHomeData({ ...homeData, mission: { ...homeData.mission, heading: e.target.value } })}
-                  style={{ width: "100%", padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.95rem", fontWeight: 800, color: "#0e3d26" }}
+                  style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "8px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.9rem", fontWeight: 800, color: "#0e3d26" }}
                 />
               </div>
               <div>
-                <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>Story Description</label>
+                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>Story Description</label>
                 <textarea
                   rows={3}
                   value={homeData.mission?.description || ""}
                   onChange={(e) => setHomeData({ ...homeData, mission: { ...homeData.mission, description: e.target.value } })}
-                  style={{ width: "100%", padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.85rem" }}
+                  style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "8px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.82rem" }}
                 />
               </div>
             </div>
@@ -1198,75 +1249,75 @@ export default function EditorPanel() {
       {/* 2. TAB: ABOUT PAGE                                                        */}
       {/* ========================================================================= */}
       {activeTab === "about" && (
-        <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-          <div className="panel-card" style={{ background: "#ffffff", borderRadius: "14px", padding: "24px", border: "1px solid #e1eae3" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "20px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
+          <div className="panel-card" style={{ background: "#ffffff", borderRadius: "12px", padding: "20px", border: "1px solid #e1eae3", width: "100%", maxWidth: "100%", minWidth: 0, boxSizing: "border-box" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px", flexWrap: "wrap", gap: "10px" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <span style={{ fontSize: "1.2rem" }}>📖</span>
-                <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.15rem", fontWeight: 800 }}>About Page &amp; Accreditation</h3>
+                <span style={{ fontSize: "1.1rem" }}>📖</span>
+                <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.1rem", fontWeight: 800 }}>About Page &amp; Accreditation</h3>
               </div>
               <button
                 type="button"
                 className="btn-primary"
                 onClick={() => saveContent("page", "about", aboutData)}
-                style={{ padding: "8px 16px", fontSize: "0.82rem" }}
+                style={{ padding: "8px 16px", fontSize: "0.8rem" }}
               >
                 <Save size={14} /> Save About Page
               </button>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "16px", marginBottom: "20px" }}>
-              <div>
-                <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>Hero Heading</label>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))", gap: "16px", marginBottom: "16px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
+              <div style={{ minWidth: 0, width: "100%" }}>
+                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>Hero Heading</label>
                 <input
                   type="text"
                   value={aboutData.hero?.heading || ""}
                   onChange={(e) => setAboutData({ ...aboutData, hero: { ...aboutData.hero, heading: e.target.value } })}
-                  style={{ width: "100%", padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.95rem", fontWeight: 800, color: "#0e3d26", marginBottom: "12px" }}
+                  style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "8px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.9rem", fontWeight: 800, color: "#0e3d26", marginBottom: "10px" }}
                 />
 
-                <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>Hero Subheading</label>
+                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>Hero Subheading</label>
                 <textarea
                   rows={2}
                   value={aboutData.hero?.subheading || ""}
                   onChange={(e) => setAboutData({ ...aboutData, hero: { ...aboutData.hero, subheading: e.target.value } })}
-                  style={{ width: "100%", padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.85rem", marginBottom: "12px" }}
+                  style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "8px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.82rem", marginBottom: "10px" }}
                 />
 
-                <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>501(c)(3) Accreditation Statement</label>
+                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>501(c)(3) Accreditation Statement</label>
                 <textarea
                   rows={3}
                   value={aboutData.history?.accreditation || ""}
                   onChange={(e) => setAboutData({ ...aboutData, history: { ...aboutData.history, accreditation: e.target.value } })}
-                  style={{ width: "100%", padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.85rem" }}
+                  style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "8px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.82rem" }}
                 />
               </div>
 
-              <div>
-                <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>Mission Statement</label>
+              <div style={{ minWidth: 0, width: "100%" }}>
+                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>Mission Statement</label>
                 <textarea
                   rows={4}
                   value={aboutData.missionVision?.mission || ""}
                   onChange={(e) => setAboutData({ ...aboutData, missionVision: { ...aboutData.missionVision, mission: e.target.value } })}
-                  style={{ width: "100%", padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.85rem", marginBottom: "12px" }}
+                  style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "8px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.82rem", marginBottom: "10px" }}
                 />
 
-                <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>Vision Statement</label>
+                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>Vision Statement</label>
                 <textarea
                   rows={4}
                   value={aboutData.missionVision?.vision || ""}
                   onChange={(e) => setAboutData({ ...aboutData, missionVision: { ...aboutData.missionVision, vision: e.target.value } })}
-                  style={{ width: "100%", padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.85rem" }}
+                  style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "8px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.82rem" }}
                 />
               </div>
             </div>
 
             {/* National Anthem Lyrics */}
-            <div style={{ borderTop: "1px solid #e1eae3", paddingTop: "16px" }}>
-              <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 800, color: "#0e3d26", marginBottom: "8px" }}>
+            <div style={{ borderTop: "1px solid #e1eae3", paddingTop: "14px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
+              <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 800, color: "#0e3d26", marginBottom: "8px" }}>
                 The Urhobo National Anthem Lyrics &amp; English Translation
               </label>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))", gap: "14px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
                 <div>
                   <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#137459", display: "block", marginBottom: "4px" }}>Urhobo (Original)</span>
                   <textarea
@@ -1278,7 +1329,7 @@ export default function EditorPanel() {
                         nationalAnthem: { ...aboutData.nationalAnthem, urhoboLyrics: e.target.value.split("\n") },
                       })
                     }
-                    style={{ width: "100%", padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.82rem", fontFamily: "monospace" }}
+                    style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "8px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.8rem", fontFamily: "monospace" }}
                   />
                 </div>
                 <div>
@@ -1292,7 +1343,7 @@ export default function EditorPanel() {
                         nationalAnthem: { ...aboutData.nationalAnthem, englishTranslation: e.target.value.split("\n") },
                       })
                     }
-                    style={{ width: "100%", padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.82rem", fontFamily: "monospace" }}
+                    style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "8px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.8rem", fontFamily: "monospace" }}
                   />
                 </div>
               </div>
@@ -1305,24 +1356,24 @@ export default function EditorPanel() {
       {/* 3. TAB: LEADERSHIP & BOARD OF TRUSTEES (BOT)                              */}
       {/* ========================================================================= */}
       {activeTab === "leadership" && (
-        <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "20px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
           {/* Top Leaders */}
-          <div className="panel-card" style={{ background: "#ffffff", borderRadius: "14px", padding: "24px", border: "1px solid #e1eae3" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-              <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.15rem", fontWeight: 800 }}>👑 National President &amp; BOT Chairman</h3>
+          <div className="panel-card" style={{ background: "#ffffff", borderRadius: "12px", padding: "20px", border: "1px solid #e1eae3", width: "100%", maxWidth: "100%", minWidth: 0, boxSizing: "border-box" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px", flexWrap: "wrap", gap: "10px" }}>
+              <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.1rem", fontWeight: 800 }}>👑 National President &amp; BOT Chairman</h3>
               <button
                 type="button"
                 className="btn-primary"
                 onClick={() => saveContent("collection", "organization/leadership", leadershipList)}
-                style={{ padding: "8px 16px", fontSize: "0.82rem" }}
+                style={{ padding: "8px 16px", fontSize: "0.8rem" }}
               >
                 <Save size={14} /> Save Top Leaders
               </button>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "18px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))", gap: "16px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
               {leadershipList.map((leader, idx) => (
-                <div key={leader.id || idx} style={{ border: "1px solid #e1eae3", borderRadius: "12px", padding: "16px", background: "#fbfcfb" }}>
+                <div key={leader.id || idx} style={{ border: "1px solid #e1eae3", borderRadius: "10px", padding: "14px", background: "#fbfcfb", minWidth: 0, maxWidth: "100%", boxSizing: "border-box", overflow: "hidden" }}>
                   <ImageField
                     label="Portrait Photograph"
                     currentUrl={leader.image}
@@ -1344,7 +1395,7 @@ export default function EditorPanel() {
                       updated[idx].name = e.target.value;
                       setLeadershipList(updated);
                     }}
-                    style={{ fontWeight: 800, fontSize: "0.95rem", color: "#0e3d26", width: "100%", border: "1px solid #d4dfd7", borderRadius: "6px", padding: "6px 10px", marginBottom: "8px" }}
+                    style={{ fontWeight: 800, fontSize: "0.9rem", color: "#0e3d26", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "6px", padding: "6px 8px", marginBottom: "6px" }}
                   />
 
                   <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>
@@ -1358,7 +1409,7 @@ export default function EditorPanel() {
                       updated[idx].title = e.target.value;
                       setLeadershipList(updated);
                     }}
-                    style={{ fontSize: "0.82rem", color: "#137459", width: "100%", border: "1px solid #d4dfd7", borderRadius: "6px", padding: "6px 10px", marginBottom: "8px" }}
+                    style={{ fontSize: "0.8rem", color: "#137459", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "6px", padding: "6px 8px", marginBottom: "6px" }}
                   />
 
                   <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>
@@ -1372,7 +1423,7 @@ export default function EditorPanel() {
                       updated[idx].tagline = e.target.value;
                       setLeadershipList(updated);
                     }}
-                    style={{ fontSize: "0.8rem", width: "100%", border: "1px solid #d4dfd7", borderRadius: "6px", padding: "6px 10px", marginBottom: "8px" }}
+                    style={{ fontSize: "0.78rem", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "6px", padding: "6px 8px", marginBottom: "6px" }}
                   />
 
                   <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>
@@ -1386,7 +1437,7 @@ export default function EditorPanel() {
                       updated[idx].bio = e.target.value;
                       setLeadershipList(updated);
                     }}
-                    style={{ fontSize: "0.82rem", width: "100%", border: "1px solid #d4dfd7", borderRadius: "6px", padding: "6px 10px", resize: "vertical" }}
+                    style={{ fontSize: "0.8rem", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "6px", padding: "6px 8px", resize: "vertical" }}
                   />
                 </div>
               ))}
@@ -1394,13 +1445,13 @@ export default function EditorPanel() {
           </div>
 
           {/* Board of Trustees Grid */}
-          <div className="panel-card" style={{ background: "#ffffff", borderRadius: "14px", padding: "24px", border: "1px solid #e1eae3" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "10px" }}>
+          <div className="panel-card" style={{ background: "#ffffff", borderRadius: "12px", padding: "20px", border: "1px solid #e1eae3", width: "100%", maxWidth: "100%", minWidth: 0, boxSizing: "border-box" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px", flexWrap: "wrap", gap: "10px" }}>
               <div>
-                <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.15rem", fontWeight: 800 }}>🛡️ Board of Trustees (BOT)</h3>
-                <p style={{ margin: "2px 0 0", fontSize: "0.82rem", color: "#526359" }}>{trusteesList.length} accredited trustees across North America with photos and Replace buttons</p>
+                <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.1rem", fontWeight: 800 }}>🛡️ Board of Trustees (BOT)</h3>
+                <p style={{ margin: "2px 0 0", fontSize: "0.8rem", color: "#526359" }}>{trusteesList.length} accredited trustees across North America with photos and Replace buttons</p>
               </div>
-              <div style={{ display: "flex", gap: "8px" }}>
+              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                 <button
                   type="button"
                   onClick={() => {
@@ -1418,32 +1469,32 @@ export default function EditorPanel() {
                     display: "inline-flex",
                     alignItems: "center",
                     gap: "6px",
-                    padding: "8px 14px",
-                    borderRadius: "8px",
+                    padding: "7px 12px",
+                    borderRadius: "6px",
                     border: "1px solid #0e3d26",
                     background: "#f0fdf4",
                     color: "#0e3d26",
-                    fontSize: "0.82rem",
+                    fontSize: "0.8rem",
                     fontWeight: 700,
                     cursor: "pointer",
                   }}
                 >
-                  <Plus size={14} /> Add Trustee
+                  <Plus size={13} /> Add Trustee
                 </button>
                 <button
                   type="button"
                   className="btn-primary"
                   onClick={() => saveContent("collection", "organization/trustees", trusteesList)}
-                  style={{ padding: "8px 16px", fontSize: "0.82rem" }}
+                  style={{ padding: "7px 14px", fontSize: "0.8rem" }}
                 >
-                  <Save size={14} /> Save All Trustees
+                  <Save size={13} /> Save All Trustees
                 </button>
               </div>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(290px, 1fr))", gap: "16px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))", gap: "14px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
               {trusteesList.map((trustee, idx) => (
-                <div key={trustee.slug || idx} style={{ border: "1px solid #e1eae3", borderRadius: "12px", padding: "14px", background: "#fbfcfb", position: "relative" }}>
+                <div key={trustee.slug || idx} style={{ border: "1px solid #e1eae3", borderRadius: "10px", padding: "12px", background: "#fbfcfb", position: "relative", minWidth: 0, maxWidth: "100%", boxSizing: "border-box", overflow: "hidden" }}>
                   <button
                     type="button"
                     onClick={() => {
@@ -1454,8 +1505,8 @@ export default function EditorPanel() {
                     }}
                     style={{
                       position: "absolute",
-                      top: "10px",
-                      right: "10px",
+                      top: "8px",
+                      right: "8px",
                       background: "transparent",
                       border: "none",
                       color: "#dc2626",
@@ -1464,7 +1515,7 @@ export default function EditorPanel() {
                     }}
                     title="Delete Trustee"
                   >
-                    <Trash2 size={15} />
+                    <Trash2 size={14} />
                   </button>
 
                   <ImageField
@@ -1476,7 +1527,7 @@ export default function EditorPanel() {
                       setTrusteesList(updated);
                     }}
                   />
-                  <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Trustee Name</label>
+                  <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Trustee Name</label>
                   <input
                     type="text"
                     value={trustee.name}
@@ -1485,9 +1536,9 @@ export default function EditorPanel() {
                       updated[idx].name = e.target.value;
                       setTrusteesList(updated);
                     }}
-                    style={{ fontWeight: 800, fontSize: "0.88rem", color: "#0e3d26", width: "100%", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px", marginBottom: "6px" }}
+                    style={{ fontWeight: 800, fontSize: "0.85rem", color: "#0e3d26", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px", marginBottom: "5px" }}
                   />
-                  <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>BOT Title</label>
+                  <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>BOT Title</label>
                   <input
                     type="text"
                     value={trustee.title}
@@ -1496,9 +1547,9 @@ export default function EditorPanel() {
                       updated[idx].title = e.target.value;
                       setTrusteesList(updated);
                     }}
-                    style={{ fontSize: "0.8rem", color: "#137459", width: "100%", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px", marginBottom: "6px" }}
+                    style={{ fontSize: "0.78rem", color: "#137459", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px", marginBottom: "5px" }}
                   />
-                  <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#526359", marginBottom: "2px" }}>Chapter Affiliation</label>
+                  <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#526359", marginBottom: "2px" }}>Chapter Affiliation</label>
                   <input
                     type="text"
                     value={trustee.chapter}
@@ -1507,7 +1558,7 @@ export default function EditorPanel() {
                       updated[idx].chapter = e.target.value;
                       setTrusteesList(updated);
                     }}
-                    style={{ fontSize: "0.78rem", color: "#526359", width: "100%", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px" }}
+                    style={{ fontSize: "0.75rem", color: "#526359", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px" }}
                   />
                 </div>
               ))}
@@ -1520,13 +1571,13 @@ export default function EditorPanel() {
       {/* 4. TAB: EXECUTIVE COMMITTEE                                              */}
       {/* ========================================================================= */}
       {activeTab === "executives" && (
-        <div className="panel-card" style={{ background: "#ffffff", borderRadius: "14px", padding: "24px", border: "1px solid #e1eae3" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "10px" }}>
+        <div className="panel-card" style={{ background: "#ffffff", borderRadius: "12px", padding: "20px", border: "1px solid #e1eae3", width: "100%", maxWidth: "100%", minWidth: 0, boxSizing: "border-box" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px", flexWrap: "wrap", gap: "10px" }}>
             <div>
-              <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.15rem", fontWeight: 800 }}>🏛️ National Executive Committee (EC)</h3>
-              <p style={{ margin: "2px 0 0", fontSize: "0.82rem", color: "#526359" }}>{executivesList.length} elected national officers with portraits and Replace Image buttons</p>
+              <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.1rem", fontWeight: 800 }}>🏛️ National Executive Committee (EC)</h3>
+              <p style={{ margin: "2px 0 0", fontSize: "0.8rem", color: "#526359" }}>{executivesList.length} elected national officers with portraits and Replace Image buttons</p>
             </div>
-            <div style={{ display: "flex", gap: "8px" }}>
+            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
               <button
                 type="button"
                 onClick={() => {
@@ -1545,32 +1596,32 @@ export default function EditorPanel() {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: "6px",
-                  padding: "8px 14px",
-                  borderRadius: "8px",
+                  padding: "7px 12px",
+                  borderRadius: "6px",
                   border: "1px solid #0e3d26",
                   background: "#f0fdf4",
                   color: "#0e3d26",
-                  fontSize: "0.82rem",
+                  fontSize: "0.8rem",
                   fontWeight: 700,
                   cursor: "pointer",
                 }}
               >
-                <Plus size={14} /> Add Officer
+                <Plus size={13} /> Add Officer
               </button>
               <button
                 type="button"
                 className="btn-primary"
                 onClick={() => saveContent("collection", "organization/executive-committee", executivesList)}
-                style={{ padding: "8px 16px", fontSize: "0.82rem" }}
+                style={{ padding: "7px 14px", fontSize: "0.8rem" }}
               >
-                <Save size={14} /> Save Executive Committee
+                <Save size={13} /> Save Executive Committee
               </button>
             </div>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(290px, 1fr))", gap: "16px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))", gap: "14px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
             {executivesList.map((officer, idx) => (
-              <div key={officer.id || idx} style={{ border: "1px solid #e1eae3", borderRadius: "12px", padding: "14px", background: "#fbfcfb", position: "relative" }}>
+              <div key={officer.id || idx} style={{ border: "1px solid #e1eae3", borderRadius: "10px", padding: "12px", background: "#fbfcfb", position: "relative", minWidth: 0, maxWidth: "100%", boxSizing: "border-box", overflow: "hidden" }}>
                 <button
                   type="button"
                   onClick={() => {
@@ -1580,8 +1631,8 @@ export default function EditorPanel() {
                   }}
                   style={{
                     position: "absolute",
-                    top: "10px",
-                    right: "10px",
+                    top: "8px",
+                    right: "8px",
                     background: "transparent",
                     border: "none",
                     color: "#dc2626",
@@ -1590,7 +1641,7 @@ export default function EditorPanel() {
                   }}
                   title="Delete Officer"
                 >
-                  <Trash2 size={15} />
+                  <Trash2 size={14} />
                 </button>
 
                 <ImageField
@@ -1602,7 +1653,7 @@ export default function EditorPanel() {
                     setExecutivesList(updated);
                   }}
                 />
-                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Full Name</label>
+                <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Full Name</label>
                 <input
                   type="text"
                   value={officer.name}
@@ -1611,9 +1662,9 @@ export default function EditorPanel() {
                     updated[idx].name = e.target.value;
                     setExecutivesList(updated);
                   }}
-                  style={{ fontWeight: 800, fontSize: "0.9rem", color: "#0e3d26", width: "100%", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px", marginBottom: "6px" }}
+                  style={{ fontWeight: 800, fontSize: "0.85rem", color: "#0e3d26", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px", marginBottom: "5px" }}
                 />
-                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Office / Role</label>
+                <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Office / Role</label>
                 <input
                   type="text"
                   value={officer.role}
@@ -1622,9 +1673,9 @@ export default function EditorPanel() {
                     updated[idx].role = e.target.value;
                     setExecutivesList(updated);
                   }}
-                  style={{ fontSize: "0.82rem", color: "#137459", width: "100%", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px", marginBottom: "6px" }}
+                  style={{ fontSize: "0.78rem", color: "#137459", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px", marginBottom: "5px" }}
                 />
-                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#526359", marginBottom: "2px" }}>Department</label>
+                <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#526359", marginBottom: "2px" }}>Department</label>
                 <input
                   type="text"
                   value={officer.department || ""}
@@ -1633,7 +1684,7 @@ export default function EditorPanel() {
                     updated[idx].department = e.target.value;
                     setExecutivesList(updated);
                   }}
-                  style={{ fontSize: "0.78rem", color: "#526359", width: "100%", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px" }}
+                  style={{ fontSize: "0.75rem", color: "#526359", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px" }}
                 />
               </div>
             ))}
@@ -1645,13 +1696,13 @@ export default function EditorPanel() {
       {/* 5. TAB: YOUTH LEADERSHIP                                                 */}
       {/* ========================================================================= */}
       {activeTab === "youth" && (
-        <div className="panel-card" style={{ background: "#ffffff", borderRadius: "14px", padding: "24px", border: "1px solid #e1eae3" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "10px" }}>
+        <div className="panel-card" style={{ background: "#ffffff", borderRadius: "12px", padding: "20px", border: "1px solid #e1eae3", width: "100%", maxWidth: "100%", minWidth: 0, boxSizing: "border-box" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px", flexWrap: "wrap", gap: "10px" }}>
             <div>
-              <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.15rem", fontWeight: 800 }}>🌟 UPUAYA Youth Wing Executive Leaders</h3>
-              <p style={{ margin: "2px 0 0", fontSize: "0.82rem", color: "#526359" }}>{youthList.length} executive leaders across North America with photos and Replace buttons</p>
+              <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.1rem", fontWeight: 800 }}>🌟 UPUAYA Youth Wing Executive Leaders</h3>
+              <p style={{ margin: "2px 0 0", fontSize: "0.8rem", color: "#526359" }}>{youthList.length} executive leaders across North America with photos and Replace buttons</p>
             </div>
-            <div style={{ display: "flex", gap: "8px" }}>
+            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
               <button
                 type="button"
                 onClick={() => {
@@ -1670,32 +1721,32 @@ export default function EditorPanel() {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: "6px",
-                  padding: "8px 14px",
-                  borderRadius: "8px",
+                  padding: "7px 12px",
+                  borderRadius: "6px",
                   border: "1px solid #0e3d26",
                   background: "#f0fdf4",
                   color: "#0e3d26",
-                  fontSize: "0.82rem",
+                  fontSize: "0.8rem",
                   fontWeight: 700,
                   cursor: "pointer",
                 }}
               >
-                <Plus size={14} /> Add Youth Officer
+                <Plus size={13} /> Add Youth Officer
               </button>
               <button
                 type="button"
                 className="btn-primary"
                 onClick={() => saveContent("collection", "organization/youth-leadership", youthList)}
-                style={{ padding: "8px 16px", fontSize: "0.82rem" }}
+                style={{ padding: "7px 14px", fontSize: "0.8rem" }}
               >
-                <Save size={14} /> Save Youth Executives
+                <Save size={13} /> Save Youth Executives
               </button>
             </div>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(290px, 1fr))", gap: "16px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))", gap: "14px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
             {youthList.map((leader, idx) => (
-              <div key={leader.id || idx} style={{ border: "1px solid #e1eae3", borderRadius: "12px", padding: "14px", background: "#fbfcfb", position: "relative" }}>
+              <div key={leader.id || idx} style={{ border: "1px solid #e1eae3", borderRadius: "10px", padding: "12px", background: "#fbfcfb", position: "relative", minWidth: 0, maxWidth: "100%", boxSizing: "border-box", overflow: "hidden" }}>
                 <button
                   type="button"
                   onClick={() => {
@@ -1705,8 +1756,8 @@ export default function EditorPanel() {
                   }}
                   style={{
                     position: "absolute",
-                    top: "10px",
-                    right: "10px",
+                    top: "8px",
+                    right: "8px",
                     background: "transparent",
                     border: "none",
                     color: "#dc2626",
@@ -1715,7 +1766,7 @@ export default function EditorPanel() {
                   }}
                   title="Delete Youth Leader"
                 >
-                  <Trash2 size={15} />
+                  <Trash2 size={14} />
                 </button>
 
                 <ImageField
@@ -1727,7 +1778,7 @@ export default function EditorPanel() {
                     setYouthList(updated);
                   }}
                 />
-                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Full Name</label>
+                <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Full Name</label>
                 <input
                   type="text"
                   value={leader.name}
@@ -1736,9 +1787,9 @@ export default function EditorPanel() {
                     updated[idx].name = e.target.value;
                     setYouthList(updated);
                   }}
-                  style={{ fontWeight: 800, fontSize: "0.9rem", color: "#0e3d26", width: "100%", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px", marginBottom: "6px" }}
+                  style={{ fontWeight: 800, fontSize: "0.85rem", color: "#0e3d26", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px", marginBottom: "5px" }}
                 />
-                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Position / Portfolio</label>
+                <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Position / Portfolio</label>
                 <input
                   type="text"
                   value={leader.role}
@@ -1747,9 +1798,9 @@ export default function EditorPanel() {
                     updated[idx].role = e.target.value;
                     setYouthList(updated);
                   }}
-                  style={{ fontSize: "0.82rem", color: "#137459", width: "100%", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px", marginBottom: "6px" }}
+                  style={{ fontSize: "0.78rem", color: "#137459", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px", marginBottom: "5px" }}
                 />
-                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#526359", marginBottom: "2px" }}>Chapter Affiliation</label>
+                <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#526359", marginBottom: "2px" }}>Chapter Affiliation</label>
                 <input
                   type="text"
                   value={leader.chapter}
@@ -1758,7 +1809,7 @@ export default function EditorPanel() {
                     updated[idx].chapter = e.target.value;
                     setYouthList(updated);
                   }}
-                  style={{ fontSize: "0.78rem", color: "#526359", width: "100%", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px" }}
+                  style={{ fontSize: "0.75rem", color: "#526359", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px" }}
                 />
               </div>
             ))}
@@ -1770,13 +1821,13 @@ export default function EditorPanel() {
       {/* 6. TAB: CHAPTERS DIRECTORY                                               */}
       {/* ========================================================================= */}
       {activeTab === "chapters" && (
-        <div className="panel-card" style={{ background: "#ffffff", borderRadius: "14px", padding: "24px", border: "1px solid #e1eae3" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "10px" }}>
+        <div className="panel-card" style={{ background: "#ffffff", borderRadius: "12px", padding: "20px", border: "1px solid #e1eae3", width: "100%", maxWidth: "100%", minWidth: 0, boxSizing: "border-box" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px", flexWrap: "wrap", gap: "10px" }}>
             <div>
-              <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.15rem", fontWeight: 800 }}>📍 North American Chapters Directory</h3>
-              <p style={{ margin: "2px 0 0", fontSize: "0.82rem", color: "#526359" }}>{chaptersList.length} accredited metro chapters with photos, location, and Replace buttons</p>
+              <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.1rem", fontWeight: 800 }}>📍 North American Chapters Directory</h3>
+              <p style={{ margin: "2px 0 0", fontSize: "0.8rem", color: "#526359" }}>{chaptersList.length} accredited metro chapters with photos, location, and Replace buttons</p>
             </div>
-            <div style={{ display: "flex", gap: "8px" }}>
+            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
               <button
                 type="button"
                 onClick={() => {
@@ -1798,32 +1849,32 @@ export default function EditorPanel() {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: "6px",
-                  padding: "8px 14px",
-                  borderRadius: "8px",
+                  padding: "7px 12px",
+                  borderRadius: "6px",
                   border: "1px solid #0e3d26",
                   background: "#f0fdf4",
                   color: "#0e3d26",
-                  fontSize: "0.82rem",
+                  fontSize: "0.8rem",
                   fontWeight: 700,
                   cursor: "pointer",
                 }}
               >
-                <Plus size={14} /> Add Chapter
+                <Plus size={13} /> Add Chapter
               </button>
               <button
                 type="button"
                 className="btn-primary"
                 onClick={() => saveContent("collection", "organization/chapters", chaptersList)}
-                style={{ padding: "8px 16px", fontSize: "0.82rem" }}
+                style={{ padding: "7px 14px", fontSize: "0.8rem" }}
               >
-                <Save size={14} /> Save Chapters
+                <Save size={13} /> Save Chapters
               </button>
             </div>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "16px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))", gap: "14px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
             {chaptersList.map((chapter, idx) => (
-              <div key={chapter.id || idx} style={{ border: "1px solid #e1eae3", borderRadius: "12px", padding: "16px", background: "#fbfcfb", position: "relative" }}>
+              <div key={chapter.id || idx} style={{ border: "1px solid #e1eae3", borderRadius: "10px", padding: "14px", background: "#fbfcfb", position: "relative", minWidth: 0, maxWidth: "100%", boxSizing: "border-box", overflow: "hidden" }}>
                 <button
                   type="button"
                   onClick={() => {
@@ -1833,8 +1884,8 @@ export default function EditorPanel() {
                   }}
                   style={{
                     position: "absolute",
-                    top: "10px",
-                    right: "10px",
+                    top: "8px",
+                    right: "8px",
                     background: "transparent",
                     border: "none",
                     color: "#dc2626",
@@ -1843,7 +1894,7 @@ export default function EditorPanel() {
                   }}
                   title="Delete Chapter"
                 >
-                  <Trash2 size={15} />
+                  <Trash2 size={14} />
                 </button>
 
                 <ImageField
@@ -1857,11 +1908,11 @@ export default function EditorPanel() {
                 />
 
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-                  <span style={{ fontSize: "0.7rem", fontWeight: 800, color: "#137459", textTransform: "uppercase" }}>{chapter.region || "Metro Region"}</span>
-                  <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "#888" }}>#{idx + 1}</span>
+                  <span style={{ fontSize: "0.68rem", fontWeight: 800, color: "#137459", textTransform: "uppercase" }}>{chapter.region || "Metro Region"}</span>
+                  <span style={{ fontSize: "0.68rem", fontWeight: 700, color: "#888" }}>#{idx + 1}</span>
                 </div>
 
-                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Chapter Full Name</label>
+                <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Chapter Full Name</label>
                 <input
                   type="text"
                   value={chapter.name}
@@ -1870,10 +1921,10 @@ export default function EditorPanel() {
                     updated[idx].name = e.target.value;
                     setChaptersList(updated);
                   }}
-                  style={{ fontWeight: 800, fontSize: "0.9rem", color: "#0e3d26", width: "100%", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px", marginBottom: "6px" }}
+                  style={{ fontWeight: 800, fontSize: "0.85rem", color: "#0e3d26", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px", marginBottom: "5px" }}
                 />
 
-                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#526359", marginBottom: "2px" }}>Chapter President</label>
+                <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#526359", marginBottom: "2px" }}>Chapter President</label>
                 <input
                   type="text"
                   value={chapter.president}
@@ -1882,10 +1933,10 @@ export default function EditorPanel() {
                     updated[idx].president = e.target.value;
                     setChaptersList(updated);
                   }}
-                  style={{ fontSize: "0.82rem", width: "100%", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px", marginBottom: "6px" }}
+                  style={{ fontSize: "0.78rem", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px", marginBottom: "5px" }}
                 />
 
-                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#526359", marginBottom: "2px" }}>City &amp; Metro Location</label>
+                <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#526359", marginBottom: "2px" }}>City &amp; Metro Location</label>
                 <input
                   type="text"
                   value={chapter.location || ""}
@@ -1895,10 +1946,10 @@ export default function EditorPanel() {
                     setChaptersList(updated);
                   }}
                   placeholder="e.g. Washington DC, MD, VA"
-                  style={{ fontSize: "0.8rem", width: "100%", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px", marginBottom: "6px" }}
+                  style={{ fontSize: "0.75rem", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px", marginBottom: "5px" }}
                 />
 
-                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#526359", marginBottom: "2px" }}>Official Website URL</label>
+                <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#526359", marginBottom: "2px" }}>Official Website URL</label>
                 <input
                   type="text"
                   value={chapter.website || ""}
@@ -1908,7 +1959,7 @@ export default function EditorPanel() {
                     updated[idx].website = e.target.value;
                     setChaptersList(updated);
                   }}
-                  style={{ fontSize: "0.8rem", width: "100%", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px" }}
+                  style={{ fontSize: "0.75rem", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px" }}
                 />
               </div>
             ))}
@@ -1920,13 +1971,13 @@ export default function EditorPanel() {
       {/* 7. TAB: 24 ROYAL KINGDOMS                                                */}
       {/* ========================================================================= */}
       {activeTab === "kingdoms" && (
-        <div className="panel-card" style={{ background: "#ffffff", borderRadius: "14px", padding: "24px", border: "1px solid #e1eae3" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "10px" }}>
+        <div className="panel-card" style={{ background: "#ffffff", borderRadius: "12px", padding: "20px", border: "1px solid #e1eae3", width: "100%", maxWidth: "100%", minWidth: 0, boxSizing: "border-box" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px", flexWrap: "wrap", gap: "10px" }}>
             <div>
-              <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.15rem", fontWeight: 800 }}>👑 The 24 Urhobo Royal Kingdoms</h3>
-              <p style={{ margin: "2px 0 0", fontSize: "0.82rem", color: "#526359" }}>Honoring traditional heritage, ancient dynasties, and Royal Monarchs</p>
+              <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.1rem", fontWeight: 800 }}>👑 The 24 Urhobo Royal Kingdoms</h3>
+              <p style={{ margin: "2px 0 0", fontSize: "0.8rem", color: "#526359" }}>Honoring traditional heritage, ancient dynasties, and Royal Monarchs</p>
             </div>
-            <div style={{ display: "flex", gap: "8px" }}>
+            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
               <button
                 type="button"
                 onClick={() => {
@@ -1944,32 +1995,32 @@ export default function EditorPanel() {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: "6px",
-                  padding: "8px 14px",
-                  borderRadius: "8px",
+                  padding: "7px 12px",
+                  borderRadius: "6px",
                   border: "1px solid #0e3d26",
                   background: "#f0fdf4",
                   color: "#0e3d26",
-                  fontSize: "0.82rem",
+                  fontSize: "0.8rem",
                   fontWeight: 700,
                   cursor: "pointer",
                 }}
               >
-                <Plus size={14} /> Add Royal Kingdom
+                <Plus size={13} /> Add Royal Kingdom
               </button>
               <button
                 type="button"
                 className="btn-primary"
                 onClick={() => saveContent("collection", "organization/kingdoms", kingdomsList)}
-                style={{ padding: "8px 16px", fontSize: "0.82rem" }}
+                style={{ padding: "7px 14px", fontSize: "0.8rem" }}
               >
-                <Save size={14} /> Save Royal Kingdoms
+                <Save size={13} /> Save Royal Kingdoms
               </button>
             </div>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(290px, 1fr))", gap: "16px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))", gap: "14px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
             {kingdomsList.map((k, idx) => (
-              <div key={k.id || idx} style={{ border: "1px solid #e1eae3", borderRadius: "12px", padding: "14px", background: "#fbfcfb", position: "relative" }}>
+              <div key={k.id || idx} style={{ border: "1px solid #e1eae3", borderRadius: "10px", padding: "12px", background: "#fbfcfb", position: "relative", minWidth: 0, maxWidth: "100%", boxSizing: "border-box", overflow: "hidden" }}>
                 <button
                   type="button"
                   onClick={() => {
@@ -1979,8 +2030,8 @@ export default function EditorPanel() {
                   }}
                   style={{
                     position: "absolute",
-                    top: "10px",
-                    right: "10px",
+                    top: "8px",
+                    right: "8px",
                     background: "transparent",
                     border: "none",
                     color: "#dc2626",
@@ -1989,7 +2040,7 @@ export default function EditorPanel() {
                   }}
                   title="Delete Kingdom"
                 >
-                  <Trash2 size={15} />
+                  <Trash2 size={14} />
                 </button>
 
                 <ImageField
@@ -2002,8 +2053,8 @@ export default function EditorPanel() {
                   }}
                 />
 
-                <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "#137459" }}>Kingdom #{idx + 1}</span>
-                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", margin: "2px 0" }}>Kingdom Title</label>
+                <span style={{ fontSize: "0.68rem", fontWeight: 700, color: "#137459" }}>Kingdom #{idx + 1}</span>
+                <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#0e3d26", margin: "2px 0" }}>Kingdom Title</label>
                 <input
                   type="text"
                   value={k.name}
@@ -2012,10 +2063,10 @@ export default function EditorPanel() {
                     updated[idx].name = e.target.value;
                     setKingdomsList(updated);
                   }}
-                  style={{ fontWeight: 800, fontSize: "0.88rem", color: "#0e3d26", width: "100%", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px", marginBottom: "6px" }}
+                  style={{ fontWeight: 800, fontSize: "0.85rem", color: "#0e3d26", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px", marginBottom: "5px" }}
                 />
 
-                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#526359", margin: "2px 0" }}>Reigning Monarch &amp; Royal Honours</label>
+                <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#526359", margin: "2px 0" }}>Reigning Monarch &amp; Royal Honours</label>
                 <textarea
                   rows={2}
                   value={k.king}
@@ -2024,7 +2075,7 @@ export default function EditorPanel() {
                     updated[idx].king = e.target.value;
                     setKingdomsList(updated);
                   }}
-                  style={{ fontSize: "0.8rem", color: "#526359", width: "100%", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px" }}
+                  style={{ fontSize: "0.78rem", color: "#526359", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px" }}
                 />
               </div>
             ))}
@@ -2036,27 +2087,27 @@ export default function EditorPanel() {
       {/* 8. TAB: PROGRAMS & SHELTER INITIATIVE                                    */}
       {/* ========================================================================= */}
       {activeTab === "programs" && (
-        <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "20px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
           {/* Women in Shelter Initiative Chapter Delegations */}
-          <div className="panel-card" style={{ background: "#ffffff", borderRadius: "14px", padding: "24px", border: "1px solid #e1eae3" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+          <div className="panel-card" style={{ background: "#ffffff", borderRadius: "12px", padding: "20px", border: "1px solid #e1eae3", width: "100%", maxWidth: "100%", minWidth: 0, boxSizing: "border-box" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px", flexWrap: "wrap", gap: "10px" }}>
               <div>
-                <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.15rem", fontWeight: 800 }}>🎗️ Women in Shelter Initiative Delegations</h3>
-                <p style={{ margin: "2px 0 0", fontSize: "0.82rem", color: "#526359" }}>Chapter donation outreach photographs and host cities</p>
+                <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.1rem", fontWeight: 800 }}>🎗️ Women in Shelter Initiative Delegations</h3>
+                <p style={{ margin: "2px 0 0", fontSize: "0.8rem", color: "#526359" }}>Chapter donation outreach photographs and host cities</p>
               </div>
               <button
                 type="button"
                 className="btn-primary"
                 onClick={() => saveContent("collection", "programs/programs", programsData)}
-                style={{ padding: "8px 16px", fontSize: "0.82rem" }}
+                style={{ padding: "8px 16px", fontSize: "0.8rem" }}
               >
                 <Save size={14} /> Save Programs
               </button>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "14px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 250px), 1fr))", gap: "12px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
               {(programsData.shelterChapters || []).map((sc: any, idx: number) => (
-                <div key={idx} style={{ border: "1px solid #e1eae3", borderRadius: "10px", padding: "12px", background: "#fbfcfb" }}>
+                <div key={idx} style={{ border: "1px solid #e1eae3", borderRadius: "10px", padding: "10px", background: "#fbfcfb", minWidth: 0, maxWidth: "100%", boxSizing: "border-box", overflow: "hidden" }}>
                   <ImageField
                     label="Outreach Photo"
                     currentUrl={sc.image}
@@ -2074,7 +2125,7 @@ export default function EditorPanel() {
                       updated.shelterChapters[idx].chapter = e.target.value;
                       setProgramsData(updated);
                     }}
-                    style={{ fontWeight: 800, fontSize: "0.85rem", color: "#0e3d26", width: "100%", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 8px", marginBottom: "4px" }}
+                    style={{ fontWeight: 800, fontSize: "0.82rem", color: "#0e3d26", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px", marginBottom: "4px" }}
                   />
                   <input
                     type="text"
@@ -2084,7 +2135,7 @@ export default function EditorPanel() {
                       updated.shelterChapters[idx].location = e.target.value;
                       setProgramsData(updated);
                     }}
-                    style={{ fontSize: "0.78rem", color: "#526359", width: "100%", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 8px" }}
+                    style={{ fontSize: "0.75rem", color: "#526359", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px" }}
                   />
                 </div>
               ))}
@@ -2092,13 +2143,13 @@ export default function EditorPanel() {
           </div>
 
           {/* Signature Initiatives */}
-          <div className="panel-card" style={{ background: "#ffffff", borderRadius: "14px", padding: "24px", border: "1px solid #e1eae3" }}>
-            <h3 style={{ margin: "0 0 16px", color: "#0e3d26", fontSize: "1.15rem", fontWeight: 800 }}>Signature Civic Programs &amp; Full Writeups</h3>
-            <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+          <div className="panel-card" style={{ background: "#ffffff", borderRadius: "12px", padding: "20px", border: "1px solid #e1eae3", width: "100%", maxWidth: "100%", minWidth: 0, boxSizing: "border-box" }}>
+            <h3 style={{ margin: "0 0 14px", color: "#0e3d26", fontSize: "1.1rem", fontWeight: 800 }}>Signature Civic Programs &amp; Full Writeups</h3>
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
               {(programsData.programs || []).map((prog: any, idx: number) => (
-                <div key={prog.id || idx} style={{ border: "1px solid #e1eae3", borderRadius: "12px", padding: "18px", background: "#fbfcfb" }}>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "14px" }}>
-                    <div>
+                <div key={prog.id || idx} style={{ border: "1px solid #e1eae3", borderRadius: "10px", padding: "16px", background: "#fbfcfb", width: "100%", maxWidth: "100%", minWidth: 0, boxSizing: "border-box" }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))", gap: "14px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
+                    <div style={{ minWidth: 0, width: "100%" }}>
                       <ImageField
                         label="Program Featured Image"
                         currentUrl={prog.featuredImage}
@@ -2108,7 +2159,7 @@ export default function EditorPanel() {
                           setProgramsData(updated);
                         }}
                       />
-                      <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Program Title</label>
+                      <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Program Title</label>
                       <input
                         type="text"
                         value={prog.title}
@@ -2117,9 +2168,9 @@ export default function EditorPanel() {
                           updated.programs[idx].title = e.target.value;
                           setProgramsData(updated);
                         }}
-                        style={{ fontWeight: 800, fontSize: "0.95rem", color: "#0e3d26", width: "100%", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px", marginBottom: "8px" }}
+                        style={{ fontWeight: 800, fontSize: "0.9rem", color: "#0e3d26", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px", marginBottom: "6px" }}
                       />
-                      <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Category</label>
+                      <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Category</label>
                       <input
                         type="text"
                         value={prog.category}
@@ -2128,11 +2179,11 @@ export default function EditorPanel() {
                           updated.programs[idx].category = e.target.value;
                           setProgramsData(updated);
                         }}
-                        style={{ fontSize: "0.82rem", color: "#137459", width: "100%", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px", marginBottom: "8px" }}
+                        style={{ fontSize: "0.78rem", color: "#137459", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px" }}
                       />
                     </div>
-                    <div>
-                      <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Summary / Impact</label>
+                    <div style={{ minWidth: 0, width: "100%" }}>
+                      <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Summary / Impact</label>
                       <textarea
                         rows={3}
                         value={prog.summary}
@@ -2141,9 +2192,9 @@ export default function EditorPanel() {
                           updated.programs[idx].summary = e.target.value;
                           setProgramsData(updated);
                         }}
-                        style={{ width: "100%", fontSize: "0.82rem", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px", marginBottom: "8px" }}
+                        style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", fontSize: "0.78rem", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px", marginBottom: "6px" }}
                       />
-                      <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Detailed Narrative</label>
+                      <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Detailed Narrative</label>
                       <textarea
                         rows={4}
                         value={prog.fullWriteup?.join("\n\n") || ""}
@@ -2152,7 +2203,7 @@ export default function EditorPanel() {
                           updated.programs[idx].fullWriteup = e.target.value.split("\n\n").filter(Boolean);
                           setProgramsData(updated);
                         }}
-                        style={{ width: "100%", fontSize: "0.82rem", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px" }}
+                        style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", fontSize: "0.78rem", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px" }}
                       />
                     </div>
                   </div>
@@ -2167,13 +2218,13 @@ export default function EditorPanel() {
       {/* 9. TAB: EVENTS & CONVENTION                                              */}
       {/* ========================================================================= */}
       {activeTab === "events" && (
-        <div className="panel-card" style={{ background: "#ffffff", borderRadius: "14px", padding: "24px", border: "1px solid #e1eae3" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "10px" }}>
+        <div className="panel-card" style={{ background: "#ffffff", borderRadius: "12px", padding: "20px", border: "1px solid #e1eae3", width: "100%", maxWidth: "100%", minWidth: 0, boxSizing: "border-box" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px", flexWrap: "wrap", gap: "10px" }}>
             <div>
-              <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.15rem", fontWeight: 800 }}>📅 Events &amp; Convention Manager</h3>
-              <p style={{ margin: "2px 0 0", fontSize: "0.82rem", color: "#526359" }}>{eventsList.length} events, conventions, and convocations with full edit functions</p>
+              <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.1rem", fontWeight: 800 }}>📅 Events &amp; Convention Manager</h3>
+              <p style={{ margin: "2px 0 0", fontSize: "0.8rem", color: "#526359" }}>{eventsList.length} events, conventions, and convocations with full edit functions</p>
             </div>
-            <div style={{ display: "flex", gap: "8px" }}>
+            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
               <button
                 type="button"
                 onClick={() => setShowCreateEventModal(true)}
@@ -2181,32 +2232,32 @@ export default function EditorPanel() {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: "6px",
-                  padding: "8px 14px",
-                  borderRadius: "8px",
+                  padding: "7px 12px",
+                  borderRadius: "6px",
                   border: "1px solid #0e3d26",
                   background: "#f0fdf4",
                   color: "#0e3d26",
-                  fontSize: "0.82rem",
+                  fontSize: "0.8rem",
                   fontWeight: 700,
                   cursor: "pointer",
                 }}
               >
-                <Plus size={14} /> Add New Event
+                <Plus size={13} /> Add New Event
               </button>
               <button
                 type="button"
                 className="btn-primary"
                 onClick={() => saveContent("collection", "events/events", eventsList)}
-                style={{ padding: "8px 16px", fontSize: "0.82rem" }}
+                style={{ padding: "7px 14px", fontSize: "0.8rem" }}
               >
-                <Save size={14} /> Save Events
+                <Save size={13} /> Save Events
               </button>
             </div>
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
             {eventsList.map((event, idx) => (
-              <div key={event.id || idx} style={{ border: "1px solid #e1eae3", borderRadius: "12px", padding: "18px", background: "#fbfcfb", position: "relative" }}>
+              <div key={event.id || idx} style={{ border: "1px solid #e1eae3", borderRadius: "10px", padding: "16px", background: "#fbfcfb", position: "relative", width: "100%", maxWidth: "100%", minWidth: 0, boxSizing: "border-box" }}>
                 <button
                   type="button"
                   onClick={() => {
@@ -2216,8 +2267,8 @@ export default function EditorPanel() {
                   }}
                   style={{
                     position: "absolute",
-                    top: "14px",
-                    right: "14px",
+                    top: "12px",
+                    right: "12px",
                     background: "transparent",
                     border: "none",
                     color: "#dc2626",
@@ -2226,11 +2277,11 @@ export default function EditorPanel() {
                   }}
                   title="Delete Event"
                 >
-                  <Trash2 size={16} />
+                  <Trash2 size={15} />
                 </button>
 
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "16px" }}>
-                  <div>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))", gap: "14px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
+                  <div style={{ minWidth: 0, width: "100%" }}>
                     <ImageField
                       label="Event Flyer / Poster Image"
                       currentUrl={event.flyer}
@@ -2240,7 +2291,7 @@ export default function EditorPanel() {
                         setEventsList(updated);
                       }}
                     />
-                    <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Event Title</label>
+                    <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Event Title</label>
                     <input
                       type="text"
                       value={event.title}
@@ -2249,11 +2300,11 @@ export default function EditorPanel() {
                         updated[idx].title = e.target.value;
                         setEventsList(updated);
                       }}
-                      style={{ fontWeight: 800, fontSize: "0.95rem", color: "#0e3d26", width: "100%", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px", marginBottom: "8px" }}
+                      style={{ fontWeight: 800, fontSize: "0.9rem", color: "#0e3d26", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px", marginBottom: "6px" }}
                     />
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 120px), 1fr))", gap: "8px", marginBottom: "6px" }}>
                       <div>
-                        <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Category</label>
+                        <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Category</label>
                         <input
                           type="text"
                           value={event.category}
@@ -2262,11 +2313,11 @@ export default function EditorPanel() {
                             updated[idx].category = e.target.value;
                             setEventsList(updated);
                           }}
-                          style={{ fontSize: "0.82rem", color: "#137459", width: "100%", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px", marginBottom: "8px" }}
+                          style={{ fontSize: "0.78rem", color: "#137459", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px" }}
                         />
                       </div>
                       <div>
-                        <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Full Date String</label>
+                        <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Full Date String</label>
                         <input
                           type="text"
                           value={event.fullDate}
@@ -2275,12 +2326,12 @@ export default function EditorPanel() {
                             updated[idx].fullDate = e.target.value;
                             setEventsList(updated);
                           }}
-                          style={{ fontSize: "0.82rem", width: "100%", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px", marginBottom: "8px" }}
+                          style={{ fontSize: "0.78rem", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px" }}
                         />
                       </div>
                     </div>
 
-                    <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Venue &amp; Location</label>
+                    <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Venue &amp; Location</label>
                     <input
                       type="text"
                       value={event.venueName}
@@ -2289,7 +2340,7 @@ export default function EditorPanel() {
                         updated[idx].venueName = e.target.value;
                         setEventsList(updated);
                       }}
-                      style={{ fontSize: "0.82rem", width: "100%", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px", marginBottom: "4px" }}
+                      style={{ fontSize: "0.78rem", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px", marginBottom: "4px" }}
                     />
                     <input
                       type="text"
@@ -2299,12 +2350,12 @@ export default function EditorPanel() {
                         updated[idx].location = e.target.value;
                         setEventsList(updated);
                       }}
-                      style={{ fontSize: "0.8rem", color: "#526359", width: "100%", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px" }}
+                      style={{ fontSize: "0.75rem", color: "#526359", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px" }}
                     />
                   </div>
 
-                  <div>
-                    <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Pricing / Ticket Options</label>
+                  <div style={{ minWidth: 0, width: "100%" }}>
+                    <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Pricing / Ticket Options</label>
                     <input
                       type="text"
                       value={event.pricing}
@@ -2313,12 +2364,12 @@ export default function EditorPanel() {
                         updated[idx].pricing = e.target.value;
                         setEventsList(updated);
                       }}
-                      style={{ fontSize: "0.82rem", width: "100%", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px", marginBottom: "8px" }}
+                      style={{ fontSize: "0.78rem", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px", marginBottom: "6px" }}
                     />
 
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginBottom: "8px" }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 120px), 1fr))", gap: "8px", marginBottom: "6px" }}>
                       <div>
-                        <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Registration Link</label>
+                        <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Registration Link</label>
                         <input
                           type="text"
                           value={event.registrationUrl}
@@ -2327,11 +2378,11 @@ export default function EditorPanel() {
                             updated[idx].registrationUrl = e.target.value;
                             setEventsList(updated);
                           }}
-                          style={{ fontSize: "0.8rem", width: "100%", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px" }}
+                          style={{ fontSize: "0.75rem", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px" }}
                         />
                       </div>
                       <div>
-                        <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Hotel Booking Link</label>
+                        <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Hotel Booking Link</label>
                         <input
                           type="text"
                           value={event.hotelBookingUrl || ""}
@@ -2340,12 +2391,12 @@ export default function EditorPanel() {
                             updated[idx].hotelBookingUrl = e.target.value;
                             setEventsList(updated);
                           }}
-                          style={{ fontSize: "0.8rem", width: "100%", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px" }}
+                          style={{ fontSize: "0.75rem", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px" }}
                         />
                       </div>
                     </div>
 
-                    <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Event Summary</label>
+                    <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Event Summary</label>
                     <textarea
                       rows={2}
                       value={event.summary}
@@ -2354,10 +2405,10 @@ export default function EditorPanel() {
                         updated[idx].summary = e.target.value;
                         setEventsList(updated);
                       }}
-                      style={{ width: "100%", fontSize: "0.82rem", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px", marginBottom: "8px" }}
+                      style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", fontSize: "0.78rem", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px", marginBottom: "6px" }}
                     />
 
-                    <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Full Description</label>
+                    <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Full Description</label>
                     <textarea
                       rows={3}
                       value={event.description}
@@ -2366,7 +2417,7 @@ export default function EditorPanel() {
                         updated[idx].description = e.target.value;
                         setEventsList(updated);
                       }}
-                      style={{ width: "100%", fontSize: "0.82rem", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px" }}
+                      style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", fontSize: "0.78rem", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px" }}
                     />
                   </div>
                 </div>
@@ -2380,13 +2431,13 @@ export default function EditorPanel() {
       {/* 10. TAB: BLOG & PRESS ARTICLES (WITH ARTICLE CREATION)                   */}
       {/* ========================================================================= */}
       {activeTab === "blog" && (
-        <div className="panel-card" style={{ background: "#ffffff", borderRadius: "14px", padding: "24px", border: "1px solid #e1eae3" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "10px" }}>
+        <div className="panel-card" style={{ background: "#ffffff", borderRadius: "12px", padding: "20px", border: "1px solid #e1eae3", width: "100%", maxWidth: "100%", minWidth: 0, boxSizing: "border-box" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px", flexWrap: "wrap", gap: "10px" }}>
             <div>
-              <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.15rem", fontWeight: 800 }}>📰 Blog &amp; Press Articles</h3>
-              <p style={{ margin: "2px 0 0", fontSize: "0.82rem", color: "#526359" }}>{articlesList.length} articles published · Create new stories with image, title, description, and body</p>
+              <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.1rem", fontWeight: 800 }}>📰 Blog &amp; Press Articles</h3>
+              <p style={{ margin: "2px 0 0", fontSize: "0.8rem", color: "#526359" }}>{articlesList.length} articles published · Create new stories with image, title, description, and body</p>
             </div>
-            <div style={{ display: "flex", gap: "8px" }}>
+            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
               <button
                 type="button"
                 onClick={() => setShowCreateArticleModal(true)}
@@ -2394,32 +2445,32 @@ export default function EditorPanel() {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: "6px",
-                  padding: "8px 16px",
-                  borderRadius: "8px",
+                  padding: "7px 12px",
+                  borderRadius: "6px",
                   border: "1px solid #0e3d26",
                   background: "#f0fdf4",
                   color: "#0e3d26",
-                  fontSize: "0.82rem",
+                  fontSize: "0.8rem",
                   fontWeight: 700,
                   cursor: "pointer",
                 }}
               >
-                <Plus size={14} /> Create Blog Article
+                <Plus size={13} /> Create Blog Article
               </button>
               <button
                 type="button"
                 className="btn-primary"
                 onClick={() => saveContent("collection", "blog/articles", articlesList)}
-                style={{ padding: "8px 16px", fontSize: "0.82rem" }}
+                style={{ padding: "7px 14px", fontSize: "0.8rem" }}
               >
-                <Save size={14} /> Save Articles
+                <Save size={13} /> Save Articles
               </button>
             </div>
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
             {articlesList.map((article, idx) => (
-              <div key={article.id || idx} style={{ border: "1px solid #e1eae3", borderRadius: "12px", padding: "18px", background: "#fbfcfb", position: "relative" }}>
+              <div key={article.id || idx} style={{ border: "1px solid #e1eae3", borderRadius: "10px", padding: "16px", background: "#fbfcfb", position: "relative", width: "100%", maxWidth: "100%", minWidth: 0, boxSizing: "border-box" }}>
                 <button
                   type="button"
                   onClick={() => {
@@ -2429,8 +2480,8 @@ export default function EditorPanel() {
                   }}
                   style={{
                     position: "absolute",
-                    top: "14px",
-                    right: "14px",
+                    top: "12px",
+                    right: "12px",
                     background: "transparent",
                     border: "none",
                     color: "#dc2626",
@@ -2439,7 +2490,7 @@ export default function EditorPanel() {
                   }}
                   title="Delete Article"
                 >
-                  <Trash2 size={16} />
+                  <Trash2 size={15} />
                 </button>
 
                 <ImageField
@@ -2452,9 +2503,9 @@ export default function EditorPanel() {
                   }}
                 />
 
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "10px", marginBottom: "8px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 240px), 1fr))", gap: "10px", marginBottom: "6px" }}>
                   <div>
-                    <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Article Title</label>
+                    <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Article Title</label>
                     <input
                       type="text"
                       value={article.title}
@@ -2463,11 +2514,11 @@ export default function EditorPanel() {
                         updated[idx].title = e.target.value;
                         setArticlesList(updated);
                       }}
-                      style={{ fontWeight: 800, fontSize: "0.95rem", color: "#0e3d26", width: "100%", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px" }}
+                      style={{ fontWeight: 800, fontSize: "0.9rem", color: "#0e3d26", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px" }}
                     />
                   </div>
                   <div>
-                    <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Category</label>
+                    <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Category</label>
                     <input
                       type="text"
                       value={article.category}
@@ -2476,14 +2527,14 @@ export default function EditorPanel() {
                         updated[idx].category = e.target.value;
                         setArticlesList(updated);
                       }}
-                      style={{ fontSize: "0.82rem", color: "#137459", width: "100%", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px" }}
+                      style={{ fontSize: "0.78rem", color: "#137459", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px" }}
                     />
                   </div>
                 </div>
 
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "10px", marginBottom: "8px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 180px), 1fr))", gap: "10px", marginBottom: "6px" }}>
                   <div>
-                    <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#526359", marginBottom: "2px" }}>Date String</label>
+                    <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#526359", marginBottom: "2px" }}>Date String</label>
                     <input
                       type="text"
                       value={article.displayDate || article.date}
@@ -2492,11 +2543,11 @@ export default function EditorPanel() {
                         updated[idx].displayDate = e.target.value;
                         setArticlesList(updated);
                       }}
-                      style={{ fontSize: "0.82rem", width: "100%", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px" }}
+                      style={{ fontSize: "0.78rem", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px" }}
                     />
                   </div>
                   <div>
-                    <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#526359", marginBottom: "2px" }}>Author</label>
+                    <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#526359", marginBottom: "2px" }}>Author</label>
                     <input
                       type="text"
                       value={article.author}
@@ -2505,12 +2556,12 @@ export default function EditorPanel() {
                         updated[idx].author = e.target.value;
                         setArticlesList(updated);
                       }}
-                      style={{ fontSize: "0.82rem", width: "100%", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px" }}
+                      style={{ fontSize: "0.78rem", width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px" }}
                     />
                   </div>
                 </div>
 
-                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Lead Description / Excerpt</label>
+                <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Lead Description / Excerpt</label>
                 <textarea
                   rows={2}
                   value={article.excerpt}
@@ -2519,10 +2570,10 @@ export default function EditorPanel() {
                     updated[idx].excerpt = e.target.value;
                     setArticlesList(updated);
                   }}
-                  style={{ width: "100%", fontSize: "0.84rem", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px", marginBottom: "8px" }}
+                  style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", fontSize: "0.8rem", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px", marginBottom: "6px" }}
                 />
 
-                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Article Body Content (Full Paragraphs)</label>
+                <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: "#0e3d26", marginBottom: "2px" }}>Article Body Content (Full Paragraphs)</label>
                 <textarea
                   rows={5}
                   value={article.content?.join("\n\n") || ""}
@@ -2531,7 +2582,7 @@ export default function EditorPanel() {
                     updated[idx].content = e.target.value.split("\n\n").filter(Boolean);
                     setArticlesList(updated);
                   }}
-                  style={{ width: "100%", fontSize: "0.82rem", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "6px 8px" }}
+                  style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", fontSize: "0.78rem", border: "1px solid #d4dfd7", borderRadius: "4px", padding: "5px 7px" }}
                 />
               </div>
             ))}
@@ -2543,11 +2594,11 @@ export default function EditorPanel() {
       {/* 11. TAB: MEDIA ASSET MANAGER (WITH IN-PLACE REPLACE BUTTON ON EVERY CARD) */}
       {/* ========================================================================= */}
       {activeTab === "media" && (
-        <div className="panel-card" style={{ background: "#ffffff", borderRadius: "14px", padding: "24px", border: "1px solid #e1eae3" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "10px" }}>
+        <div className="panel-card" style={{ background: "#ffffff", borderRadius: "12px", padding: "20px", border: "1px solid #e1eae3", width: "100%", maxWidth: "100%", minWidth: 0, boxSizing: "border-box" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px", flexWrap: "wrap", gap: "10px" }}>
             <div>
-              <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.15rem", fontWeight: 800 }}>🖼️ Media Asset Manager</h3>
-              <p style={{ margin: "2px 0 0", fontSize: "0.82rem", color: "#526359" }}>
+              <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.1rem", fontWeight: 800 }}>🖼️ Media Asset Manager</h3>
+              <p style={{ margin: "2px 0 0", fontSize: "0.8rem", color: "#526359" }}>
                 Stored in repository public assets directory · Click &quot;Replace Image&quot; on any card to update that file in place
               </p>
             </div>
@@ -2558,12 +2609,12 @@ export default function EditorPanel() {
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "6px",
-                padding: "8px 16px",
-                fontSize: "0.82rem",
+                padding: "8px 14px",
+                fontSize: "0.8rem",
                 cursor: "pointer",
               }}
             >
-              <Upload size={14} /> Upload New Image
+              <Upload size={13} /> Upload New Image
               <input
                 type="file"
                 accept="image/*"
@@ -2576,10 +2627,10 @@ export default function EditorPanel() {
             </label>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "16px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 180px), 1fr))", gap: "14px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
             {mediaList.map((m, idx) => (
-              <div key={idx} style={{ border: "1px solid #e1eae3", borderRadius: "10px", padding: "12px", background: "#fbfcfb", textAlign: "center", display: "flex", flexDirection: "column" }}>
-                <div style={{ width: "100%", height: "130px", position: "relative", borderRadius: "6px", overflow: "hidden", marginBottom: "8px", background: "#eee", border: "1px solid #e5ece7" }}>
+              <div key={idx} style={{ border: "1px solid #e1eae3", borderRadius: "10px", padding: "10px", background: "#fbfcfb", textAlign: "center", display: "flex", flexDirection: "column", minWidth: 0, maxWidth: "100%", boxSizing: "border-box", overflow: "hidden" }}>
+                <div style={{ width: "100%", height: "120px", position: "relative", borderRadius: "6px", overflow: "hidden", marginBottom: "6px", background: "#eee", border: "1px solid #e5ece7" }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={m.url}
@@ -2590,33 +2641,34 @@ export default function EditorPanel() {
                     }}
                   />
                 </div>
-                <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }} title={m.filename}>
+                <div style={{ fontSize: "0.72rem", fontWeight: 700, color: "#0e3d26", textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }} title={m.filename}>
                   {m.filename}
                 </div>
-                <div style={{ fontSize: "0.68rem", color: "#888", margin: "2px 0 8px" }}>
+                <div style={{ fontSize: "0.65rem", color: "#888", margin: "2px 0 6px" }}>
                   {(m.sizeBytes / 1024).toFixed(1)} KB · {m.folder}
                 </div>
 
-                <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "6px" }}>
+                <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "5px" }}>
                   {/* Dedicated Replace Image Button for this specific card */}
                   <label
                     style={{
                       display: "inline-flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      gap: "5px",
+                      gap: "4px",
                       background: "#0e3d26",
                       color: "#ffffff",
                       borderRadius: "6px",
-                      padding: "6px 10px",
-                      fontSize: "0.75rem",
+                      padding: "5px 8px",
+                      fontSize: "0.72rem",
                       fontWeight: 700,
                       cursor: "pointer",
                       width: "100%",
+                      boxSizing: "border-box",
                       transition: "background 0.15s ease",
                     }}
                   >
-                    <Camera size={13} /> Replace Image
+                    <Camera size={12} /> Replace Image
                     <input
                       type="file"
                       accept="image/*"
@@ -2641,11 +2693,12 @@ export default function EditorPanel() {
                       border: "1px solid #cce2d6",
                       color: "#137459",
                       borderRadius: "6px",
-                      padding: "4px 8px",
-                      fontSize: "0.72rem",
+                      padding: "4px 6px",
+                      fontSize: "0.68rem",
                       fontWeight: 700,
                       cursor: "pointer",
                       width: "100%",
+                      boxSizing: "border-box",
                     }}
                   >
                     Copy Path
@@ -2661,20 +2714,20 @@ export default function EditorPanel() {
       {/* 12. TAB: DEPLOYMENTS & PUBLISH                                           */}
       {/* ========================================================================= */}
       {activeTab === "deploy" && (
-        <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "20px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
           {/* One-Click Publish Card */}
-          <div className="panel-card" style={{ background: "#ffffff", borderRadius: "14px", padding: "24px", border: "1.5px solid #d4af37" }}>
+          <div className="panel-card" style={{ background: "#ffffff", borderRadius: "12px", padding: "20px", border: "1.5px solid #d4af37", width: "100%", maxWidth: "100%", minWidth: 0, boxSizing: "border-box" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-              <span style={{ fontSize: "1.4rem" }}>🚀</span>
-              <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.2rem", fontWeight: 800 }}>Publish Changes to Production</h3>
+              <span style={{ fontSize: "1.3rem" }}>🚀</span>
+              <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.15rem", fontWeight: 800 }}>Publish Changes to Production</h3>
             </div>
-            <p style={{ color: "#526359", fontSize: "0.88rem", margin: "0 0 16px" }}>
+            <p style={{ color: "#526359", fontSize: "0.85rem", margin: "0 0 14px" }}>
               Commits all modified JSON schemas and media assets directly to the GitHub repository on branch <strong>master</strong>.
               This immediately triggers parallel production deployments to <strong>Vercel</strong> and <strong>Google Cloud Run</strong>.
             </p>
 
-            <div style={{ marginBottom: "16px" }}>
-              <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#0e3d26", marginBottom: "6px" }}>
+            <div style={{ marginBottom: "14px" }}>
+              <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
                 Commit Message
               </label>
               <input
@@ -2684,10 +2737,12 @@ export default function EditorPanel() {
                 onChange={(e) => setPublishMessage(e.target.value)}
                 style={{
                   width: "100%",
-                  padding: "10px 14px",
-                  borderRadius: "8px",
+                  maxWidth: "100%",
+                  boxSizing: "border-box",
+                  padding: "8px 12px",
+                  borderRadius: "6px",
                   border: "1.5px solid #d4dfd7",
-                  fontSize: "0.88rem",
+                  fontSize: "0.85rem",
                 }}
               />
             </div>
@@ -2700,9 +2755,9 @@ export default function EditorPanel() {
                 background: isPublishing ? "#888" : "#0e3d26",
                 color: "#ffffff",
                 border: "none",
-                borderRadius: "10px",
-                padding: "12px 24px",
-                fontSize: "0.92rem",
+                borderRadius: "8px",
+                padding: "10px 20px",
+                fontSize: "0.88rem",
                 fontWeight: 800,
                 cursor: isPublishing ? "not-allowed" : "pointer",
                 display: "inline-flex",
@@ -2713,22 +2768,22 @@ export default function EditorPanel() {
             >
               {isPublishing ? (
                 <>
-                  <Loader2 size={16} className="animate-spin" /> Committing to GitHub master...
+                  <Loader2 size={15} className="animate-spin" /> Committing to GitHub master...
                 </>
               ) : (
                 <>
-                  <Send size={16} /> Publish All Changes Now
+                  <Send size={15} /> Publish All Changes Now
                 </>
               )}
             </button>
           </div>
 
           {/* Deployment Monitors */}
-          <div className="panel-card" style={{ background: "#ffffff", borderRadius: "14px", padding: "24px", border: "1px solid #e1eae3" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+          <div className="panel-card" style={{ background: "#ffffff", borderRadius: "12px", padding: "20px", border: "1px solid #e1eae3", width: "100%", maxWidth: "100%", minWidth: 0, boxSizing: "border-box" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px", flexWrap: "wrap", gap: "10px" }}>
               <div>
-                <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.1rem", fontWeight: 800 }}>Continuous Deployment Status</h3>
-                <p style={{ margin: "2px 0 0", fontSize: "0.82rem", color: "#526359" }}>Real-time monitoring of Vercel and Google Cloud Run</p>
+                <h3 style={{ margin: 0, color: "#0e3d26", fontSize: "1.05rem", fontWeight: 800 }}>Continuous Deployment Status</h3>
+                <p style={{ margin: "2px 0 0", fontSize: "0.78rem", color: "#526359" }}>Real-time monitoring of Vercel and Google Cloud Run</p>
               </div>
               <button
                 type="button"
@@ -2744,42 +2799,42 @@ export default function EditorPanel() {
                   background: "#f0fdf4",
                   border: "1px solid #cce2d6",
                   color: "#0e3d26",
-                  borderRadius: "8px",
-                  padding: "6px 12px",
-                  fontSize: "0.8rem",
+                  borderRadius: "6px",
+                  padding: "5px 10px",
+                  fontSize: "0.75rem",
                   fontWeight: 700,
                   cursor: "pointer",
                   display: "inline-flex",
                   alignItems: "center",
-                  gap: "6px",
+                  gap: "5px",
                 }}
               >
-                <RefreshCw size={13} /> Refresh Status
+                <RefreshCw size={12} /> Refresh Status
               </button>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "16px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 240px), 1fr))", gap: "14px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
               {/* GitHub Latest Commit */}
-              <div style={{ border: "1px solid #e1eae3", borderRadius: "10px", padding: "16px", background: "#fbfcfb" }}>
+              <div style={{ border: "1px solid #e1eae3", borderRadius: "8px", padding: "14px", background: "#fbfcfb", minWidth: 0, maxWidth: "100%", boxSizing: "border-box" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
-                  <Globe size={18} color="#0e3d26" />
-                  <strong style={{ fontSize: "0.92rem", color: "#0e3d26" }}>GitHub Repository</strong>
+                  <Globe size={16} color="#0e3d26" />
+                  <strong style={{ fontSize: "0.88rem", color: "#0e3d26" }}>GitHub Repository</strong>
                 </div>
-                <div style={{ fontSize: "0.82rem", color: "#526359", margin: "6px 0" }}>
-                  Branch: <code style={{ background: "#eef5f1", padding: "2px 6px", borderRadius: "4px" }}>master</code>
+                <div style={{ fontSize: "0.78rem", color: "#526359", margin: "4px 0" }}>
+                  Branch: <code style={{ background: "#eef5f1", padding: "2px 5px", borderRadius: "4px" }}>master</code>
                 </div>
-                <div style={{ fontSize: "0.78rem", color: "#666" }}>
+                <div style={{ fontSize: "0.75rem", color: "#666" }}>
                   Commit: <code>{deployStatus?.latestCommit?.sha?.slice(0, 7) || "origin/master"}</code>
                 </div>
               </div>
 
               {/* Vercel Status */}
-              <div style={{ border: "1px solid #e1eae3", borderRadius: "10px", padding: "16px", background: "#fbfcfb" }}>
+              <div style={{ border: "1px solid #e1eae3", borderRadius: "8px", padding: "14px", background: "#fbfcfb", minWidth: 0, maxWidth: "100%", boxSizing: "border-box" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
-                  <span style={{ fontSize: "1.1rem" }}>▲</span>
-                  <strong style={{ fontSize: "0.92rem", color: "#0e3d26" }}>Vercel Production</strong>
+                  <span style={{ fontSize: "1rem" }}>▲</span>
+                  <strong style={{ fontSize: "0.88rem", color: "#0e3d26" }}>Vercel Production</strong>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: "6px", margin: "6px 0" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px", margin: "4px 0" }}>
                   <span
                     style={{
                       width: "8px",
@@ -2788,7 +2843,7 @@ export default function EditorPanel() {
                       background: deployStatus?.vercel?.status === "completed" ? "#10b981" : "#10b981",
                     }}
                   />
-                  <span style={{ fontSize: "0.82rem", fontWeight: 700, textTransform: "capitalize", color: "#0e3d26" }}>
+                  <span style={{ fontSize: "0.78rem", fontWeight: 700, textTransform: "capitalize", color: "#0e3d26" }}>
                     {deployStatus?.vercel?.status || "Live & Ready"}
                   </span>
                 </div>
@@ -2796,19 +2851,19 @@ export default function EditorPanel() {
                   href="https://upua.vercel.app"
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{ fontSize: "0.78rem", color: "#137459", textDecoration: "underline", display: "inline-flex", alignItems: "center", gap: "4px" }}
+                  style={{ fontSize: "0.75rem", color: "#137459", textDecoration: "underline", display: "inline-flex", alignItems: "center", gap: "4px" }}
                 >
-                  upua.vercel.app <ExternalLink size={12} />
+                  upua.vercel.app <ExternalLink size={11} />
                 </a>
               </div>
 
               {/* Google Cloud Run Status */}
-              <div style={{ border: "1px solid #e1eae3", borderRadius: "10px", padding: "16px", background: "#fbfcfb" }}>
+              <div style={{ border: "1px solid #e1eae3", borderRadius: "8px", padding: "14px", background: "#fbfcfb", minWidth: 0, maxWidth: "100%", boxSizing: "border-box" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
-                  <Cloud size={18} color="#1a73e8" />
-                  <strong style={{ fontSize: "0.92rem", color: "#0e3d26" }}>Google Cloud Run</strong>
+                  <Cloud size={16} color="#1a73e8" />
+                  <strong style={{ fontSize: "0.88rem", color: "#0e3d26" }}>Google Cloud Run</strong>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: "6px", margin: "6px 0" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px", margin: "4px 0" }}>
                   <span
                     style={{
                       width: "8px",
@@ -2817,11 +2872,11 @@ export default function EditorPanel() {
                       background: deployStatus?.cloudRun?.status === "completed" ? "#10b981" : "#f59e0b",
                     }}
                   />
-                  <span style={{ fontSize: "0.82rem", fontWeight: 700, textTransform: "capitalize", color: "#0e3d26" }}>
+                  <span style={{ fontSize: "0.78rem", fontWeight: 700, textTransform: "capitalize", color: "#0e3d26" }}>
                     {deployStatus?.cloudRun?.status || "Active (deploy-gcloud.yml)"}
                   </span>
                 </div>
-                <span style={{ fontSize: "0.78rem", color: "#526359" }}>Service: upua · Region: us-east1</span>
+                <span style={{ fontSize: "0.75rem", color: "#526359" }}>Service: upua · Region: us-east1</span>
               </div>
             </div>
           </div>
@@ -2832,12 +2887,12 @@ export default function EditorPanel() {
       {/* MODAL: IMAGE PICKER & REPLACER                                           */}
       {/* ========================================================================= */}
       {imagePickerTarget && (
-        <div className="upua-modal-backdrop" style={{ zIndex: 999999 }} onClick={() => setImagePickerTarget(null)}>
-          <div className="upua-modal-box" style={{ maxWidth: "680px", maxHeight: "90vh", display: "flex", flexDirection: "column" }} onClick={(e) => e.stopPropagation()}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+        <div className="upua-modal-backdrop" style={{ zIndex: 999999, padding: "12px", boxSizing: "border-box" }} onClick={() => setImagePickerTarget(null)}>
+          <div className="upua-modal-box" style={{ width: "94vw", maxWidth: "660px", maxHeight: "90vh", display: "flex", flexDirection: "column", boxSizing: "border-box" }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <Camera size={20} color="#0e3d26" />
-                <h3 style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: "1.25rem", color: "#0e3d26" }}>
+                <Camera size={18} color="#0e3d26" />
+                <h3 style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: "1.15rem", color: "#0e3d26" }}>
                   Replace / Select Image
                 </h3>
               </div>
@@ -2846,27 +2901,27 @@ export default function EditorPanel() {
                 onClick={() => setImagePickerTarget(null)}
                 style={{ background: "transparent", border: "none", cursor: "pointer", color: "#666" }}
               >
-                <X size={20} />
+                <X size={18} />
               </button>
             </div>
 
             {/* Action 1: Direct File Upload */}
-            <div style={{ background: "#f8faf8", padding: "16px", borderRadius: "10px", border: "1.5px dashed #137459", textAlign: "center", marginBottom: "18px" }}>
+            <div style={{ background: "#f8faf8", padding: "14px", borderRadius: "8px", border: "1.5px dashed #137459", textAlign: "center", marginBottom: "14px", boxSizing: "border-box" }}>
               <label
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
-                  gap: "8px",
+                  gap: "6px",
                   background: "#0e3d26",
                   color: "#ffffff",
-                  padding: "10px 20px",
-                  borderRadius: "8px",
-                  fontSize: "0.88rem",
+                  padding: "8px 16px",
+                  borderRadius: "6px",
+                  fontSize: "0.82rem",
                   fontWeight: 700,
                   cursor: "pointer",
                 }}
               >
-                <Upload size={16} /> Choose File from Computer
+                <Upload size={14} /> Choose File from Computer
                 <input
                   type="file"
                   accept="image/*"
@@ -2883,17 +2938,17 @@ export default function EditorPanel() {
                   style={{ display: "none" }}
                 />
               </label>
-              <p style={{ margin: "6px 0 0", fontSize: "0.76rem", color: "#526359" }}>
-                Accepts JPG, PNG, WEBP, or SVG. Automatically saved to public/assets/cms and staged for GitHub.
+              <p style={{ margin: "5px 0 0", fontSize: "0.72rem", color: "#526359" }}>
+                JPG, PNG, WEBP, or SVG. Auto-saved to public assets and staged for GitHub.
               </p>
             </div>
 
             {/* Action 2: Choose from Media Library */}
-            <div style={{ flex: 1, overflowY: "auto", minHeight: "220px", maxHeight: "360px" }}>
-              <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 800, color: "#0e3d26", marginBottom: "8px" }}>
+            <div style={{ flex: 1, overflowY: "auto", minHeight: "200px", maxHeight: "340px", boxSizing: "border-box" }}>
+              <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 800, color: "#0e3d26", marginBottom: "6px" }}>
                 Or Pick an Existing Image from Media Library:
               </label>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(110px, 1fr))", gap: "10px" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 100px), 1fr))", gap: "8px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
                 {mediaList.map((m, idx) => (
                   <button
                     key={idx}
@@ -2906,14 +2961,16 @@ export default function EditorPanel() {
                     style={{
                       background: imagePickerTarget.currentUrl === m.url ? "#e6f4ea" : "#ffffff",
                       border: imagePickerTarget.currentUrl === m.url ? "2px solid #137333" : "1px solid #e1eae3",
-                      borderRadius: "8px",
-                      padding: "6px",
+                      borderRadius: "6px",
+                      padding: "5px",
                       cursor: "pointer",
                       textAlign: "center",
                       transition: "all 0.15s ease",
+                      boxSizing: "border-box",
+                      minWidth: 0,
                     }}
                   >
-                    <div style={{ width: "100%", height: "70px", position: "relative", borderRadius: "4px", overflow: "hidden", marginBottom: "4px", background: "#eee", border: "1px solid #e5ece7" }}>
+                    <div style={{ width: "100%", height: "64px", position: "relative", borderRadius: "4px", overflow: "hidden", marginBottom: "4px", background: "#eee", border: "1px solid #e5ece7" }}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={m.url}
@@ -2924,7 +2981,7 @@ export default function EditorPanel() {
                         }}
                       />
                     </div>
-                    <div style={{ fontSize: "0.68rem", fontWeight: 600, color: "#0e3d26", textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }} title={m.filename}>
+                    <div style={{ fontSize: "0.65rem", fontWeight: 600, color: "#0e3d26", textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }} title={m.filename}>
                       {m.filename}
                     </div>
                   </button>
@@ -2939,12 +2996,12 @@ export default function EditorPanel() {
       {/* MODAL: CREATE NEW BLOG ARTICLE                                            */}
       {/* ========================================================================= */}
       {showCreateArticleModal && (
-        <div className="upua-modal-backdrop" style={{ zIndex: 999999 }} onClick={() => setShowCreateArticleModal(false)}>
-          <div className="upua-modal-box" style={{ maxWidth: "720px", maxHeight: "90vh", overflowY: "auto" }} onClick={(e) => e.stopPropagation()}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", borderBottom: "1px solid #e1eae3", paddingBottom: "12px" }}>
+        <div className="upua-modal-backdrop" style={{ zIndex: 999999, padding: "12px", boxSizing: "border-box" }} onClick={() => setShowCreateArticleModal(false)}>
+          <div className="upua-modal-box" style={{ width: "94vw", maxWidth: "680px", maxHeight: "90vh", overflowY: "auto", boxSizing: "border-box" }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px", borderBottom: "1px solid #e1eae3", paddingBottom: "10px" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <span style={{ fontSize: "1.3rem" }}>✍️</span>
-                <h3 style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: "1.3rem", color: "#0e3d26", fontWeight: 800 }}>
+                <span style={{ fontSize: "1.2rem" }}>✍️</span>
+                <h3 style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: "1.2rem", color: "#0e3d26", fontWeight: 800 }}>
                   Create New Blog Article
                 </h3>
               </div>
@@ -2953,13 +3010,13 @@ export default function EditorPanel() {
                 onClick={() => setShowCreateArticleModal(false)}
                 style={{ background: "transparent", border: "none", cursor: "pointer", color: "#666" }}
               >
-                <X size={20} />
+                <X size={18} />
               </button>
             </div>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
               <div>
-                <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 800, color: "#0e3d26", marginBottom: "4px" }}>
+                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 800, color: "#0e3d26", marginBottom: "4px" }}>
                   Article Headline / Title *
                 </label>
                 <input
@@ -2967,7 +3024,7 @@ export default function EditorPanel() {
                   placeholder="e.g. UPUA Announces Nationwide Youth Scholarship Awards"
                   value={newArticle.title}
                   onChange={(e) => setNewArticle({ ...newArticle, title: e.target.value })}
-                  style={{ width: "100%", padding: "10px 12px", border: "1.5px solid #d4dfd7", borderRadius: "6px", fontSize: "0.95rem", fontWeight: 700 }}
+                  style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "8px 10px", border: "1.5px solid #d4dfd7", borderRadius: "6px", fontSize: "0.9rem", fontWeight: 700 }}
                 />
               </div>
 
@@ -2977,46 +3034,46 @@ export default function EditorPanel() {
                 onChange={(newUrl) => setNewArticle({ ...newArticle, image: newUrl })}
               />
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 140px), 1fr))", gap: "10px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
+                  <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
                     Category
                   </label>
                   <input
                     type="text"
-                    placeholder="Community, Convention, Programs, Culture..."
+                    placeholder="Community, Convention, Programs..."
                     value={newArticle.category}
                     onChange={(e) => setNewArticle({ ...newArticle, category: e.target.value })}
-                    style={{ width: "100%", padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.85rem" }}
+                    style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "7px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.8rem" }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
+                  <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
                     Author
                   </label>
                   <input
                     type="text"
                     value={newArticle.author}
                     onChange={(e) => setNewArticle({ ...newArticle, author: e.target.value })}
-                    style={{ width: "100%", padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.85rem" }}
+                    style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "7px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.8rem" }}
                   />
                 </div>
               </div>
 
               <div>
-                <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
+                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
                   Display Date
                 </label>
                 <input
                   type="text"
                   value={newArticle.displayDate}
                   onChange={(e) => setNewArticle({ ...newArticle, displayDate: e.target.value })}
-                  style={{ width: "100%", padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.85rem" }}
+                  style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "7px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.8rem" }}
                 />
               </div>
 
               <div>
-                <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 800, color: "#0e3d26", marginBottom: "4px" }}>
+                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 800, color: "#0e3d26", marginBottom: "4px" }}>
                   Lead Description / Excerpt *
                 </label>
                 <textarea
@@ -3024,28 +3081,28 @@ export default function EditorPanel() {
                   placeholder="A concise summary of the article appearing on blog cards and previews..."
                   value={newArticle.excerpt}
                   onChange={(e) => setNewArticle({ ...newArticle, excerpt: e.target.value })}
-                  style={{ width: "100%", padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.85rem" }}
+                  style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "7px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.8rem" }}
                 />
               </div>
 
               <div>
-                <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 800, color: "#0e3d26", marginBottom: "4px" }}>
+                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 800, color: "#0e3d26", marginBottom: "4px" }}>
                   Article Body Content (Full Paragraphs) *
                 </label>
                 <textarea
-                  rows={6}
+                  rows={5}
                   placeholder="Write full article body paragraphs here. Separate distinct paragraphs with an empty line..."
                   value={newArticle.content}
                   onChange={(e) => setNewArticle({ ...newArticle, content: e.target.value })}
-                  style={{ width: "100%", padding: "10px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.85rem" }}
+                  style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "8px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.8rem" }}
                 />
               </div>
 
-              <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "12px", borderTop: "1px solid #e1eae3", paddingTop: "14px" }}>
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", marginTop: "10px", borderTop: "1px solid #e1eae3", paddingTop: "12px" }}>
                 <button
                   type="button"
                   onClick={() => setShowCreateArticleModal(false)}
-                  style={{ padding: "10px 18px", borderRadius: "8px", border: "1px solid #d4dfd7", background: "#fbfcfb", color: "#526359", fontWeight: 600, cursor: "pointer" }}
+                  style={{ padding: "8px 16px", borderRadius: "6px", border: "1px solid #d4dfd7", background: "#fbfcfb", color: "#526359", fontWeight: 600, cursor: "pointer", fontSize: "0.82rem" }}
                 >
                   Cancel
                 </button>
@@ -3053,7 +3110,7 @@ export default function EditorPanel() {
                   type="button"
                   onClick={handleAddArticleSubmit}
                   className="btn-primary"
-                  style={{ padding: "10px 22px", borderRadius: "8px", fontWeight: 800, fontSize: "0.9rem" }}
+                  style={{ padding: "8px 18px", borderRadius: "6px", fontWeight: 800, fontSize: "0.85rem" }}
                 >
                   Publish Article
                 </button>
@@ -3067,12 +3124,12 @@ export default function EditorPanel() {
       {/* MODAL: CREATE NEW EVENT                                                   */}
       {/* ========================================================================= */}
       {showCreateEventModal && (
-        <div className="upua-modal-backdrop" style={{ zIndex: 999999 }} onClick={() => setShowCreateEventModal(false)}>
-          <div className="upua-modal-box" style={{ maxWidth: "720px", maxHeight: "90vh", overflowY: "auto" }} onClick={(e) => e.stopPropagation()}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", borderBottom: "1px solid #e1eae3", paddingBottom: "12px" }}>
+        <div className="upua-modal-backdrop" style={{ zIndex: 999999, padding: "12px", boxSizing: "border-box" }} onClick={() => setShowCreateEventModal(false)}>
+          <div className="upua-modal-box" style={{ width: "94vw", maxWidth: "680px", maxHeight: "90vh", overflowY: "auto", boxSizing: "border-box" }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px", borderBottom: "1px solid #e1eae3", paddingBottom: "10px" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <Calendar size={22} color="#0e3d26" />
-                <h3 style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: "1.3rem", color: "#0e3d26", fontWeight: 800 }}>
+                <Calendar size={20} color="#0e3d26" />
+                <h3 style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: "1.2rem", color: "#0e3d26", fontWeight: 800 }}>
                   Add New Event / Convention
                 </h3>
               </div>
@@ -3081,13 +3138,13 @@ export default function EditorPanel() {
                 onClick={() => setShowCreateEventModal(false)}
                 style={{ background: "transparent", border: "none", cursor: "pointer", color: "#666" }}
               >
-                <X size={20} />
+                <X size={18} />
               </button>
             </div>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
               <div>
-                <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 800, color: "#0e3d26", marginBottom: "4px" }}>
+                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 800, color: "#0e3d26", marginBottom: "4px" }}>
                   Event Title *
                 </label>
                 <input
@@ -3095,7 +3152,7 @@ export default function EditorPanel() {
                   placeholder="e.g. UPUA Annual National Convention & Cultural Gala"
                   value={newEvent.title}
                   onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
-                  style={{ width: "100%", padding: "10px 12px", border: "1.5px solid #d4dfd7", borderRadius: "6px", fontSize: "0.95rem", fontWeight: 700 }}
+                  style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "8px 10px", border: "1.5px solid #d4dfd7", borderRadius: "6px", fontSize: "0.9rem", fontWeight: 700 }}
                 />
               </div>
 
@@ -3105,21 +3162,21 @@ export default function EditorPanel() {
                 onChange={(newUrl) => setNewEvent({ ...newEvent, flyer: newUrl })}
               />
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 140px), 1fr))", gap: "10px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
+                  <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
                     Category
                   </label>
                   <input
                     type="text"
-                    placeholder="Convention, Cultural Gala, Youth Symposium..."
+                    placeholder="Convention, Cultural Gala..."
                     value={newEvent.category}
                     onChange={(e) => setNewEvent({ ...newEvent, category: e.target.value })}
-                    style={{ width: "100%", padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.85rem" }}
+                    style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "7px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.8rem" }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
+                  <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
                     Full Date String
                   </label>
                   <input
@@ -3127,14 +3184,14 @@ export default function EditorPanel() {
                     placeholder="e.g. September 4 – 7, 2026"
                     value={newEvent.fullDate}
                     onChange={(e) => setNewEvent({ ...newEvent, fullDate: e.target.value })}
-                    style={{ width: "100%", padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.85rem" }}
+                    style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "7px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.8rem" }}
                   />
                 </div>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 140px), 1fr))", gap: "10px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
+                  <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
                     Time
                   </label>
                   <input
@@ -3142,11 +3199,11 @@ export default function EditorPanel() {
                     placeholder="e.g. 10:00 AM – 6:00 PM EST"
                     value={newEvent.time}
                     onChange={(e) => setNewEvent({ ...newEvent, time: e.target.value })}
-                    style={{ width: "100%", padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.85rem" }}
+                    style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "7px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.8rem" }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
+                  <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
                     Pricing / Pass
                   </label>
                   <input
@@ -3154,14 +3211,14 @@ export default function EditorPanel() {
                     placeholder="e.g. $150 / Delegate"
                     value={newEvent.pricing}
                     onChange={(e) => setNewEvent({ ...newEvent, pricing: e.target.value })}
-                    style={{ width: "100%", padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.85rem" }}
+                    style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "7px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.8rem" }}
                   />
                 </div>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 140px), 1fr))", gap: "10px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
+                  <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
                     Venue Name
                   </label>
                   <input
@@ -3169,11 +3226,11 @@ export default function EditorPanel() {
                     placeholder="e.g. Hilton Anatole Hotel"
                     value={newEvent.venueName}
                     onChange={(e) => setNewEvent({ ...newEvent, venueName: e.target.value })}
-                    style={{ width: "100%", padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.85rem" }}
+                    style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "7px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.8rem" }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
+                  <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
                     City &amp; State
                   </label>
                   <input
@@ -3181,26 +3238,26 @@ export default function EditorPanel() {
                     placeholder="e.g. Dallas-Fort Worth, Texas"
                     value={newEvent.location}
                     onChange={(e) => setNewEvent({ ...newEvent, location: e.target.value })}
-                    style={{ width: "100%", padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.85rem" }}
+                    style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.8rem", padding: "7px 10px" }}
                   />
                 </div>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 140px), 1fr))", gap: "10px", width: "100%", maxWidth: "100%", minWidth: 0 }}>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
+                  <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
                     Registration / Ticket URL
                   </label>
                   <input
                     type="text"
-                    placeholder="/store or external ticketing URL"
+                    placeholder="/store or ticketing link"
                     value={newEvent.registrationUrl}
                     onChange={(e) => setNewEvent({ ...newEvent, registrationUrl: e.target.value })}
-                    style={{ width: "100%", padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.85rem" }}
+                    style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "7px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.8rem" }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
+                  <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: "#0e3d26", marginBottom: "4px" }}>
                     Hotel Booking Link
                   </label>
                   <input
@@ -3208,13 +3265,13 @@ export default function EditorPanel() {
                     placeholder="https://..."
                     value={newEvent.hotelBookingUrl}
                     onChange={(e) => setNewEvent({ ...newEvent, hotelBookingUrl: e.target.value })}
-                    style={{ width: "100%", padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.85rem" }}
+                    style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "7px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.8rem" }}
                   />
                 </div>
               </div>
 
               <div>
-                <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 800, color: "#0e3d26", marginBottom: "4px" }}>
+                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 800, color: "#0e3d26", marginBottom: "4px" }}>
                   Event Summary
                 </label>
                 <textarea
@@ -3222,15 +3279,15 @@ export default function EditorPanel() {
                   placeholder="Short summary highlighting the convention or convocation..."
                   value={newEvent.summary}
                   onChange={(e) => setNewEvent({ ...newEvent, summary: e.target.value })}
-                  style={{ width: "100%", padding: "8px 12px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.85rem" }}
+                  style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "7px 10px", border: "1px solid #d4dfd7", borderRadius: "6px", fontSize: "0.8rem" }}
                 />
               </div>
 
-              <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "12px", borderTop: "1px solid #e1eae3", paddingTop: "14px" }}>
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", marginTop: "10px", borderTop: "1px solid #e1eae3", paddingTop: "12px" }}>
                 <button
                   type="button"
                   onClick={() => setShowCreateEventModal(false)}
-                  style={{ padding: "10px 18px", borderRadius: "8px", border: "1px solid #d4dfd7", background: "#fbfcfb", color: "#526359", fontWeight: 600, cursor: "pointer" }}
+                  style={{ padding: "8px 16px", borderRadius: "6px", border: "1px solid #d4dfd7", background: "#fbfcfb", color: "#526359", fontWeight: 600, cursor: "pointer", fontSize: "0.82rem" }}
                 >
                   Cancel
                 </button>
@@ -3238,7 +3295,7 @@ export default function EditorPanel() {
                   type="button"
                   onClick={handleAddEventSubmit}
                   className="btn-primary"
-                  style={{ padding: "10px 22px", borderRadius: "8px", fontWeight: 800, fontSize: "0.9rem" }}
+                  style={{ padding: "8px 18px", borderRadius: "6px", fontWeight: 800, fontSize: "0.85rem" }}
                 >
                   Create Event
                 </button>

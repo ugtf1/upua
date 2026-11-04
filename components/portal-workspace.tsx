@@ -1293,7 +1293,7 @@ ${meeting.transcript}
               </>
             )}
 
-            {user.role === "editor" && (
+            {(user.role === "editor" || user.role === "admin") && (
               <>
                 <button
                   type="button"
@@ -3677,8 +3677,8 @@ ${meeting.transcript}
             );
           })()}
 
-          {/* TAB: SITE EDITOR (EDITOR ROLE) */}
-          {activeTab === "site_editor" && user.role === "editor" && (
+          {/* TAB: SITE EDITOR (EDITOR & ADMIN ROLES) */}
+          {activeTab === "site_editor" && (user.role === "editor" || user.role === "admin") && (
             <EditorPanel />
           )}
         </main>

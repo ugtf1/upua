@@ -4173,6 +4173,19 @@ a {
   gap: 28px;
   max-width: 1380px;
   width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.cms-workspace-container {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.cms-workspace-container * {
+  box-sizing: border-box;
 }
 
 .dash-welcome-banner {
