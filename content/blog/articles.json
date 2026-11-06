@@ -11,7 +11,12 @@
     "image": "/assets/DMV-6.jpg",
     "excerpt": "From Southern California and Chicagoland to Delaware Valley, Michigan, and the DMV, UPUA chapters mobilized nationwide to donate essential hygiene packages, clothing, supplies, and warmth to local women's shelters.",
     "featured": true,
-    "tags": ["Community Outreach", "Women in Shelter", "Humanitarian", "North America Chapters"],
+    "tags": [
+      "Community Outreach",
+      "Women in Shelter",
+      "Humanitarian",
+      "North America Chapters"
+    ],
     "content": [
       "In a coordinated nationwide display of humanitarian service, chapters of the Urhobo Progress Union America (UPUA) across sixteen metropolitan areas have conducted in-person donation drives at women's emergency shelters.",
       "The Women in Shelter Initiative was designed to support women and children escaping domestic hardship, displacement, and economic vulnerability. Chapter delegations delivered hundreds of custom hygiene packs containing personal care products, warm blankets, winter garments, and infant care necessities.",
@@ -30,7 +35,12 @@
     "author": "National Secretariat",
     "image": "/assets/Congress-1.jpg",
     "featured": false,
-    "tags": ["National Convention", "Dallas", "Cultural Gala", "Governance"],
+    "tags": [
+      "National Convention",
+      "Dallas",
+      "Cultural Gala",
+      "Governance"
+    ],
     "content": [
       "The National Executive Committee of the Urhobo Progress Union America is thrilled to announce that the 32nd Annual National Convention and Cultural Gala will be staged in the heart of Texas at the prestigious Hilton Anatole Dallas over Labor Day Weekend 2026.",
       "Delegates from over twenty chapters across the United States and Canada, accompanied by traditional monarchs, dignitaries, and cultural performers from Nigeria, will converge for four days of intensive assembly deliberations, youth symposiums, and cultural banquets.",
@@ -48,7 +58,12 @@
     "author": "UPUAYA Youth Directorate",
     "image": "/update-stem.jpg",
     "featured": false,
-    "tags": ["STEM", "AI", "Youth Empowerment", "Education"],
+    "tags": [
+      "STEM",
+      "AI",
+      "Youth Empowerment",
+      "Education"
+    ],
     "content": [
       "In our continuing commitment to education and technological progress, the UPUAYA Youth Wing has successfully rolled out its hybrid STEM & Artificial Intelligence bootcamp series.",
       "Over 1,200 participants from across Delta State and North America attended intensive virtual coding workshops, learning fundamentals of machine learning models, modern web development, and cloud data architecture.",
