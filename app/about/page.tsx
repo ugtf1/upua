@@ -58,7 +58,7 @@ const executiveTeam = [
   {
     name: "Mr. Efe Shemi",
     role: "National Treasurer",
-    image: "/assets/shemi.jpg",
+    image: "/assets/shemi.png",
   },
   {
     name: "Hon. Oghenetega JohnGold",
