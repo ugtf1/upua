@@ -1,26 +1,146 @@
 [
-  { "id": "k-1", "name": "Owhorode of Olomu Kingdom", "king": "HRM Richard Layeguen Ogbon, (JP), PhD, OON, Ogoni Oghoro I", "order": 1 },
-  { "id": "k-2", "name": "Ovie of Agbon Kingdom", "king": "HRM Mike Omeru Ogurimerime, Ukori I, (CON)", "order": 2 },
-  { "id": "k-3", "name": "Ovie of Umiaghwa Abraka Kingdom", "king": "HRM Air Vice Marshal Lucky Ochuko Ararile (RTD), Avwaeke I", "order": 3 },
-  { "id": "k-4", "name": "Okobaro of Ughievwen Kingdom", "king": "HRM Matthew Ediri Egbi, (JP), FOD, Owawha II", "order": 4 },
-  { "id": "k-5", "name": "Osuivie of Agbarho Kingdom", "king": "HRM Samson Owhe, Ogugu I", "order": 5 },
-  { "id": "k-6", "name": "Ovie of Oghara Kingdom", "king": "HRM Noble Eshemitan Uku Oghara N'Ame, Orefe III", "order": 6 },
-  { "id": "k-7", "name": "Orodje of Okpe Kingdom", "king": "HRM Gen. Felix Mujakperuo, (JP), CFR, Orhue I", "order": 7 },
-  { "id": "k-8", "name": "Ovie of Uvwie Kingdom", "king": "HRM Emmanuel Ekemejewan Sideso, (JP), OON, Abe I", "order": 8 },
-  { "id": "k-9", "name": "Ovie of Ughelli Kingdom", "king": "HRM Wilson Ojakovo, (JP), Oharisi III", "order": 9 },
-  { "id": "k-10", "name": "Ovie of Agbarha-Otor Kingdom", "king": "HRM Richard Oghenevwogaga Ebelle, (JP), Okorefe I", "order": 10 },
-  { "id": "k-11", "name": "Ovie of Eghwu Kingdom", "king": "HRM Jabin Onesa Mukoro, Okpo R'Ufuoma I", "order": 11 },
-  { "id": "k-12", "name": "Okpara-Uku of Orogun Kingdom", "king": "HRM Matthew Iwemife Akpobi, Omoga II", "order": 12 },
-  { "id": "k-13", "name": "Ovie of Idjerhe Kingdom", "king": "HRM Monday Obukowho Whiskey, Udurhie I", "order": 13 },
-  { "id": "k-14", "name": "Ovie of Evwreni Kingdom", "king": "HRM Oghenekevwe Kumane, Eruvwedede III", "order": 14 },
-  { "id": "k-15", "name": "Ovie of Mosogar Kingdom", "king": "HRM Sunday Odiete, Keagborekuzi I", "order": 15 },
-  { "id": "k-16", "name": "Ovie of Ozoro Kingdom", "king": "HRM Anthony Oromoni, Orobome I", "order": 16 },
-  { "id": "k-17", "name": "Ovie of Arhavwarien Kingdom", "king": "HRM Solomon Okukurenne, Aregbovwe I", "order": 17 },
-  { "id": "k-18", "name": "Ovie of Okparabe Kingdom", "king": "HRM Shadrach Owhonjeke, Okparabe I", "order": 18 },
-  { "id": "k-19", "name": "Ovie of Ephron-Oto Kingdom", "king": "HRM D. O. Efeduma, Okolo II", "order": 19 },
-  { "id": "k-20", "name": "Ovie of Udu Kingdom", "king": "HRM E. B. O. Delekpe, Owhorhu I", "order": 20 },
-  { "id": "k-21", "name": "Ovie of Oruarivie-Abraka Kingdom", "king": "HRM Akpomeyoma Majoroh, Ojeta II", "order": 21 },
-  { "id": "k-22", "name": "Ovie of Agbarha-Ame Kingdom", "king": "HRM Orhifi Oghoghovwe, Orhifi I", "order": 22 },
-  { "id": "k-23", "name": "Okpako R'Orere of Okere-Urhobo Kingdom", "king": "HRM Morris Oghenerioborue, Okere I", "order": 23 },
-  { "id": "k-24", "name": "Ovie of Jesse (Idjerhe Clan) Kingdom", "king": "Traditional Council of Elders & Rulers", "order": 24 }
+  {
+    "id": "k-1",
+    "name": "Owhorode of Olomu Kingdom",
+    "king": "HRM Richard Layeguen Ogbon, (JP), PhD, OON, Ogoni Oghoro I",
+    "order": 1
+  },
+  {
+    "id": "k-2",
+    "name": "Ovie of Agbon Kingdom",
+    "king": "HRM Mike Omeru Ogurimerime, Ukori I, (CON)",
+    "order": 2
+  },
+  {
+    "id": "k-3",
+    "name": "Ovie of Umiaghwa Abraka Kingdom",
+    "king": "HRM Air Vice Marshal Lucky Ochuko Ararile (RTD), Avwaeke I",
+    "order": 3
+  },
+  {
+    "id": "k-4",
+    "name": "Okobaro of Ughievwen Kingdom",
+    "king": "HRM Matthew Ediri Egbi, (JP), FOD, Owawha II",
+    "order": 4
+  },
+  {
+    "id": "k-5",
+    "name": "Osuivie of Agbarho Kingdom",
+    "king": "HRM Samson Owhe, Ogugu I",
+    "order": 5
+  },
+  {
+    "id": "k-6",
+    "name": "Ovie of Oghara Kingdom",
+    "king": "HRM Noble Eshemitan Uku Oghara N'Ame, Orefe III",
+    "order": 6
+  },
+  {
+    "id": "k-7",
+    "name": "Orodje of Okpe Kingdom",
+    "king": "HRM Gen. Felix Mujakperuo, (JP), CFR, Orhue I",
+    "order": 7
+  },
+  {
+    "id": "k-8",
+    "name": "Ovie of Uvwie Kingdom",
+    "king": "HRM Emmanuel Ekemejewan Sideso, (JP), OON, Abe I",
+    "order": 8
+  },
+  {
+    "id": "k-9",
+    "name": "Ovie of Ughelli Kingdom",
+    "king": "HRM Wilson Ojakovo, (JP), Oharisi III",
+    "order": 9
+  },
+  {
+    "id": "k-10",
+    "name": "Ovie of Agbarha-Otor Kingdom",
+    "king": "HRM Richard Oghenevwogaga Ebelle, (JP), Okorefe I",
+    "order": 10
+  },
+  {
+    "id": "k-11",
+    "name": "Ovie of Eghwu Kingdom",
+    "king": "HRM Jabin Onesa Mukoro, Okpo R'Ufuoma I",
+    "order": 11
+  },
+  {
+    "id": "k-12",
+    "name": "Okpara-Uku of Orogun Kingdom",
+    "king": "HRM Matthew Iwemife Akpobi, Omoga II",
+    "order": 12
+  },
+  {
+    "id": "k-13",
+    "name": "Ovie of Idjerhe Kingdom",
+    "king": "HRM Monday Obukowho Whiskey, Udurhie I",
+    "order": 13
+  },
+  {
+    "id": "k-14",
+    "name": "Ovie of Evwreni Kingdom",
+    "king": "HRM Oghenekevwe Kumane, Eruvwedede III",
+    "order": 14
+  },
+  {
+    "id": "k-15",
+    "name": "Ovie of Mosogar Kingdom",
+    "king": "HRM Sunday Odiete, Keagborekuzi I",
+    "order": 15
+  },
+  {
+    "id": "k-16",
+    "name": "Ovie of Ozoro Kingdom",
+    "king": "HRM Anthony Oromoni, Orobome I",
+    "order": 16
+  },
+  {
+    "id": "k-17",
+    "name": "Ovie of Arhavwarien Kingdom",
+    "king": "HRM Solomon Okukurenne, Aregbovwe I",
+    "order": 17
+  },
+  {
+    "id": "k-18",
+    "name": "Ovie of Okparabe Kingdom",
+    "king": "HRM Shadrach Owhonjeke, Okparabe I",
+    "order": 18
+  },
+  {
+    "id": "k-19",
+    "name": "Ovie of Ephron-Oto Kingdom",
+    "king": "HRM D. O. Efeduma, Okolo II",
+    "order": 19
+  },
+  {
+    "id": "k-20",
+    "name": "Ovie of Udu Kingdom",
+    "king": "HRM E. B. O. Delekpe, Owhorhu I",
+    "order": 20
+  },
+  {
+    "id": "k-21",
+    "name": "Ovie of Oruarivie-Abraka Kingdom",
+    "king": "HRM Akpomeyoma Majoroh, Ojeta II",
+    "order": 21
+  },
+  {
+    "id": "k-22",
+    "name": "Ovie of Agbarha-Ame Kingdom",
+    "king": "HRM Orhifi Oghoghovwe, Orhifi I",
+    "order": 22
+  },
+  {
+    "id": "k-23",
+    "name": "Okpako R'Orere of Okere-Urhobo Kingdom",
+    "king": "HRM Morris Oghenerioborue, Okere I",
+    "order": 23
+  },
+  {
+    "id": "k-24",
+    "name": "Ovie of Jesse (Idjerhe Clan) Kingdom",
+    "king": "Traditional Council of Elders & Rulers",
+    "order": 24
+  }
 ]

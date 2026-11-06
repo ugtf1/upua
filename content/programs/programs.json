@@ -1,13 +1,45 @@
 {
   "shelterChapters": [
-    { "chapter": "DC, Maryland & Virginia (UPUDMV)", "location": "Washington DC, MD, VA", "image": "/assets/DMV-6.jpg" },
-    { "chapter": "Michigan (UPUMI)", "location": "Detroit, Michigan", "image": "/assets/Michigan-2.jpg" },
-    { "chapter": "Ohio (UPU Ohio)", "location": "Columbus & Cleveland, OH", "image": "/assets/Ohio-1.jpg" },
-    { "chapter": "Southern California (UPUSC)", "location": "Los Angeles & San Diego, CA", "image": "/assets/SolCal-4.jpg" },
-    { "chapter": "Chicagoland (UPUC)", "location": "Chicago, Illinois", "image": "/assets/ChicagoLand-1x.jpg" },
-    { "chapter": "Delaware Valley (UPUDV)", "location": "PA, DE & NJ", "image": "/assets/Delaware-1.jpg" },
-    { "chapter": "Great Kansas City (Waado)", "location": "Kansas City, MO / KS", "image": "/assets/wadoo-1.jpg" },
-    { "chapter": "Minnesota (UPUM)", "location": "Minneapolis & St. Paul, MN", "image": "/assets/Minnesota-3.jpg" }
+    {
+      "chapter": "DC, Maryland & Virginia (UPUDMV)",
+      "location": "Washington DC, MD, VA",
+      "image": "/assets/DMV-6.jpg"
+    },
+    {
+      "chapter": "Michigan (UPUMI)",
+      "location": "Detroit, Michigan",
+      "image": "/assets/Michigan-2.jpg"
+    },
+    {
+      "chapter": "Ohio (UPU Ohio)",
+      "location": "Columbus & Cleveland, OH",
+      "image": "/assets/Ohio-1.jpg"
+    },
+    {
+      "chapter": "Southern California (UPUSC)",
+      "location": "Los Angeles & San Diego, CA",
+      "image": "/assets/SolCal-4.jpg"
+    },
+    {
+      "chapter": "Chicagoland (UPUC)",
+      "location": "Chicago, Illinois",
+      "image": "/assets/ChicagoLand-1x.jpg"
+    },
+    {
+      "chapter": "Delaware Valley (UPUDV)",
+      "location": "PA, DE & NJ",
+      "image": "/assets/Delaware-1.jpg"
+    },
+    {
+      "chapter": "Great Kansas City (Waado)",
+      "location": "Kansas City, MO / KS",
+      "image": "/assets/wadoo-1.jpg"
+    },
+    {
+      "chapter": "Minnesota (UPUM)",
+      "location": "Minneapolis & St. Paul, MN",
+      "image": "/assets/Minnesota-3.jpg"
+    }
   ],
   "programs": [
     {
