@@ -11,7 +11,10 @@ export async function POST(req: NextRequest) {
       body.message ||
       `CMS: Publish website content update (${new Date().toLocaleDateString()})`;
 
-    const result = await ContentService.publishToGitHub(message, clientToken);
+    const customFiles: Array<{ path: string; content: string }> | undefined =
+      Array.isArray(body.files) && body.files.length > 0 ? body.files : undefined;
+
+    const result = await ContentService.publishToGitHub(message, clientToken, customFiles);
 
     if (!result.success) {
       return NextResponse.json(

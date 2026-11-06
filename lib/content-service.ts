@@ -164,28 +164,39 @@ export const ContentService = {
   },
 
   // 🚀 Atomic Publish to GitHub (triggers Vercel + Cloud Run) ──────────────────
-  async publishToGitHub(commitMessage: string, overrideToken?: string) {
-    const stagedFiles: Array<{ path: string; content: string }> = [];
+  async publishToGitHub(
+    commitMessage: string,
+    overrideToken?: string,
+    customFiles?: Array<{ path: string; content: string }>
+  ) {
+    let stagedFiles: Array<{ path: string; content: string }> =
+      customFiles && customFiles.length > 0 ? [...customFiles] : [];
 
-    const contentDir = path.join(process.cwd(), "content");
-    function collectFiles(dir: string, baseDir: string) {
-      if (!fs.existsSync(dir)) return;
-      const entries = fs.readdirSync(dir, { withFileTypes: true });
-      for (const entry of entries) {
-        const full = path.join(dir, entry.name);
-        if (entry.isDirectory()) {
-          collectFiles(full, baseDir);
-        } else if (entry.isFile() && entry.name.endsWith(".json")) {
-          const relPath = path.relative(baseDir, full).replace(/\\/g, "/");
-          stagedFiles.push({
-            path: relPath,
-            content: fs.readFileSync(full, "utf-8"),
-          });
+    if (stagedFiles.length === 0) {
+      const contentDir = path.join(process.cwd(), "content");
+      function collectFiles(dir: string, baseDir: string) {
+        if (!fs.existsSync(dir)) return;
+        const entries = fs.readdirSync(dir, { withFileTypes: true });
+        for (const entry of entries) {
+          const full = path.join(dir, entry.name);
+          if (entry.isDirectory()) {
+            collectFiles(full, baseDir);
+          } else if (entry.isFile() && entry.name.endsWith(".json")) {
+            const relPath = path.relative(baseDir, full).replace(/\\/g, "/");
+            try {
+              stagedFiles.push({
+                path: relPath,
+                content: fs.readFileSync(full, "utf-8"),
+              });
+            } catch (err) {
+              console.warn("[ContentService] Could not read staged file:", full, err);
+            }
+          }
         }
       }
-    }
 
-    collectFiles(contentDir, process.cwd());
+      collectFiles(contentDir, process.cwd());
+    }
 
     return await githubCMS.commitFilesToGitHub(stagedFiles, commitMessage, overrideToken);
   },

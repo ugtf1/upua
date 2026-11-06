@@ -614,11 +614,28 @@ export default function EditorPanel() {
       const headers: Record<string, string> = { "Content-Type": "application/json" };
       if (token) headers["x-github-token"] = token;
 
+      // Bundle all current in-memory content across all tabs
+      // Ensures commit succeeds reliably on Cloud Run, Vercel, and local dev
+      const clientFiles = [
+        { path: "content/pages/home.json", content: JSON.stringify(homeData, null, 2) },
+        { path: "content/pages/about.json", content: JSON.stringify(aboutData, null, 2) },
+        { path: "content/organization/leadership.json", content: JSON.stringify(leadershipList, null, 2) },
+        { path: "content/organization/trustees.json", content: JSON.stringify(trusteesList, null, 2) },
+        { path: "content/organization/executive-committee.json", content: JSON.stringify(executivesList, null, 2) },
+        { path: "content/organization/youth-leadership.json", content: JSON.stringify(youthList, null, 2) },
+        { path: "content/organization/chapters.json", content: JSON.stringify(chaptersList, null, 2) },
+        { path: "content/organization/kingdoms.json", content: JSON.stringify(kingdomsList, null, 2) },
+        { path: "content/programs/programs.json", content: JSON.stringify(programsData, null, 2) },
+        { path: "content/events/events.json", content: JSON.stringify(eventsList, null, 2) },
+        { path: "content/blog/articles.json", content: JSON.stringify(articlesList, null, 2) },
+      ];
+
       const res = await fetch("/api/cms/publish", {
         method: "POST",
         headers,
         body: JSON.stringify({
           commitMessage: publishMessage.trim() || `CMS update by Website Editor on ${new Date().toLocaleDateString()}`,
+          files: clientFiles,
         }),
       });
       const json = await res.json();

@@ -149,9 +149,24 @@ class GitHubCMSService {
       const parentCommitData = await parentCommitRes.json();
       const baseTreeSha = parentCommitData.tree.sha;
 
-      // C. Create blobs for each file
-      const treeItems: Array<{ path: string; mode: string; type: string; sha: string }> = [];
+      // If no files to commit, don't attempt to create an empty tree (GitHub returns 422 Invalid tree info)
+      if (!files || files.length === 0) {
+        return {
+          success: true,
+          commitSha: parentCommitSha,
+        };
+      }
+
+      // C. Create blobs for each file and deduplicate by clean path
+      const pathToBlobSha = new Map<string, string>();
       for (const file of files) {
+        const cleanPath = file.path
+          .replace(/^[\\\/]+/, "")
+          .replace(/^\.\//, "")
+          .replace(/\\/g, "/")
+          .trim();
+        if (!cleanPath) continue;
+
         const isBase64 = file.encoding === "base64";
         const blobRes = await fetch(`${baseUrl}/git/blobs`, {
           method: "POST",
@@ -165,11 +180,23 @@ class GitHubCMSService {
           throw new Error(`Failed to create blob for ${file.path}: ${await blobRes.text()}`);
         }
         const blobData = await blobRes.json();
+        pathToBlobSha.set(cleanPath, blobData.sha);
+      }
+
+      if (pathToBlobSha.size === 0) {
+        return {
+          success: true,
+          commitSha: parentCommitSha,
+        };
+      }
+
+      const treeItems: Array<{ path: string; mode: string; type: string; sha: string }> = [];
+      for (const [cleanPath, sha] of pathToBlobSha.entries()) {
         treeItems.push({
-          path: file.path.replace(/^[\\\/]+/, "").replace(/\\/g, "/"),
+          path: cleanPath,
           mode: "100644",
           type: "blob",
-          sha: blobData.sha,
+          sha,
         });
       }
 
