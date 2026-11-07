@@ -3,7 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Calendar, MapPin, Clock } from "lucide-react";
+import { ArrowRight, Calendar, MapPin, Clock, CreditCard, Ticket, Lock, ShieldCheck } from "lucide-react";
 
 export default function LandingEventsSection() {
   return (
@@ -29,13 +29,9 @@ export default function LandingEventsSection() {
         <div className="events-grid">
           {/* Featured Large Card (Left) */}
           <article className="event-feature-card">
-            <a
-              href="https://campaigns.donately.com/t005/landing?account_subdomain=upuamerica&campaign_id=cmp_3bf0af489f59"
-              target="_blank"
-              rel="noopener noreferrer"
+            <div
               className="event-feature-media"
-              style={{ position: "relative", display: "block", background: "linear-gradient(135deg, #0e3d26 0%, #165637 100%)", cursor: "pointer" }}
-              title="Click on the registration flyer to register on Donately"
+              style={{ position: "relative", display: "block", background: "linear-gradient(135deg, #0e3d26 0%, #165637 100%)" }}
             >
               <Image
                 src="/events/upua-convention-2026-flyer.jpg"
@@ -55,20 +51,58 @@ export default function LandingEventsSection() {
                   bottom: 12,
                   left: "50%",
                   transform: "translateX(-50%)",
-                  background: "rgba(14, 61, 38, 0.95)",
-                  border: "1.5px solid #d4af37",
-                  color: "#f7d070",
-                  padding: "5px 14px",
-                  borderRadius: "9999px",
-                  fontSize: "11px",
-                  fontWeight: 800,
-                  whiteSpace: "nowrap",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+                  display: "flex",
+                  gap: "8px",
+                  flexWrap: "wrap",
+                  justifyContent: "center",
+                  width: "calc(100% - 24px)",
+                  maxWidth: "420px",
+                  zIndex: 2,
                 }}
               >
-                Click Flyer to Register on Donately
+                <Link
+                  href="/events/tickets"
+                  style={{
+                    background: "rgba(14, 61, 38, 0.95)",
+                    border: "1.5px solid #d4af37",
+                    color: "#f7d070",
+                    padding: "6px 14px",
+                    borderRadius: "9999px",
+                    fontSize: "11px",
+                    fontWeight: 800,
+                    whiteSpace: "nowrap",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+                    textDecoration: "none",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "6px",
+                  }}
+                >
+                  <Ticket size={12} /> Buy Gala &amp; Convention Tickets (Stripe)
+                </Link>
+                <a
+                  href="https://campaigns.donately.com/t005/landing?account_subdomain=upuamerica&campaign_id=cmp_3bf0af489f59"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    background: "rgba(0, 0, 0, 0.75)",
+                    border: "1px solid rgba(255,255,255,0.4)",
+                    color: "#ffffff",
+                    padding: "6px 12px",
+                    borderRadius: "9999px",
+                    fontSize: "11px",
+                    fontWeight: 700,
+                    whiteSpace: "nowrap",
+                    textDecoration: "none",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "4px",
+                  }}
+                >
+                  Register on Donately
+                </a>
               </div>
-            </a>
+            </div>
             <div className="event-feature-info">
               <div className="event-meta">
                 <span className="event-tag convention-tag">CONVENTION</span>
@@ -99,10 +133,32 @@ export default function LandingEventsSection() {
                   ✈️ CVG Airport
                 </span>
               </div>
-              <div className="event-feature-footer">
+              <div className="event-feature-footer" style={{ display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" }}>
+                <Link
+                  href="/events/tickets"
+                  className="event-feature-ticket-btn"
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    background: "linear-gradient(135deg, #0e3d26 0%, #165637 100%)",
+                    color: "#ffffff",
+                    border: "1.5px solid #d4af37",
+                    borderRadius: "10px",
+                    padding: "10px 18px",
+                    fontSize: "0.88rem",
+                    fontWeight: 800,
+                    textDecoration: "none",
+                    boxShadow: "0 4px 14px rgba(14, 61, 38, 0.25)",
+                    transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                  }}
+                >
+                  <CreditCard size={16} color="#f7d070" />
+                  <span>Buy Tickets (Secured Stripe Checkout)</span>
+                </Link>
                 <Link href="/events" className="event-feature-link">
-                  <span>View Details &amp; Registration Guidelines</span>
-                  <ArrowRight size={16} />
+                  <span>View Details &amp; Guidelines</span>
+                  <ArrowRight size={15} />
                 </Link>
               </div>
             </div>
@@ -134,8 +190,28 @@ export default function LandingEventsSection() {
                     UPUA Annual National Golf Outing 2026
                   </Link>
                 </h4>
-                <div className="event-stack-location">
+                <div className="event-stack-location" style={{ marginBottom: "8px" }}>
                   <MapPin size={13} /> Sugar Ridge Golf Club, Lawrenceburg, IN
+                </div>
+                <div>
+                  <Link
+                    href="/events/tickets?event=golf"
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "4px",
+                      fontSize: "11.5px",
+                      fontWeight: 800,
+                      color: "#0e3d26",
+                      background: "#e8f4ec",
+                      border: "1px solid #cce2d6",
+                      borderRadius: "6px",
+                      padding: "4px 10px",
+                      textDecoration: "none",
+                    }}
+                  >
+                    <Ticket size={12} /> Buy Golf Pass ($100) &rarr;
+                  </Link>
                 </div>
               </div>
             </article>
@@ -194,8 +270,28 @@ export default function LandingEventsSection() {
                     2026 Convention Brochure Ads &amp; Goodwill Messages
                   </Link>
                 </h4>
-                <div className="event-stack-location">
+                <div className="event-stack-location" style={{ marginBottom: "8px" }}>
                   <MapPin size={13} /> Souvenir Brochure ($100 – $1,000)
+                </div>
+                <div>
+                  <Link
+                    href="/store"
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "4px",
+                      fontSize: "11.5px",
+                      fontWeight: 800,
+                      color: "#b45309",
+                      background: "#fef3c7",
+                      border: "1px solid #fde68a",
+                      borderRadius: "6px",
+                      padding: "4px 10px",
+                      textDecoration: "none",
+                    }}
+                  >
+                    <span>Book Brochure Advert</span> &rarr;
+                  </Link>
                 </div>
               </div>
             </article>

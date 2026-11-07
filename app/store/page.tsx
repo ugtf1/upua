@@ -25,7 +25,12 @@ import {
   Lock,
   Loader2,
   DollarSign,
-  Heart
+  Heart,
+  Users,
+  UserCheck,
+  Ticket,
+  BadgePercent,
+  AlertCircle
 } from "lucide-react";
 
 const DONATELY_CAMPAIGN_URL =
@@ -42,7 +47,23 @@ const storeCategories = [
 
 const defaultCatalogItems: StoreItem[] = seedStoreItems;
 
-function getItemEffectivePrice(item: StoreItem, selectedOption?: string): number {
+export interface StoreAttendee {
+  id: string;
+  name: string;
+  type: "Adult" | "Child";
+  relationship: string;
+  ageGroup?: string;
+  dietary?: string;
+}
+
+function getItemEffectivePrice(
+  item: StoreItem,
+  selectedOption?: string,
+  customPrice?: number
+): number {
+  if (typeof customPrice === "number" && customPrice > 0) {
+    return customPrice;
+  }
   if (selectedOption) {
     const match = selectedOption.match(/\$([0-9,]+(?:\.[0-9]{2})?)/);
     if (match) {
@@ -57,6 +78,10 @@ interface CartEntry {
   item: StoreItem;
   quantity: number;
   selectedOption?: string;
+  attendees?: StoreAttendee[];
+  adultCount?: number;
+  childCount?: number;
+  customPrice?: number;
 }
 
 export default function StorePage() {
@@ -126,6 +151,146 @@ export default function StorePage() {
   const [customAmount, setCustomAmount] = useState("");
   const [customPurpose, setCustomPurpose] = useState("");
 
+  // Attendee / Family Pass Registration Modal State
+  const [attendeeModalOpen, setAttendeeModalOpen] = useState(false);
+  const [attendeeModalItem, setAttendeeModalItem] = useState<StoreItem | null>(null);
+  const [adultsCount, setAdultsCount] = useState<number>(1);
+  const [childrenCount, setChildrenCount] = useState<number>(0);
+  const [attendeeFormError, setAttendeeFormError] = useState("");
+  const [attendeesList, setAttendeesList] = useState<StoreAttendee[]>([
+    {
+      id: "att-adult-1",
+      name: "",
+      type: "Adult",
+      relationship: "Self / Primary",
+      dietary: "Authentic Urhobo Assorted (Oghwo / Banga / Starch)",
+    },
+  ]);
+
+  const openAttendeeModal = (item: StoreItem) => {
+    setAttendeeModalItem(item);
+    setAdultsCount(1);
+    setChildrenCount(0);
+    setAttendeeFormError("");
+    setAttendeesList([
+      {
+        id: "att-adult-1",
+        name: customerName || "",
+        type: "Adult",
+        relationship: "Self / Primary",
+        dietary: "Authentic Urhobo Assorted (Oghwo / Banga / Starch)",
+      },
+    ]);
+    setAttendeeModalOpen(true);
+  };
+
+  const handleUpdateCounts = (newAdults: number, newChildren: number) => {
+    if (newAdults < 1) return;
+    if (newChildren < 0) return;
+
+    setAdultsCount(newAdults);
+    setChildrenCount(newChildren);
+
+    setAttendeesList((prev) => {
+      const currentAdults = prev.filter((a) => a.type === "Adult");
+      const currentChildren = prev.filter((a) => a.type === "Child");
+
+      // Adjust adults
+      let nextAdults = [...currentAdults];
+      if (newAdults > nextAdults.length) {
+        for (let i = nextAdults.length; i < newAdults; i++) {
+          nextAdults.push({
+            id: `att-adult-${i + 1}-${Date.now()}`,
+            name: "",
+            type: "Adult",
+            relationship: i === 1 ? "Wife / Spouse" : "Adult Family / Guest",
+            dietary: "Authentic Urhobo Assorted (Oghwo / Banga / Starch)",
+          });
+        }
+      } else if (newAdults < nextAdults.length) {
+        nextAdults = nextAdults.slice(0, newAdults);
+      }
+
+      // Adjust children
+      let nextChildren = [...currentChildren];
+      if (newChildren > nextChildren.length) {
+        for (let i = nextChildren.length; i < newChildren; i++) {
+          nextChildren.push({
+            id: `att-child-${i + 1}-${Date.now()}`,
+            name: "",
+            type: "Child",
+            relationship: i === 0 ? "Son" : i === 1 ? "Daughter" : "Child (Son / Daughter)",
+            ageGroup: "Child (3-12 yrs)",
+            dietary: "Standard Banquet Plate",
+          });
+        }
+      } else if (newChildren < nextChildren.length) {
+        nextChildren = nextChildren.slice(0, newChildren);
+      }
+
+      return [...nextAdults, ...nextChildren];
+    });
+  };
+
+  const handleApplyPreset = (adults: number, children: number) => {
+    handleUpdateCounts(adults, children);
+  };
+
+  const updateAttendeeField = (
+    index: number,
+    field: keyof StoreAttendee,
+    value: string
+  ) => {
+    setAttendeesList((prev) =>
+      prev.map((att, i) => (i === index ? { ...att, [field]: value } : att))
+    );
+  };
+
+  const computedModalTotal = adultsCount * 150 + childrenCount * 50;
+
+  const handleConfirmAttendeeRegistration = (immediateCheckout: boolean = false) => {
+    if (!attendeeModalItem) return;
+    setAttendeeFormError("");
+
+    // Validate that every attendee has a name
+    const missing = attendeesList.find((a) => !a.name.trim());
+    if (missing) {
+      setAttendeeFormError(
+        `Please enter the full name for every registered individual (${missing.type}: ${missing.relationship || "Guest"}).`
+      );
+      return;
+    }
+
+    const packageSummary = `${adultsCount} Adult${adultsCount > 1 ? "s" : ""}, ${childrenCount} Child${childrenCount !== 1 ? "ren" : ""} ($${computedModalTotal})`;
+
+    const newEntry: CartEntry = {
+      item: {
+        ...attendeeModalItem,
+        price: computedModalTotal,
+      },
+      quantity: 1,
+      selectedOption: packageSummary,
+      adultCount: adultsCount,
+      childCount: childrenCount,
+      customPrice: computedModalTotal,
+      attendees: [...attendeesList],
+    };
+
+    setCart((prev) => [...prev, newEntry]);
+    setAttendeeModalOpen(false);
+
+    if (immediateCheckout) {
+      const primary = attendeesList[0];
+      if (primary && primary.name && !customerName) {
+        setCustomerName(primary.name);
+      }
+      setIsCheckoutOpen(true);
+      setCheckoutStep("shipping");
+    } else {
+      setIsCartOpen(true);
+    }
+  };
+
   // Load cart from localStorage on client mount
   useEffect(() => {
     try {
@@ -193,7 +358,11 @@ export default function StorePage() {
   };
 
   const totalItemsCount = cart.reduce((sum, c) => sum + c.quantity, 0);
-  const subtotal = cart.reduce((sum, c) => sum + getItemEffectivePrice(c.item, c.selectedOption) * c.quantity, 0);
+  const subtotal = cart.reduce(
+    (sum, c) =>
+      sum + getItemEffectivePrice(c.item, c.selectedOption, c.customPrice) * c.quantity,
+    0
+  );
   // Free shipping for convention packages, flat $8 for apparel/items
   const hasPhysicalGoods = cart.some((c) => c.item.category !== "Convention Packages");
   const shippingCost = cart.length === 0 ? 0 : hasPhysicalGoods ? 8 : 0;
@@ -217,16 +386,43 @@ export default function StorePage() {
     setIsProcessing(true);
 
     try {
+      const attendeeDetailsList = cart
+        .filter((c) => c.attendees && c.attendees.length > 0)
+        .flatMap((c) =>
+          c.attendees!.map(
+            (a, idx) =>
+              `${idx + 1}. ${a.name} (${a.type} - ${a.relationship || "Guest"}${a.dietary ? ` | Meal: ${a.dietary}` : ""})`
+          )
+        );
+
+      const itemsDesc = cart
+        .map((c) => {
+          if (c.attendees && c.attendees.length > 0) {
+            return `${c.item.title} [${c.selectedOption}: ${c.attendees.map((a) => a.name).join(", ")}]`;
+          }
+          return `${c.quantity}x ${c.item.title}${c.selectedOption ? ` (${c.selectedOption})` : ""}`;
+        })
+        .join("; ");
+
       const res = await fetch("/api/stripe/create-payment-intent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           amount: orderTotal,
           currency: "usd",
-          category: "merchandise",
+          category: "convention-tickets",
           memberName: customerName,
           email: customerEmail,
-          description: `UPUA Store Order: ${cart.map((c) => `${c.quantity}x ${c.item.title}`).join(", ")}`,
+          phone: customerPhone,
+          description: `UPUA Store: ${itemsDesc}`,
+          metadata: {
+            customerPhone,
+            shippingAddress: `${shippingAddress}, ${shippingCity}, ${shippingState} ${shippingZip}, ${shippingCountry}`,
+            orderNotes,
+            attendeeRoster: attendeeDetailsList.join(" || "),
+            adultCount: cart.reduce((acc, c) => acc + (c.adultCount || 0), 0),
+            childCount: cart.reduce((acc, c) => acc + (c.childCount || 0), 0),
+          },
         }),
       });
 
@@ -561,24 +757,65 @@ export default function StorePage() {
                         ))}
                       </ul>
 
-                      <div className="store-card-actions">
-                        <button
-                          type="button"
-                          className="store-add-btn"
-                          onClick={() => addToCart(item, false)}
-                        >
-                          <ShoppingCart size={15} />
-                          <span>Add to Cart</span>
-                        </button>
-                        <button
-                          type="button"
-                          className="store-buy-btn"
-                          onClick={() => addToCart(item, true)}
-                        >
-                          <span>Buy Now</span>
-                          <ArrowRight size={15} />
-                        </button>
-                      </div>
+                      {item.id === "convention-cultural-gala-ticket" ||
+                      item.title.toLowerCase().includes("gala") ||
+                      item.title.toLowerCase().includes("banquet pass") ? (
+                        <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "8px", paddingTop: "14px", borderTop: "1px solid #f3f4f6" }}>
+                          <div className="store-family-ticket-banner">
+                            <div className="store-family-ticket-pill">
+                              <Users size={12} />
+                              <span>Family &amp; Multi-Attendee Registration</span>
+                            </div>
+                            <p className="store-family-ticket-note">
+                              Register husband, wife, and children with individual names. Adult: $150 &bull; Child (3-12 yrs): $50.
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            className="store-configure-attendees-btn"
+                            onClick={() => openAttendeeModal(item)}
+                          >
+                            <Ticket size={16} />
+                            <span>Configure Attendees &amp; Passes</span>
+                          </button>
+                          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
+                            <button
+                              type="button"
+                              className="store-add-btn"
+                              onClick={() => openAttendeeModal(item)}
+                            >
+                              <Users size={14} />
+                              <span>Custom Group</span>
+                            </button>
+                            <Link
+                              href="/events/tickets"
+                              className="store-buy-btn"
+                              style={{ textDecoration: "none", fontSize: "11px", textAlign: "center" }}
+                            >
+                              <span>E-Ticket Portal &rarr;</span>
+                            </Link>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="store-card-actions">
+                          <button
+                            type="button"
+                            className="store-add-btn"
+                            onClick={() => addToCart(item, false)}
+                          >
+                            <ShoppingCart size={15} />
+                            <span>Add to Cart</span>
+                          </button>
+                          <button
+                            type="button"
+                            className="store-buy-btn"
+                            onClick={() => addToCart(item, true)}
+                          >
+                            <span>Buy Now</span>
+                            <ArrowRight size={15} />
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </article>
                 );
@@ -642,8 +879,31 @@ export default function StorePage() {
                           </span>
                         )}
                         <span className="store-cart-item-price">
-                          ${getItemEffectivePrice(entry.item, entry.selectedOption).toFixed(2)} each
+                          ${getItemEffectivePrice(entry.item, entry.selectedOption, entry.customPrice).toFixed(2)}
+                          {entry.quantity > 1 ? ` (${entry.quantity}x)` : ""}
                         </span>
+
+                        {entry.attendees && entry.attendees.length > 0 && (
+                          <div className="store-cart-attendees-box">
+                            <div className="store-cart-attendees-header">
+                              <Users size={12} />
+                              <span>Registered Individuals ({entry.attendees.length}):</span>
+                            </div>
+                            <div className="store-cart-attendees-list">
+                              {entry.attendees.map((att, aIdx) => (
+                                <div key={aIdx} className="store-cart-attendee-chip">
+                                  <span className={`store-att-type-badge ${att.type.toLowerCase()}`}>
+                                    {att.type}
+                                  </span>
+                                  <span className="store-att-name">{att.name}</span>
+                                  {att.relationship && (
+                                    <span className="store-att-rel">({att.relationship})</span>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                         <div className="store-cart-qty-row">
                           <button
                             type="button"
@@ -781,10 +1041,32 @@ export default function StorePage() {
                         <span>
                           {c.quantity}x {c.item.title} {c.selectedOption ? `(${c.selectedOption})` : ""}
                         </span>
-                        <span>${(getItemEffectivePrice(c.item, c.selectedOption) * c.quantity).toFixed(2)}</span>
+                        <span>${(getItemEffectivePrice(c.item, c.selectedOption, c.customPrice) * c.quantity).toFixed(2)}</span>
                       </div>
                     ))}
                   </div>
+
+                  {confirmedOrder.items.some((c) => c.attendees && c.attendees.length > 0) && (
+                    <div style={{ marginTop: "14px", padding: "12px 14px", background: "#fdfbf7", border: "1.5px solid #ebdcc4", borderRadius: "10px", textAlign: "left" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#8a5807", fontWeight: 800, fontSize: "13px", marginBottom: "8px" }}>
+                        <Users size={15} />
+                        <span>Registered Attendees on this Booking:</span>
+                      </div>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                        {confirmedOrder.items.flatMap((c) => c.attendees || []).map((att, aIdx) => (
+                          <div key={aIdx} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "#ffffff", padding: "6px 10px", borderRadius: "6px", border: "1px solid #ebdcc4" }}>
+                            <div>
+                              <strong style={{ color: "#0e3d26", fontSize: "12.5px" }}>{att.name}</strong>
+                              <span style={{ fontSize: "11px", color: "#667085", marginLeft: "6px" }}>({att.relationship || att.type})</span>
+                            </div>
+                            <span className={`store-att-type-badge ${att.type.toLowerCase()}`}>
+                              {att.type} Pass
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div style={{ padding: "14px 18px", background: "#f0f7f3", borderRadius: "10px", fontSize: "13px", color: "#0e3d26", textAlign: "left", margin: "20px 0" }}>
@@ -825,6 +1107,24 @@ export default function StorePage() {
                 {/* Step 1: Shipping and Contact */}
                 {checkoutStep === "shipping" && (
                   <div className="store-form-fields">
+                    {cart.some((c) => c.attendees && c.attendees.length > 0) && (
+                      <div style={{ padding: "12px 14px", background: "#f8faf9", border: "1px solid #d1ded6", borderRadius: "10px", marginBottom: "16px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "12.5px", fontWeight: 700, color: "#0e3d26" }}>
+                          <Users size={15} />
+                          <span>Pass Holders to be Registered ({cart.reduce((sum, c) => sum + (c.attendees?.length || 0), 0)}):</span>
+                        </div>
+                        <div style={{ marginTop: "8px", fontSize: "11.5px", color: "#374151", display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                          {cart.flatMap((c) => c.attendees || []).map((att, aIdx) => (
+                            <span key={aIdx} style={{ background: "#ffffff", padding: "3px 8px", borderRadius: "6px", border: "1px solid #d1ded6", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                              <span className={`store-att-type-badge ${att.type.toLowerCase()}`}>{att.type}</span>
+                              <strong>{att.name}</strong>
+                              {att.relationship && <span style={{ color: "#6b7280" }}>({att.relationship})</span>}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
                     <div className="store-form-row">
                       <div className="store-input-wrap">
                         <label>Full Name *</label>
@@ -1190,6 +1490,356 @@ export default function StorePage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Attendee / Family Pass Registration Modal */}
+      {attendeeModalOpen && attendeeModalItem && (
+        <div className="upua-modal-backdrop" onClick={() => setAttendeeModalOpen(false)}>
+          <div
+            className="store-attendee-modal"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-label="Register Attendees"
+          >
+            <button
+              type="button"
+              className="upua-modal-close-btn"
+              onClick={() => setAttendeeModalOpen(false)}
+              aria-label="Close"
+            >
+              <X size={20} />
+            </button>
+
+            <div className="store-attendee-modal-inner">
+              <div className="store-attendee-header">
+                <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "6px" }}>
+                  <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "#e8f5ec", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <Users size={20} color="#0e3d26" />
+                  </div>
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: "1.25rem", color: "#0e3d26", fontWeight: 800 }}>
+                      Register Gala &amp; Banquet Attendees
+                    </h3>
+                    <span style={{ fontSize: "12px", color: "#d4af37", fontWeight: 700 }}>
+                      National Cultural Gala &amp; Royal Banquet &bull; Sat, Sept 5, 2026
+                    </span>
+                  </div>
+                </div>
+                <p style={{ margin: "8px 0 0", fontSize: "13px", color: "#475467" }}>
+                  Enter details for <strong>every individual</strong> (husband, wife, children &amp; guests). Full names are recorded for individual banquet badges, seating tags, and official credentials.
+                </p>
+              </div>
+
+              {/* Quick Family Presets */}
+              <div>
+                <label style={{ fontSize: "11.5px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: "#667085" }}>
+                  Quick Family / Party Presets:
+                </label>
+                <div className="store-attendee-preset-wrap">
+                  <button
+                    type="button"
+                    className={`store-attendee-preset-btn ${adultsCount === 1 && childrenCount === 0 ? "active" : ""}`}
+                    onClick={() => handleApplyPreset(1, 0)}
+                  >
+                    👤 1 Adult ($150)
+                  </button>
+                  <button
+                    type="button"
+                    className={`store-attendee-preset-btn ${adultsCount === 2 && childrenCount === 0 ? "active" : ""}`}
+                    onClick={() => handleApplyPreset(2, 0)}
+                  >
+                    👫 Couple ($300)
+                  </button>
+                  <button
+                    type="button"
+                    className={`store-attendee-preset-btn ${adultsCount === 2 && childrenCount === 1 ? "active" : ""}`}
+                    onClick={() => handleApplyPreset(2, 1)}
+                  >
+                    👨‍👩‍👧 Family (2 Adults + 1 Child &bull; $350)
+                  </button>
+                  <button
+                    type="button"
+                    className={`store-attendee-preset-btn ${adultsCount === 2 && childrenCount === 2 ? "active" : ""}`}
+                    onClick={() => handleApplyPreset(2, 2)}
+                  >
+                    👨‍👩‍👧‍👦 Family (2 Adults + 2 Kids &bull; $400)
+                  </button>
+                  <button
+                    type="button"
+                    className={`store-attendee-preset-btn ${adultsCount === 2 && childrenCount === 3 ? "active" : ""}`}
+                    onClick={() => handleApplyPreset(2, 3)}
+                  >
+                    👨‍👩‍👧‍👧 Family (2 Adults + 3 Kids &bull; $450)
+                  </button>
+                </div>
+              </div>
+
+              {/* Quantity Selectors */}
+              <div className="store-counter-grid">
+                <div className="store-counter-card">
+                  <div>
+                    <strong style={{ display: "block", color: "#0e3d26", fontSize: "14.5px" }}>
+                      Adult Passes
+                    </strong>
+                    <span style={{ fontSize: "12px", color: "#0f6a4b", fontWeight: 700 }}>
+                      $150.00 each
+                    </span>
+                  </div>
+                  <div className="store-counter-controls">
+                    <button
+                      type="button"
+                      className="store-counter-btn"
+                      disabled={adultsCount <= 1}
+                      onClick={() => handleUpdateCounts(adultsCount - 1, childrenCount)}
+                      aria-label="Decrease adults"
+                    >
+                      <Minus size={14} />
+                    </button>
+                    <span style={{ fontSize: "15px", fontWeight: 800, minWidth: "24px", textAlign: "center" }}>
+                      {adultsCount}
+                    </span>
+                    <button
+                      type="button"
+                      className="store-counter-btn"
+                      onClick={() => handleUpdateCounts(adultsCount + 1, childrenCount)}
+                      aria-label="Increase adults"
+                    >
+                      <Plus size={14} />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="store-counter-card">
+                  <div>
+                    <strong style={{ display: "block", color: "#0e3d26", fontSize: "14.5px" }}>
+                      Children Passes (Ages 3–12)
+                    </strong>
+                    <span style={{ fontSize: "12px", color: "#d4af37", fontWeight: 700 }}>
+                      $50.00 each (Under 2 Free)
+                    </span>
+                  </div>
+                  <div className="store-counter-controls">
+                    <button
+                      type="button"
+                      className="store-counter-btn"
+                      disabled={childrenCount <= 0}
+                      onClick={() => handleUpdateCounts(adultsCount, childrenCount - 1)}
+                      aria-label="Decrease children"
+                    >
+                      <Minus size={14} />
+                    </button>
+                    <span style={{ fontSize: "15px", fontWeight: 800, minWidth: "24px", textAlign: "center" }}>
+                      {childrenCount}
+                    </span>
+                    <button
+                      type="button"
+                      className="store-counter-btn"
+                      onClick={() => handleUpdateCounts(adultsCount, childrenCount + 1)}
+                      aria-label="Increase children"
+                    >
+                      <Plus size={14} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Attendee Roster Form */}
+              <div style={{ marginBottom: "20px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px", flexWrap: "wrap", gap: "6px" }}>
+                  <h4 style={{ margin: 0, fontSize: "14px", fontWeight: 800, color: "#0e3d26" }}>
+                    Attendee Roster ({attendeesList.length} Individual{attendeesList.length > 1 ? "s" : ""})
+                  </h4>
+                  <span style={{ fontSize: "12px", color: "#667085" }}>
+                    Please enter each individual's full name
+                  </span>
+                </div>
+
+                {attendeeFormError && (
+                  <div className="store-error-banner" style={{ marginBottom: "14px", display: "flex", alignItems: "center", gap: "8px" }}>
+                    <AlertCircle size={16} />
+                    <span>{attendeeFormError}</span>
+                  </div>
+                )}
+
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                  {attendeesList.map((att, idx) => {
+                    const isAdult = att.type === "Adult";
+                    return (
+                      <div
+                        key={att.id || idx}
+                        className={`store-attendee-card ${isAdult ? "adult" : "child"}`}
+                      >
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+                          <span className={`store-attendee-badge ${isAdult ? "adult" : "child"}`}>
+                            {isAdult ? "Adult Pass ($150)" : "Child Pass ($50)"} &bull; #{idx + 1}
+                          </span>
+                          <span style={{ fontSize: "11px", color: "#667085", fontWeight: 600 }}>
+                            {idx === 0
+                              ? "Primary / Purchaser"
+                              : idx === 1 && isAdult
+                              ? "Spouse / Partner"
+                              : att.relationship || att.type}
+                          </span>
+                        </div>
+
+                        <div className="store-form-row">
+                          <div className="store-input-wrap">
+                            <label style={{ fontSize: "12px" }}>
+                              Full Name *
+                            </label>
+                            <input
+                              type="text"
+                              required
+                              placeholder={
+                                idx === 0
+                                  ? "e.g. Chief Oghenemaro Davis"
+                                  : idx === 1 && isAdult
+                                  ? "e.g. Mrs. Ese Davis (Wife)"
+                                  : isAdult
+                                  ? "e.g. Adult Family / Guest Name"
+                                  : "e.g. Tega Davis (Child)"
+                              }
+                              value={att.name}
+                              onChange={(e) => updateAttendeeField(idx, "name", e.target.value)}
+                            />
+                          </div>
+
+                          <div className="store-input-wrap">
+                            <label style={{ fontSize: "12px" }}>
+                              Relationship / Role
+                            </label>
+                            <select
+                              value={att.relationship}
+                              onChange={(e) => updateAttendeeField(idx, "relationship", e.target.value)}
+                            >
+                              {isAdult ? (
+                                <>
+                                  <option value="Self / Primary">Self / Primary Purchaser</option>
+                                  <option value="Wife / Spouse">Wife / Spouse</option>
+                                  <option value="Husband / Spouse">Husband / Spouse</option>
+                                  <option value="Brother">Brother</option>
+                                  <option value="Sister">Sister</option>
+                                  <option value="Adult Son">Adult Son (18+)</option>
+                                  <option value="Adult Daughter">Adult Daughter (18+)</option>
+                                  <option value="Guest">Guest / Supporter</option>
+                                </>
+                              ) : (
+                                <>
+                                  <option value="Son">Son</option>
+                                  <option value="Daughter">Daughter</option>
+                                  <option value="Ward">Ward</option>
+                                  <option value="Niece">Niece</option>
+                                  <option value="Nephew">Nephew</option>
+                                  <option value="Junior Guest">Junior Guest</option>
+                                </>
+                              )}
+                            </select>
+                          </div>
+                        </div>
+
+                        <div className="store-input-wrap" style={{ marginTop: "8px" }}>
+                          <label style={{ fontSize: "11.5px" }}>
+                            {isAdult ? "Banquet 3-Course Dinner Choice" : "Kids Meal Preference"}
+                          </label>
+                          <select
+                            value={att.dietary || ""}
+                            onChange={(e) => updateAttendeeField(idx, "dietary", e.target.value)}
+                          >
+                            {isAdult ? (
+                              <>
+                                <option value="Authentic Urhobo Assorted (Oghwo / Banga / Starch)">
+                                  Authentic Urhobo Assorted (Oghwo / Banga / Starch)
+                                </option>
+                                <option value="Grilled Fish &amp; Roasted Plantain">
+                                  Grilled Fish &amp; Roasted Plantain
+                                </option>
+                                <option value="Vegetarian / Vegan Platter">
+                                  Vegetarian / Vegan Platter
+                                </option>
+                                <option value="Chef's Choice Banquet Platter">
+                                  Chef's Choice Banquet Platter
+                                </option>
+                              </>
+                            ) : (
+                              <>
+                                <option value="Standard Kids Banquet Plate">
+                                  Standard Kids Banquet Plate (Chicken &amp; Rice / Fries)
+                                </option>
+                                <option value="Urhobo Traditional Junior Plate">
+                                  Urhobo Traditional Junior Plate
+                                </option>
+                                <option value="Kids Vegetarian Meal">
+                                  Kids Vegetarian Meal
+                                </option>
+                              </>
+                            )}
+                          </select>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Price Calculation Card */}
+              <div style={{ background: "#f8faf9", border: "1.5px solid #d1ded6", borderRadius: "12px", padding: "16px", marginBottom: "20px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px", color: "#475467", marginBottom: "6px" }}>
+                  <span>Adult Passes ({adultsCount} &times; $150.00)</span>
+                  <strong>${(adultsCount * 150).toFixed(2)}</strong>
+                </div>
+                {childrenCount > 0 && (
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px", color: "#475467", marginBottom: "6px" }}>
+                    <span>Children Passes ({childrenCount} &times; $50.00)</span>
+                    <strong>${(childrenCount * 50).toFixed(2)}</strong>
+                  </div>
+                )}
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "16px", color: "#0e3d26", fontWeight: 800, borderTop: "1px dashed #cfd8d3", paddingTop: "8px", marginTop: "4px" }}>
+                  <span>Total Pass Package:</span>
+                  <span style={{ color: "#0f6a4b", fontSize: "1.25rem" }}>
+                    ${computedModalTotal.toFixed(2)} USD
+                  </span>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                  <button
+                    type="button"
+                    className="store-add-btn"
+                    style={{ padding: "12px 16px", fontSize: "13.5px" }}
+                    onClick={() => handleConfirmAttendeeRegistration(false)}
+                  >
+                    <ShoppingCart size={16} />
+                    <span>Add to Cart</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="store-buy-btn"
+                    style={{ padding: "12px 16px", fontSize: "13.5px" }}
+                    onClick={() => handleConfirmAttendeeRegistration(true)}
+                  >
+                    <CreditCard size={16} />
+                    <span>Instant Checkout &bull; ${computedModalTotal}</span>
+                  </button>
+                </div>
+
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "6px", fontSize: "12px", flexWrap: "wrap", gap: "6px" }}>
+                  <Link
+                    href="/events/tickets"
+                    style={{ color: "#0e3d26", fontWeight: 700, display: "inline-flex", alignItems: "center", gap: "4px" }}
+                  >
+                    <span>Prefer the Full-Screen Luxury E-Ticket Studio?</span>
+                    <ExternalLink size={12} />
+                  </Link>
+                  <span style={{ color: "#667085" }}>
+                    🔒 Secured 256-Bit SSL Stripe Checkout
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}

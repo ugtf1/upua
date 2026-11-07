@@ -9276,3 +9276,237 @@ body.cms-inline-edit-active [data-cms-field]:focus {
   outline: 2px solid #d4af37;
   background: rgba(255, 255, 255, 0.15);
 }
+
+
+/* =====================================================================
+   UPUA STORE - FAMILY & MULTI-ATTENDEE PASS CONFIGURATION
+   ===================================================================== */
+.store-family-ticket-banner {
+  background: linear-gradient(135deg, rgba(14, 61, 38, 0.05) 0%, rgba(212, 175, 55, 0.1) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin: 12px 0 16px;
+}
+.store-family-ticket-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #0e3d26;
+  color: #f7df94;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin-bottom: 6px;
+}
+.store-family-ticket-note {
+  font-size: 12px;
+  color: #374151;
+  margin: 0;
+  line-height: 1.45;
+}
+.store-configure-attendees-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  background: linear-gradient(135deg, #0e3d26 0%, #155734 100%);
+  color: #ffffff;
+  border: 1.5px solid #d4af37;
+  padding: 11px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(14, 61, 38, 0.18);
+  transition: all 0.2s ease;
+  margin-bottom: 8px;
+}
+.store-configure-attendees-btn:hover {
+  background: linear-gradient(135deg, #134e31 0%, #1a6b41 100%);
+  border-color: #f5c037;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(14, 61, 38, 0.25);
+}
+.store-attendee-modal {
+  background: #ffffff;
+  border-radius: 20px;
+  width: 95%;
+  max-width: 760px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.store-attendee-modal-inner {
+  padding: 28px;
+}
+@media (max-width: 640px) {
+  .store-attendee-modal-inner {
+    padding: 18px;
+  }
+}
+.store-attendee-header {
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 18px;
+  margin-bottom: 20px;
+}
+.store-attendee-preset-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0 20px;
+}
+.store-attendee-preset-btn {
+  background: #f8faf9;
+  border: 1px solid #d1ded6;
+  color: #0e3d26;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.store-attendee-preset-btn:hover {
+  background: #eaf3ed;
+  border-color: #0e3d26;
+}
+.store-attendee-preset-btn.active {
+  background: #0e3d26;
+  color: #ffffff;
+  border-color: #0e3d26;
+}
+.store-counter-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+@media (max-width: 600px) {
+  .store-counter-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.store-counter-card {
+  background: #fdfbf7;
+  border: 1.5px solid #ebdcc4;
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.store-counter-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.store-counter-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid #cfd8d3;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #0e3d26;
+  font-weight: 800;
+}
+.store-counter-btn:hover:not(:disabled) {
+  background: #0e3d26;
+  color: #ffffff;
+}
+.store-counter-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.store-attendee-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+.store-attendee-card.adult {
+  border-left: 4px solid #0e3d26;
+}
+.store-attendee-card.child {
+  border-left: 4px solid #d4af37;
+}
+.store-attendee-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.store-attendee-badge.adult {
+  background: #e8f5ec;
+  color: #0e3d26;
+}
+.store-attendee-badge.child {
+  background: #fdf4db;
+  color: #8f6505;
+}
+.store-cart-attendees-box {
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: #f9fbf9;
+  border: 1px solid #e1ebe4;
+  border-radius: 8px;
+}
+.store-cart-attendees-header {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #0e3d26;
+  margin-bottom: 6px;
+}
+.store-cart-attendees-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.store-cart-attendee-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: #374151;
+}
+.store-att-type-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+.store-att-type-badge.adult {
+  background: #d4ebd9;
+  color: #0e3d26;
+}
+.store-att-type-badge.child {
+  background: #faeac3;
+  color: #7a5400;
+}
+.store-att-name {
+  font-weight: 600;
+}
+.store-att-rel {
+  color: #6b7280;
+  font-size: 11px;
+}
