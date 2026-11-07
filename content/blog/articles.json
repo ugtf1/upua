@@ -11,7 +11,12 @@
     "image": "/update-convention.jpg",
     "featured": true,
     "excerpt": "The 33rd Annual UPUA National Convention convenes at DoubleTree by Hilton Hotel in Lawrenceburg, Indiana, bringing together diaspora delegates, traditional rulers, and cultural ambassadors from across North America.",
-    "tags": ["Convention", "National Assembly", "Heritage", "UPU Ohio"],
+    "tags": [
+      "Convention",
+      "National Assembly",
+      "Heritage",
+      "UPU Ohio"
+    ],
     "content": [
       "The National Executive Committee of the Urhobo Progress Union America is pleased to announce that the 33rd Annual National Convention and Cultural Gala will be held from September 3–7, 2026 at the DoubleTree by Hilton Hotel in Lawrenceburg, Indiana.",
       "Hosted by UPU Ohio, this five-day landmark gathering brings together chapter delegates, respected royal fathers from Urhoboland, business executives, youth leaders, and cultural dance troupes.",
@@ -31,7 +36,12 @@
     "image": "/update-outreach.jpg",
     "featured": false,
     "excerpt": "A dedicated volunteer medical team dispatched by UPUA provided free health screenings, medications, optical consultations, and preventive healthcare packages to hundreds of community members in Urhoboland.",
-    "tags": ["Medical Outreach", "Healthcare", "Homeland Development", "Philanthropy"],
+    "tags": [
+      "Medical Outreach",
+      "Healthcare",
+      "Homeland Development",
+      "Philanthropy"
+    ],
     "content": [
       "As part of our commitment to homeland health and wellness, UPUA successfully executed a comprehensive community medical outreach mission during the UPU Worldwide Conference.",
       "Volunteer doctors, nurses, and pharmacists conducted screenings for hypertension, diabetes, and vision impairments, dispensing free medications and distributing over 500 prescription eyeglasses to elderly and low-income residents.",
@@ -50,7 +60,12 @@
     "image": "/update-stem.jpg",
     "featured": false,
     "excerpt": "Over 1,200 secondary and tertiary students across Urhoboland participated in intensive coding, machine learning, and digital innovation bootcamps sponsored by UPU America.",
-    "tags": ["STEM", "AI", "Youth Empowerment", "Education"],
+    "tags": [
+      "STEM",
+      "AI",
+      "Youth Empowerment",
+      "Education"
+    ],
     "content": [
       "Bridging the global digital divide, UPU America and the UPUAYA Youth Wing completed a landmark STEM & Artificial Intelligence training program for youth in Delta State.",
       "Participants engaged in hands-on workshops covering web application development, cloud computing, and real-world AI applications designed to solve local challenges in agriculture, healthcare, and education.",
@@ -69,7 +84,12 @@
     "image": "/update-news.jpg",
     "featured": false,
     "excerpt": "Emergency humanitarian relief packages, food staples, clean water supplies, and bedding delivered to internally displaced families following regional disruptions.",
-    "tags": ["Emergency Relief", "Humanitarian", "IDP Support", "Welfare"],
+    "tags": [
+      "Emergency Relief",
+      "Humanitarian",
+      "IDP Support",
+      "Welfare"
+    ],
     "content": [
       "Demonstrating steadfast brotherhood in times of adversity, UPUA mobilized emergency relief supplies for internally displaced persons (IDPs) in the Okuama community.",
       "Chapter donations across North America funded bulk purchases of rice, grain, medical first-aid kits, blankets, and temporary shelter equipment delivered directly by accredited ground coordinators.",
