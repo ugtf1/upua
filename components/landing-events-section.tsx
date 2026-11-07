@@ -1,11 +1,64 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Calendar, MapPin, Clock, CreditCard, Ticket, Lock, ShieldCheck } from "lucide-react";
 
 export default function LandingEventsSection() {
+  const [eventsList, setEventsList] = useState<any[]>([]);
+  const [headerInfo, setHeaderInfo] = useState({
+    title: "Latest & Upcoming Events",
+    subtitle: "Mark your calendars for our national conventions, youth summits, and cultural gatherings",
+    buttonText: "VIEW ALL EVENTS",
+    buttonUrl: "/events",
+  });
+
+  useEffect(() => {
+    // 1. Fetch events
+    fetch("/api/cms/content?type=collection&name=events/events")
+      .then((r) => r.json())
+      .then((res) => {
+        if (res && res.data && Array.isArray(res.data) && res.data.length > 0) {
+          setEventsList(res.data);
+        }
+      })
+      .catch(() => {});
+
+    // 2. Fetch section header
+    fetch("/api/cms/content?type=page&name=home")
+      .then((r) => r.json())
+      .then((res) => {
+        if (res?.data?.eventsSection) {
+          setHeaderInfo({
+            title: res.data.eventsSection.heading || "Latest & Upcoming Events",
+            subtitle: res.data.eventsSection.subtitle || "Mark your calendars for our national conventions, youth summits, and cultural gatherings",
+            buttonText: res.data.eventsSection.buttonText || "VIEW ALL EVENTS",
+            buttonUrl: res.data.eventsSection.buttonUrl || "/events",
+          });
+        }
+      })
+      .catch(() => {});
+
+    // 3. Listen to live in-memory updates
+    function handleUpdate(e: any) {
+      if (e.detail?.name === "events/events" && Array.isArray(e.detail.data)) {
+        setEventsList(e.detail.data);
+      }
+      if (e.detail?.name === "home" && e.detail.data?.eventsSection) {
+        setHeaderInfo((prev) => ({
+          ...prev,
+          title: e.detail.data.eventsSection.heading || prev.title,
+          subtitle: e.detail.data.eventsSection.subtitle || prev.subtitle,
+        }));
+      }
+    }
+    window.addEventListener("upua_cms_update", handleUpdate);
+    return () => window.removeEventListener("upua_cms_update", handleUpdate);
+  }, []);
+
+  const featuredEvent = eventsList.find((e) => e.featured) || eventsList[0];
+
   return (
     <section className="landing-events-section" id="events" aria-labelledby="events-heading">
       <div className="events-container">
@@ -13,14 +66,19 @@ export default function LandingEventsSection() {
         <div className="events-header">
           <div className="events-header-text">
             <h2 id="events-heading" className="events-title">
-              Latest &amp; Upcoming <span className="heading-gold-accent">Events</span>
+              {headerInfo.title.includes("Events") ? (
+                <>
+                  {headerInfo.title.replace(/Events/, "")}
+                  <span className="heading-gold-accent">Events</span>
+                </>
+              ) : (
+                headerInfo.title
+              )}
             </h2>
-            <p className="events-subtitle">
-              Mark your calendars for our national conventions, youth summits, and cultural gatherings
-            </p>
+            <p className="events-subtitle">{headerInfo.subtitle}</p>
           </div>
-          <Link href="/events" className="events-view-more-btn">
-            <span>VIEW ALL EVENTS</span>
+          <Link href={headerInfo.buttonUrl || "/events"} className="events-view-more-btn">
+            <span>{headerInfo.buttonText || "VIEW ALL EVENTS"}</span>
             <ArrowRight size={18} />
           </Link>
         </div>
@@ -34,16 +92,16 @@ export default function LandingEventsSection() {
               style={{ position: "relative", display: "block", background: "linear-gradient(135deg, #0e3d26 0%, #165637 100%)" }}
             >
               <Image
-                src="/events/upua-convention-2026-flyer.jpg"
-                alt="33rd Annual Urhobo Progress Union America National Convention 2026"
+                src={featuredEvent?.image || featuredEvent?.flyer || "/events/upua-convention-2026-flyer.jpg"}
+                alt={featuredEvent?.title || "33rd Annual Urhobo Progress Union America National Convention 2026"}
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 style={{ objectFit: "contain", padding: "8px" }}
                 className="event-img"
               />
               <div className="event-date-badge">
-                <span className="event-badge-month">SEP</span>
-                <span className="event-badge-day">03</span>
+                <span className="event-badge-month">{featuredEvent?.monthShort || "SEP"}</span>
+                <span className="event-badge-day">{featuredEvent?.day || "03"}</span>
               </div>
               <div
                 style={{
@@ -105,19 +163,21 @@ export default function LandingEventsSection() {
             </div>
             <div className="event-feature-info">
               <div className="event-meta">
-                <span className="event-tag convention-tag">CONVENTION</span>
+                <span className="event-tag convention-tag">{featuredEvent?.category?.toUpperCase() || "CONVENTION"}</span>
                 <span className="event-meta-item">
-                  <MapPin size={14} /> Lawrenceburg, IN
+                  <MapPin size={14} /> {featuredEvent?.location || "Lawrenceburg, IN"}
                 </span>
                 <span className="event-meta-item">
-                  <Clock size={14} /> Sept 3 – 7, 2026
+                  <Clock size={14} /> {featuredEvent?.date || "Sept 3 – 7, 2026"}
                 </span>
               </div>
               <h3 className="event-feature-title">
-                The 33rd Annual UPUA National Convention 2026
+                {featuredEvent?.title || "The 33rd Annual UPUA National Convention 2026"}
               </h3>
               <p className="event-feature-desc">
-                Hosted by UPU Ohio at DoubleTree by Hilton, Lawrenceburg, IN. Theme: <em>&ldquo;Urhobo Global Impact: Leadership, Legacy &amp; Prosperity&rdquo;</em>. Join national delegates, traditional rulers, and youth for 5 days of culture, golf, and symposiums.
+                {featuredEvent?.summary ||
+                  featuredEvent?.description ||
+                  "Hosted by UPU Ohio at DoubleTree by Hilton, Lawrenceburg, IN. Theme: “Urhobo Global Impact: Leadership, Legacy & Prosperity”. Join national delegates, traditional rulers, and youth for 5 days of culture, golf, and symposiums."}
               </p>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", margin: "10px 0 14px" }}>
                 <span style={{ fontSize: "11px", background: "#f0f7f3", color: "#0e3d26", padding: "3px 8px", borderRadius: "6px", fontWeight: 700 }}>
@@ -170,8 +230,8 @@ export default function LandingEventsSection() {
             <article className="event-stack-card">
               <div className="event-stack-media" style={{ background: "#f0f7f3" }}>
                 <Image
-                  src="/events/upua-golf-outing-2026.jpg"
-                  alt="UPUA Annual National Golf Outing 2026"
+                  src={eventsList[1]?.image || eventsList[1]?.flyer || "/events/upua-golf-outing-card.jpg"}
+                  alt={eventsList[1]?.title || "UPUA Annual National Golf Outing 2026"}
                   fill
                   sizes="(max-width: 768px) 140px, 150px"
                   style={{ objectFit: "cover", objectPosition: "center center" }}
@@ -182,16 +242,16 @@ export default function LandingEventsSection() {
                 <div className="event-meta">
                   <span className="event-tag convention-tag">GOLF OUTING</span>
                   <span className="event-meta-item">
-                    <Calendar size={13} /> Fri, Sept 4, 2026
+                    <Calendar size={13} /> {eventsList[1]?.fullDate || "Fri, Sept 4, 2026"}
                   </span>
                 </div>
                 <h4 className="event-stack-title">
                   <Link href="/events">
-                    UPUA Annual National Golf Outing 2026
+                    {eventsList[1]?.title || "UPUA Annual National Golf Outing & Scramble Tournament"}
                   </Link>
                 </h4>
                 <div className="event-stack-location" style={{ marginBottom: "8px" }}>
-                  <MapPin size={13} /> Sugar Ridge Golf Club, Lawrenceburg, IN
+                  <MapPin size={13} /> {eventsList[1]?.location || "Dearborn Country Club, Aurora, IN"}
                 </div>
                 <div>
                   <Link
@@ -216,12 +276,12 @@ export default function LandingEventsSection() {
               </div>
             </article>
 
-            {/* Event 2: Ohio Zoom Fundraiser */}
+            {/* Event 2: Ohio / Gala Night */}
             <article className="event-stack-card">
               <div className="event-stack-media" style={{ background: "#f8faf8" }}>
                 <Image
-                  src="/events/upua-convention-2026-flyer.jpg"
-                  alt="UPU Ohio Chapter Zoom Fundraiser"
+                  src={eventsList[2]?.image || eventsList[2]?.flyer || "/store/national-cultural-gala-pass.jpg"}
+                  alt={eventsList[2]?.title || "Grand Cultural Gala Night & Royal Banquet"}
                   fill
                   sizes="(max-width: 768px) 140px, 150px"
                   style={{ objectFit: "cover", objectPosition: "center center" }}
@@ -230,59 +290,29 @@ export default function LandingEventsSection() {
               </div>
               <div className="event-stack-info">
                 <div className="event-meta">
-                  <span className="event-tag gov-tag" style={{ background: "#e8f0fe", color: "#1a73e8" }}>FUNDRAISER</span>
+                  <span className="event-tag convention-tag" style={{ background: "#fef3c7", color: "#854d0e" }}>ROYAL GALA</span>
                   <span className="event-meta-item">
-                    <Calendar size={13} /> This Saturday, Oct 24
+                    <Calendar size={13} /> {eventsList[2]?.fullDate || "Sat, Sept 5, 2026"}
                   </span>
                 </div>
                 <h4 className="event-stack-title">
                   <Link href="/events">
-                    UPU Ohio Zoom Fundraiser — 2026 Convention Support
-                  </Link>
-                </h4>
-                <div className="event-stack-location">
-                  <MapPin size={13} /> Virtual Zoom Live Assembly
-                </div>
-              </div>
-            </article>
-
-            {/* Event 3: Brochure Advertisements */}
-            <article className="event-stack-card">
-              <div className="event-stack-media" style={{ background: "#f8faf8" }}>
-                <Image
-                  src="/events/upua-convention-2026-brochure.jpg"
-                  alt="Convention Brochure Advertisement & Goodwill Messages"
-                  fill
-                  sizes="(max-width: 768px) 140px, 150px"
-                  style={{ objectFit: "cover", objectPosition: "center center" }}
-                  className="event-img"
-                />
-              </div>
-              <div className="event-stack-info">
-                <div className="event-meta">
-                  <span className="event-tag culture-tag">PUBLICATIONS</span>
-                  <span className="event-meta-item">
-                    <Calendar size={13} /> Book by Aug 15, 2026
-                  </span>
-                </div>
-                <h4 className="event-stack-title">
-                  <Link href="/events">
-                    2026 Convention Brochure Ads &amp; Goodwill Messages
+                    {eventsList[2]?.title || "Grand Cultural Gala Night & Royal Banquet"}
                   </Link>
                 </h4>
                 <div className="event-stack-location" style={{ marginBottom: "8px" }}>
-                  <MapPin size={13} /> Souvenir Brochure ($100 – $1,000)
+                  <MapPin size={13} /> {eventsList[2]?.location || "DoubleTree Ballroom, Lawrenceburg, IN"}
                 </div>
                 <div>
                   <Link
-                    href="/store"
+                    href="/events/tickets"
                     style={{
                       display: "inline-flex",
                       alignItems: "center",
                       gap: "4px",
                       fontSize: "11.5px",
                       fontWeight: 800,
-                      color: "#b45309",
+                      color: "#854d0e",
                       background: "#fef3c7",
                       border: "1px solid #fde68a",
                       borderRadius: "6px",
@@ -290,21 +320,21 @@ export default function LandingEventsSection() {
                       textDecoration: "none",
                     }}
                   >
-                    <span>Book Brochure Advert</span> &rarr;
+                    <Ticket size={12} /> Gala Passes ($150 / $50) &rarr;
                   </Link>
                 </div>
               </div>
             </article>
 
-            {/* Event 4: Youth Leadership Symposium */}
+            {/* Event 3: Youth Leadership Symposium */}
             <article className="event-stack-card">
               <div className="event-stack-media" style={{ background: "#f8faf8" }}>
                 <Image
-                  src="/assets/youth-kevwe.jpg"
-                  alt="UPUAYA National Youth Leadership & Career Symposium"
+                  src={eventsList[3]?.image || eventsList[3]?.flyer || "/update-stem.jpg"}
+                  alt={eventsList[3]?.title || "UPUAYA National Youth Leadership & STEM Mentorship"}
                   fill
                   sizes="(max-width: 768px) 140px, 150px"
-                  style={{ objectFit: "cover", objectPosition: "top 20% center" }}
+                  style={{ objectFit: "cover", objectPosition: "center center" }}
                   className="event-img"
                 />
               </div>
@@ -312,16 +342,16 @@ export default function LandingEventsSection() {
                 <div className="event-meta">
                   <span className="event-tag youth-tag">YOUTH WING</span>
                   <span className="event-meta-item">
-                    <Calendar size={13} /> Oct 18 – 19, 2026
+                    <Calendar size={13} /> {eventsList[3]?.fullDate || "Fri, Sept 4, 2026"}
                   </span>
                 </div>
                 <h4 className="event-stack-title">
                   <Link href="/events">
-                    UPUAYA National Youth Leadership &amp; Career Symposium
+                    {eventsList[3]?.title || "UPUAYA North America Youth & STEM Mentorship Congress"}
                   </Link>
                 </h4>
                 <div className="event-stack-location">
-                  <MapPin size={13} /> Houston, TX &amp; Virtual Stream
+                  <MapPin size={13} /> {eventsList[3]?.location || "DoubleTree Conference Center, IN"}
                 </div>
               </div>
             </article>

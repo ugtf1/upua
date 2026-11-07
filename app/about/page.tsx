@@ -176,8 +176,21 @@ const royalKingdoms = [
 
 export default function AboutPage() {
   const liveLeaders = ContentService.getCollection("organization/leadership", topLeaders);
+  const liveExecutives = ContentService.getCollection("organization/executive-committee", executiveTeam);
+  const liveYouth = ContentService.getCollection("organization/youth-leadership", youthWingExco);
   const liveChapters = ContentService.getCollection("organization/chapters", chapters);
   const liveKingdoms = ContentService.getCollection("organization/kingdoms", royalKingdoms);
+  const liveAbout = ContentService.getPage<any>("about", null);
+
+  const historyHead = liveAbout?.history?.heading || "The Umbrella Organization of the Urhobo Diaspora";
+  const historyBody = liveAbout?.history?.body || [
+    "Urhobo Progress Union America (UPUA) is the umbrella organization of all Urhobo organizations and people resident in North America. In December 2003, it was formally recognized and accredited at the annual Urhobo Day Congress held in the auditorium of the Petroleum Training Institute (PTI), Effurun, Delta State, Nigeria, by the Urhobo Progress Union (UPU) Worldwide — the mother organization of all Urhobo people globally.",
+    "This historic event occurred during the administration of former President Dr. Austin Atiyota (2003–2007). Urhobo Progress Union America membership is open to all Urhobo people by birth, marriage, or by adoption of Urhobo ethnicity and culture.",
+    "The day-to-day administration of the association is the responsibility of the Executive Committee (EC) headed by the National President, elected at the annual convention for a 2-year term. The policy-making body is the Board of Trustees (BOT), comprising the Presidents of the various UPUA local chapters across North America."
+  ];
+
+  const missionText = liveAbout?.missionVision?.mission || "To unite people of Urhobo descent and others who identify with the Urhobo people and culture, both abroad and at home, for the promotion of human development and Urhobo culture and ideals. Our nonprofit association promotes charitable, scientific, literary, and educational projects in North America and Nigeria.";
+  const visionText = liveAbout?.missionVision?.vision || "UPU America members value our common ancestry and cultural heritage. Our organization believes in the critical importance of passing on to our children the positive aspects of Urhobo culture and values. As a nonprofit organization, we recognize the importance of giving back to our host communities, Urhoboland, and North America in general.";
 
   return (
     <div className="figma-landing-page">
@@ -199,7 +212,7 @@ export default function AboutPage() {
             About Urhobo Progress Union <span className="heading-gold-accent">America</span>
           </h1>
           <p className="page-hero-sub">
-            Developing Urhobo Culture and Ideals · “Okugbe, Egba, Voyan Robaro” (Unity, Strength and Progress)
+            {liveAbout?.hero?.subheading || "Developing Urhobo Culture and Ideals · “Okugbe, Egba, Voyan Robaro” (Unity, Strength and Progress)"}
           </p>
         </div>
       </section>
@@ -210,18 +223,21 @@ export default function AboutPage() {
           <div className="about-mission-block">
             <span className="about-label">Historical Foundation</span>
             <h2>
-              The Umbrella Organization of the Urhobo <span className="heading-gold-accent">Diaspora</span>
+              {historyHead.includes("Diaspora") ? (
+                <>
+                  {historyHead.replace(/Diaspora/, "")}
+                  <span className="heading-gold-accent">Diaspora</span>
+                </>
+              ) : (
+                historyHead
+              )}
             </h2>
             <span className="mission-rule" />
-            <p>
-              <strong>Urhobo Progress Union America (UPUA)</strong> is the umbrella organization of all Urhobo organizations and people resident in North America. In December 2003, it was formally recognized and accredited at the annual Urhobo Day Congress held in the auditorium of the Petroleum Training Institute (PTI), Effurun, Delta State, Nigeria, by the <strong>Urhobo Progress Union (UPU) Worldwide</strong> — the mother organization of all Urhobo people globally.
-            </p>
-            <p>
-              This historic event occurred during the administration of former President <strong>Dr. Austin Atiyota (2003–2007)</strong>. Urhobo Progress Union America membership is open to all Urhobo people by birth, marriage, or by adoption of Urhobo ethnicity and culture.
-            </p>
-            <p>
-              The day-to-day administration of the association is the responsibility of the Executive Committee (EC) headed by the National President, elected at the annual convention for a 2-year term. The policy-making body is the <strong>Board of Trustees (BOT)</strong>, comprising the Presidents of the various UPUA local chapters across North America.
-            </p>
+            {Array.isArray(historyBody) ? (
+              historyBody.map((p: string, idx: number) => <p key={idx}>{p}</p>)
+            ) : (
+              <p>{historyBody}</p>
+            )}
           </div>
           <div className="about-vision-cards">
             <div className="about-stat-card">
@@ -255,16 +271,12 @@ export default function AboutPage() {
           </div>
           <div className="about-values-grid about-mission-vision-grid">
             <div className="about-value-card" style={{ borderLeft: "4px solid #137459" }}>
-              <h3>Our Mission</h3>
-              <p>
-                To unite people of Urhobo descent and others who identify with the Urhobo people and culture, both abroad and at home, for the promotion of human development and Urhobo culture and ideals. Our nonprofit association promotes charitable, scientific, literary, and educational projects in North America and Nigeria.
-              </p>
+              <h3>{liveAbout?.missionVision?.missionHeading || "Our Mission"}</h3>
+              <p>{missionText}</p>
             </div>
             <div className="about-value-card" style={{ borderLeft: "4px solid #e7c326" }}>
-              <h3>Our Vision</h3>
-              <p>
-                UPU America members value our common ancestry and cultural heritage. Our organization believes in the critical importance of passing on to our children the positive aspects of Urhobo culture and values. As a nonprofit organization, we recognize the importance of giving back to our host communities, Urhoboland, and North America in general.
-              </p>
+              <h3>{liveAbout?.missionVision?.visionHeading || "Our Vision"}</h3>
+              <p>{visionText}</p>
             </div>
           </div>
         </div>
@@ -331,7 +343,7 @@ export default function AboutPage() {
           </div>
 
           <div className="ec-grid" style={{ marginBottom: "56px" }}>
-            {executiveTeam.map((exec) => (
+            {liveExecutives.map((exec: any) => (
               <article className="ec-officer-card" key={exec.name}>
                 <div className="ec-card-media">
                   <Image
@@ -359,7 +371,7 @@ export default function AboutPage() {
           </div>
 
           <div className="ec-grid" style={{ marginBottom: "56px" }}>
-            {youthWingExco.map((youth) => (
+            {liveYouth.map((youth: any) => (
               <article className="ec-officer-card" key={youth.name}>
                 <div className="ec-card-media">
                   <Image

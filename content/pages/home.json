@@ -1,13 +1,14 @@
 {
   "hero": {
-    "badge": "Okugbe · Egba · Voyan Robaro",
-    "heading": "Urhobo Progress Union America",
+    "badge": "UPU America",
+    "motto": "Okugbe · Egba · Voyan Robaro",
+    "heading": "Urhobo Progressive Union America.",
     "subheading": "Unity. Strength. Progress.",
-    "description": "The umbrella body of all Urhobo sons and daughters across North America — advocating for cultural pride, community development, and homeland progress.",
-    "ctaPrimaryLabel": "Explore Our Works",
-    "ctaPrimaryUrl": "#work",
-    "ctaSecondaryLabel": "Join UPUA",
-    "ctaSecondaryUrl": "/portal",
+    "description": "Promoting the Urhobo culture, supporting community development, and fostering a strong network of members across the United States.",
+    "ctaPrimaryLabel": "Become a member",
+    "ctaPrimaryUrl": "#join-community",
+    "ctaSecondaryLabel": "Explore programs",
+    "ctaSecondaryUrl": "#work",
     "carouselImages": [
       "/upuahero.png",
       "/assets/Congress-1.jpg",
@@ -17,66 +18,87 @@
   },
   "stats": [
     {
-      "label": "Years of Service",
-      "value": "32+",
+      "label": "Years of service",
+      "value": "30+",
       "subtext": "Continuous diaspora service"
     },
     {
-      "label": "Active Chapters",
-      "value": "20",
+      "label": "Active chapters",
+      "value": "23",
       "subtext": "Across USA & Canada"
     },
     {
-      "label": "Community Impact",
-      "value": "15k+",
-      "subtext": "Families assisted annually"
-    },
-    {
-      "label": "Active Programs",
-      "value": "6",
+      "label": "Core program areas",
+      "value": "4",
       "subtext": "Signature civic initiatives"
     }
   ],
+  "mission": {
+    "eyebrow": "Why UPUA exists",
+    "heading": "Community work moves faster when people, records, and resources stay aligned.",
+    "description": "Across the Urhobo diaspora, families can feel separated from the support systems that keep culture, service, and opportunity moving. UPUA creates a reliable structure for chapters to coordinate outreach, share updates, and invest in the next generation.",
+    "bulletPoints": [
+      "Chapter-led collaboration across America",
+      "Practical support for education and health initiatives",
+      "Cultural programs that keep identity visible"
+    ]
+  },
   "marquee": {
     "title": "Women in Shelter Initiative",
     "subtitle": "Across North America, UPU chapters are giving back, donating time, resources and love to women's shelters in their communities."
   },
-  "mission": {
-    "eyebrow": "Why UPUA exists",
-    "heading": "Uniting Urhobo people across North America and advancing our ancestral homeland.",
-    "description": "For over three decades, Urhobo Progress Union America has stood as the unified voice and civic engine for tens of thousands of Urhobo immigrants, families, and professionals across the United States and Canada",
-    "bulletPoints": [
-      "Fostering deep cultural heritage and Urhobo language fluency across generations.",
-      "Providing immediate humanitarian relief and healthcare missions to Urhoboland.",
-      "Empowering youth through tech mentorship, scholarships, and professional networking.",
-      "Promoting civic responsibility, brotherhood, and active philanthropy in our North American cities."
-    ]
-  },
   "work": {
-    "badge": "Our Mission",
-    "heading": "What We Do",
-    "description": "UPUA leads transformative programs across North America, serving as the strategic voice for Urhobo people in the diaspora."
+    "badge": "Our work",
+    "heading": "Programs built for a living association, not a static directory.",
+    "description": "Coordinated health support, scholarships, community relief, and cultural programs across North America.",
+    "linkText": "View recent updates",
+    "linkUrl": "#updates",
+    "items": [
+      {
+        "title": "Medical Outreach",
+        "summary": "Coordinated health support and supplies for communities in need.",
+        "image": "/update-outreach.jpg"
+      },
+      {
+        "title": "Scholarships",
+        "summary": "Student support that opens paths into leadership, STEM, and service.",
+        "image": "/update-stem.jpg"
+      },
+      {
+        "title": "Community Support",
+        "summary": "Relief programs, chapter giving, and urgent response for families.",
+        "image": "/update-news.jpg"
+      },
+      {
+        "title": "Cultural Programs",
+        "summary": "Events and conventions that keep Urhobo heritage active and shared.",
+        "image": "/update-convention.jpg"
+      }
+    ]
   },
   "leadershipSection": {
     "badge": "Union Governance",
     "heading": "Leaders who keep the union moving",
-    "description": "Dedicated trustees, national executives, and chapter leaders committed to transparency, servant leadership, and the advancement of the Urhobo nation."
+    "subtitle": "Guiding UPU America with integrity, cultural pride, and 21st-century administrative excellence."
   },
   "updatesSection": {
     "badge": "News & Stories",
     "heading": "Updates from UPU America",
-    "description": "Stay informed on national initiatives, humanitarian relief missions, and community milestones from our chapters."
+    "subtitle": "News and blog posts on UPU America and our programs",
+    "buttonText": "VIEW MORE UPDATE",
+    "buttonUrl": "/blog"
   },
   "eventsSection": {
     "badge": "Convocations & Galas",
-    "heading": "Upcoming Events & Convention",
-    "description": "Connect with fellow Urhobo people at our annual national conventions, leadership symposiums, and regional cultural celebrations."
+    "heading": "Latest & Upcoming Events",
+    "subtitle": "Mark your calendars for our national conventions, youth summits, and cultural gatherings",
+    "buttonText": "VIEW ALL EVENTS",
+    "buttonUrl": "/events"
   },
   "worldwideCommunity": {
-    "heading": "Global Urhobo Community",
-    "description": "From Alaska to Florida, California to New York, UPUA connects Urhobo people in every corner of North America to our ancestral roots in Delta State, Nigeria.",
-    "newsletterTitle": "Stay Connected with UPUA",
-    "newsletterDescription": "Receive official announcements, convention registration alerts, and quarterly executive updates directly to your inbox.",
-    "newsletterButtonText": "Subscribe to Updates"
+    "heading": "A worldwide community with local impact.",
+    "description": "Join thousands of Urhobo diaspora members actively contributing to community development, youth mentorship, and cultural preservation.",
+    "newsletterTitle": "Stay updated with UPUA",
+    "newsletterDescription": "Subscribe to receive convention updates, chapter highlights, and community news."
   }
 }

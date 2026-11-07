@@ -118,16 +118,45 @@ export default function PortalExperience() {
 
 function LandingPage({ onLogin }: { onLogin: (role: Role) => void }) {
   const [donationOpen, setDonationOpen] = useState(false);
+  const [homeData, setHomeData] = useState<any>(null);
+
+  useEffect(() => {
+    // Check localStorage first for instant rendering
+    try {
+      const cached = localStorage.getItem("upua_cms_page_home");
+      if (cached) setHomeData(JSON.parse(cached));
+    } catch {}
+
+    fetch("/api/cms/content?type=page&name=home")
+      .then((r) => r.json())
+      .then((res) => {
+        if (res?.data) {
+          setHomeData(res.data);
+          try {
+            localStorage.setItem("upua_cms_page_home", JSON.stringify(res.data));
+          } catch {}
+        }
+      })
+      .catch(() => {});
+
+    function handleCmsUpdate(e: any) {
+      if (e.detail?.name === "home" && e.detail?.data) {
+        setHomeData(e.detail.data);
+      }
+    }
+    window.addEventListener("upua_cms_update", handleCmsUpdate);
+    return () => window.removeEventListener("upua_cms_update", handleCmsUpdate);
+  }, []);
 
   return (
     <section className="figma-landing-page" aria-label="UPUA landing page">
       <LandingHeader onLogin={onLogin} onOpenDonation={() => setDonationOpen(true)} />
-      <LandingHero />
-      <ProblemSolution />
+      <LandingHero content={homeData?.hero} stats={homeData?.stats} />
+      <ProblemSolution content={homeData?.mission} />
       {/* Framer-style Glass Sliding Gallery right after Why UPUA exists */}
       <InfiniteGalleryMarquee />
       {/* Our Work Section */}
-      <LandingWork />
+      <LandingWork content={homeData?.work} />
       {/* Leaders who keep the union moving */}
       <LeadersShowcase />
       {/* Board of Trustees Section */}
@@ -140,7 +169,7 @@ function LandingPage({ onLogin }: { onLogin: (role: Role) => void }) {
       <LandingUpdatesSection />
       {/* Latest Events */}
       <LandingEventsSection />
-      <WorldwideLandingFooter />
+      <WorldwideLandingFooter content={homeData?.worldwideCommunity} />
       <DonationModal isOpen={donationOpen} onClose={() => setDonationOpen(false)} />
     </section>
   );
@@ -234,7 +263,25 @@ function LandingHeader({
   );
 }
 
-function LandingHero() {
+function LandingHero({ content, stats }: { content?: any; stats?: any[] }) {
+  const eyebrow = content?.badge || content?.eyebrow || "UPU America";
+  const heading = content?.heading || "Urhobo Progressive Union America.";
+  const description =
+    content?.description ||
+    "Promoting the Urhobo culture, supporting community development, and fostering a strong network of members across the United States.";
+  const ctaPrimaryLabel = content?.ctaPrimaryLabel || "Become a member";
+  const ctaPrimaryUrl = content?.ctaPrimaryUrl || "#join-community";
+  const ctaSecondaryLabel = content?.ctaSecondaryLabel || "Explore programs";
+  const ctaSecondaryUrl = content?.ctaSecondaryUrl || "#work";
+
+  const statsList = Array.isArray(stats) && stats.length > 0
+    ? stats
+    : [
+        { value: "30+", label: "Years of service" },
+        { value: "23", label: "Active chapters" },
+        { value: "4", label: "Core program areas" },
+      ];
+
   return (
     <section className="association-hero" id="home" aria-labelledby="landing-title">
       {/* Blended Carousel Slider on Right */}
@@ -242,49 +289,81 @@ function LandingHero() {
 
       {/* Hero Writeup on Left */}
       <div className="association-hero-content">
-        <p className="association-eyebrow">UPU America</p>
+        <p className="association-eyebrow">{eyebrow}</p>
         <h1 id="landing-title">
-          Urhobo Progressive Union <span className="heading-gold-accent">America.</span>
+          {heading.includes("America") ? (
+            <>
+              {heading.replace(/America\.?/, "")}
+              <span className="heading-gold-accent">America.</span>
+            </>
+          ) : (
+            heading
+          )}
         </h1>
-        <p>
-          Promoting the Urhobo culture, supporting community development, and fostering a strong network of members across the United States.
-        </p>
+        <p>{description}</p>
         <div className="association-hero-actions">
-          <a className="association-primary-link" href="#join-community">Become a member <ArrowRight size={17} /></a>
-          <a className="association-secondary-link" href="#work">Explore programs</a>
+          <a className="association-primary-link" href={ctaPrimaryUrl}>
+            {ctaPrimaryLabel} <ArrowRight size={17} />
+          </a>
+          <a className="association-secondary-link" href={ctaSecondaryUrl}>
+            {ctaSecondaryLabel}
+          </a>
         </div>
       </div>
 
       {/* Hero Stats Panel */}
       <div className="association-hero-panel" aria-label="UPUA impact highlights">
-        <article><strong>30+</strong><span>Years of service</span></article>
-        <article><strong>23</strong><span>Active chapters</span></article>
-        <article><strong>4</strong><span>Core program areas</span></article>
+        {statsList.map((st, i) => (
+          <article key={st.label || i}>
+            <strong>{st.value}</strong>
+            <span>{st.label}</span>
+          </article>
+        ))}
       </div>
     </section>
   );
 }
 
-function ProblemSolution() {
+function ProblemSolution({ content }: { content?: any }) {
+  const eyebrow = content?.eyebrow || "Why UPUA exists";
+  const heading =
+    content?.heading ||
+    "Community work moves faster when people, records, and resources stay aligned.";
+  const description =
+    content?.description ||
+    "Across the Urhobo diaspora, families can feel separated from the support systems that keep culture, service, and opportunity moving. UPUA creates a reliable structure for chapters to coordinate outreach, share updates, and invest in the next generation.";
+  const bulletPoints: string[] =
+    Array.isArray(content?.bulletPoints) && content.bulletPoints.length > 0
+      ? content.bulletPoints
+      : [
+          "Chapter-led collaboration across America",
+          "Practical support for education and health initiatives",
+          "Cultural programs that keep identity visible",
+        ];
+
   return (
     <section className="association-mission" id="problem" aria-labelledby="problem-title">
       <div>
-        <p className="association-eyebrow">Why UPUA exists</p>
+        <p className="association-eyebrow">{eyebrow}</p>
         <h2 id="problem-title">
-          Community work moves faster when people, records, and resources <span className="heading-gold-accent">stay aligned.</span>
+          {heading.includes("stay aligned") ? (
+            <>
+              {heading.replace(/stay aligned\.?/, "")}
+              <span className="heading-gold-accent">stay aligned.</span>
+            </>
+          ) : (
+            heading
+          )}
         </h2>
       </div>
       <div className="association-mission-copy">
-        <p>
-          Across the Urhobo diaspora, families can feel separated from the support
-          systems that keep culture, service, and opportunity moving. UPUA creates
-          a reliable structure for chapters to coordinate outreach, share updates,
-          and invest in the next generation.
-        </p>
+        <p>{description}</p>
         <ul>
-          <li><CheckCircle2 size={18} /> Chapter-led collaboration across America</li>
-          <li><CheckCircle2 size={18} /> Practical support for education and health initiatives</li>
-          <li><CheckCircle2 size={18} /> Cultural programs that keep identity visible</li>
+          {bulletPoints.map((bp, i) => (
+            <li key={i}>
+              <CheckCircle2 size={18} /> {bp}
+            </li>
+          ))}
         </ul>
       </div>
     </section>
@@ -305,27 +384,48 @@ const associationProgramItems = [
   { title: "Cultural Programs", summary: "Events and conventions that keep Urhobo heritage active and shared.", icon: CalendarCheck, image: "/update-convention.jpg" }
 ];
 
-function LandingWork() {
+function LandingWork({ content }: { content?: any }) {
+  const eyebrow = content?.badge || "Our work";
+  const heading =
+    content?.heading ||
+    "Programs built for a living association, not a static directory.";
+  const linkText = content?.linkText || "View recent updates";
+  const linkUrl = content?.linkUrl || "#updates";
+
+  const items =
+    Array.isArray(content?.items) && content.items.length > 0
+      ? content.items
+      : associationProgramItems;
+
+  const defaultIcons = [Heart, Sparkles, Users, CalendarCheck];
+
   return (
     <section className="association-work-section" id="work" aria-labelledby="work-title">
       <div className="association-section-heading">
         <div className="association-section-title-wrap">
-          <p className="association-eyebrow">Our work</p>
+          <p className="association-eyebrow">{eyebrow}</p>
           <h2 id="work-title">
-            Programs built for a living association, not a <span className="heading-gold-accent">static directory.</span>
+            {heading.includes("static directory") ? (
+              <>
+                {heading.replace(/static directory\.?/, "")}
+                <span className="heading-gold-accent">static directory.</span>
+              </>
+            ) : (
+              heading
+            )}
           </h2>
         </div>
-        <a className="association-text-link" href="#updates">
-          <span>View recent updates</span> <ArrowRight size={16} />
+        <a className="association-text-link" href={linkUrl}>
+          <span>{linkText}</span> <ArrowRight size={16} />
         </a>
       </div>
       <div className="association-work-grid">
-        {associationProgramItems.map((item) => {
-          const Icon = item.icon;
+        {items.map((item: any, idx: number) => {
+          const Icon = defaultIcons[idx % defaultIcons.length];
           return (
-            <article className="association-work-card" key={item.title}>
+            <article className="association-work-card" key={item.title || idx}>
               <div className="association-work-image">
-                <Image src={item.image} alt="" fill sizes="(max-width: 760px) 100vw, 25vw" />
+                <Image src={item.image || "/update-outreach.jpg"} alt={item.title || "UPUA Program"} fill sizes="(max-width: 760px) 100vw, 25vw" />
               </div>
               <div className="association-work-copy">
                 <span><Icon size={20} /></span>
@@ -367,8 +467,16 @@ function LandingBlog() {
   );
 }
 
-function WorldwideLandingFooter() {
+function WorldwideLandingFooter({ content }: { content?: any }) {
   const navItems = ["Home", "About", "Chapters", "Programs", "Blog", "Gallery"];
+  const heading = content?.heading || "Urhobo Progress Union is worldwide.";
+  const description =
+    content?.description ||
+    "UPUA is part of a broader global community, with members working together across cities, chapters, and generations.";
+  const newsletterTitle = content?.newsletterTitle || "Join the Community";
+  const newsletterDescription =
+    content?.newsletterDescription ||
+    "Sign up for the very best tutorials and the latest news.";
 
   return (
     <section className="upua-world-footer" aria-label="UPUA worldwide community and footer">
@@ -376,9 +484,16 @@ function WorldwideLandingFooter() {
         <div className="association-world-heading">
           <p className="association-eyebrow">Worldwide network</p>
           <h2>
-            Urhobo Progress Union <span className="heading-gold-accent">is worldwide.</span>
+            {heading.includes("is worldwide") ? (
+              <>
+                {heading.replace(/is worldwide\.?/, "")}
+                <span className="heading-gold-accent">is worldwide.</span>
+              </>
+            ) : (
+              heading
+            )}
           </h2>
-          <p>UPUA is part of a broader global community, with members working together across cities, chapters, and generations.</p>
+          <p>{description}</p>
         </div>
         <div className="upua-map-card">
           <Image className="world-map-art" src="/world-map.svg" alt="Dotted world map showing UPU America community locations" width={980} height={336} unoptimized />
@@ -394,8 +509,17 @@ function WorldwideLandingFooter() {
         </div>
         <div className="join-community-card" id="join-community">
           <div>
-            <h3>Join the <span className="heading-gold-accent">Community</span></h3>
-            <p>Sign up for the very best tutorials and the latest news.</p>
+            <h3>
+              {newsletterTitle.includes("Community") ? (
+                <>
+                  {newsletterTitle.replace(/Community/, "")}
+                  <span className="heading-gold-accent">Community</span>
+                </>
+              ) : (
+                newsletterTitle
+              )}
+            </h3>
+            <p>{newsletterDescription}</p>
           </div>
           <form>
             <div className="join-input-row">

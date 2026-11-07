@@ -2,6 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { ContentService } from "@/lib/content-service";
 import { githubCMS } from "@/lib/github-cms";
 
+const noCacheHeaders = {
+  "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
+  "Pragma": "no-cache",
+  "Expires": "0",
+};
+
 // GET /api/cms/content?type=(page|collection|global)&name=...
 export async function GET(req: NextRequest) {
   try {
@@ -11,22 +17,22 @@ export async function GET(req: NextRequest) {
 
     if (type === "page") {
       const data = ContentService.getPage(name, null);
-      return NextResponse.json({ success: true, data });
+      return NextResponse.json({ success: true, data }, { headers: noCacheHeaders });
     }
 
     if (type === "collection") {
       const data = ContentService.getCollection(name, []);
-      return NextResponse.json({ success: true, data });
+      return NextResponse.json({ success: true, data }, { headers: noCacheHeaders });
     }
 
     if (type === "global") {
       const data = ContentService.getGlobalSettings(null);
-      return NextResponse.json({ success: true, data });
+      return NextResponse.json({ success: true, data }, { headers: noCacheHeaders });
     }
 
-    return NextResponse.json({ error: "Invalid content type" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid content type" }, { status: 400, headers: noCacheHeaders });
   } catch (err: any) {
-    return NextResponse.json({ error: err.message || "Failed to fetch content" }, { status: 500 });
+    return NextResponse.json({ error: err.message || "Failed to fetch content" }, { status: 500, headers: noCacheHeaders });
   }
 }
 

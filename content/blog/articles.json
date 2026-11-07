@@ -1,73 +1,79 @@
 [
   {
-    "id": "women-in-shelter-national",
-    "slug": "across-north-america-upua-chapters-unite-for-women-in-shelter-initiative",
-    "title": "Across North America: UPUA Chapters Unite for Women in Shelter Initiative",
-    "category": "Community",
+    "id": "annual-convention-2026-announcement",
+    "slug": "the-2026-annual-urhobo-progress-union-america-convention",
+    "title": "The 2026 Annual Urhobo Progress Union America Convention",
+    "category": "News",
+    "date": "2026-08-28",
+    "displayDate": "August 28, 2026",
+    "readTime": "4 min read",
+    "author": "National Secretariat",
+    "image": "/update-convention.jpg",
+    "featured": true,
+    "excerpt": "The 33rd Annual UPUA National Convention convenes at DoubleTree by Hilton Hotel in Lawrenceburg, Indiana, bringing together diaspora delegates, traditional rulers, and cultural ambassadors from across North America.",
+    "tags": ["Convention", "National Assembly", "Heritage", "UPU Ohio"],
+    "content": [
+      "The National Executive Committee of the Urhobo Progress Union America is pleased to announce that the 33rd Annual National Convention and Cultural Gala will be held from September 3–7, 2026 at the DoubleTree by Hilton Hotel in Lawrenceburg, Indiana.",
+      "Hosted by UPU Ohio, this five-day landmark gathering brings together chapter delegates, respected royal fathers from Urhoboland, business executives, youth leaders, and cultural dance troupes.",
+      "Sessions will encompass plenary assembly deliberations, youth mentorship workshops, the inaugural Convention Golf Outing, and the Grand Cultural Gala Banquet on Saturday, September 5.",
+      "Hotel reservations and delegate passes are now open through the UPUA portal and official ticket store."
+    ]
+  },
+  {
+    "id": "medical-outreach-report",
+    "slug": "upu-america-medical-outreach-worldwide-conference",
+    "title": "UPU America medical outreach at the 2023 UPU Worldwide Conference",
+    "category": "News",
+    "date": "2024-06-28",
+    "displayDate": "June 28, 2024",
+    "readTime": "5 min read",
+    "author": "Medical Outreach Directorate",
+    "image": "/update-outreach.jpg",
+    "featured": false,
+    "excerpt": "A dedicated volunteer medical team dispatched by UPUA provided free health screenings, medications, optical consultations, and preventive healthcare packages to hundreds of community members in Urhoboland.",
+    "tags": ["Medical Outreach", "Healthcare", "Homeland Development", "Philanthropy"],
+    "content": [
+      "As part of our commitment to homeland health and wellness, UPUA successfully executed a comprehensive community medical outreach mission during the UPU Worldwide Conference.",
+      "Volunteer doctors, nurses, and pharmacists conducted screenings for hypertension, diabetes, and vision impairments, dispensing free medications and distributing over 500 prescription eyeglasses to elderly and low-income residents.",
+      "Community leaders in Delta State expressed immense gratitude to the diaspora for consistently investing in the grassroots health and vitality of our people."
+    ]
+  },
+  {
+    "id": "stem-ai-training-urhoboland",
+    "slug": "stem-artificial-intelligence-training-in-urhoboland",
+    "title": "Science, Technology, Engineering & Mathematics (STEM), Artificial Intelligence (AI) Training in Urhoboland",
+    "category": "Program",
     "date": "2024-06-28",
     "displayDate": "June 28, 2024",
     "readTime": "4 min read",
-    "author": "UPUA Communications",
-    "image": "/assets/DMV-6.jpg",
-    "excerpt": "From Southern California and Chicagoland to Delaware Valley, Michigan, and the DMV, UPUA chapters mobilized nationwide to donate essential hygiene packages, clothing, supplies, and warmth to local women's shelters.",
-    "featured": true,
-    "tags": [
-      "Community Outreach",
-      "Women in Shelter",
-      "Humanitarian",
-      "North America Chapters"
-    ],
-    "content": [
-      "In a coordinated nationwide display of humanitarian service, chapters of the Urhobo Progress Union America (UPUA) across sixteen metropolitan areas have conducted in-person donation drives at women's emergency shelters.",
-      "The Women in Shelter Initiative was designed to support women and children escaping domestic hardship, displacement, and economic vulnerability. Chapter delegations delivered hundreds of custom hygiene packs containing personal care products, warm blankets, winter garments, and infant care necessities.",
-      "National leadership praised the initiative, emphasizing that the Urhobo culture has always held community generosity and care for the vulnerable as sacred duties. Municipal officials in Detroit, Columbus, and Washington D.C. expressed sincere gratitude to UPUA for their sustained civic leadership.",
-      "UPUA plans to expand the initiative to all active North American chapters, establishing permanent philanthropic partnerships with certified shelter organizations across the United States and Canada."
-    ]
-  },
-  {
-    "id": "convention-announcement-2026",
-    "slug": "dallas-fort-worth-confirmed-as-host-city-for-32nd-annual-upua-convention",
-    "title": "Dallas-Fort Worth Confirmed as Host City for 32nd Annual National Convention",
-    "category": "Convention",
-    "date": "2026-01-15",
-    "displayDate": "January 15, 2026",
-    "readTime": "3 min read",
-    "author": "National Secretariat",
-    "image": "/assets/Congress-1.jpg",
-    "featured": false,
-    "tags": [
-      "National Convention",
-      "Dallas",
-      "Cultural Gala",
-      "Governance"
-    ],
-    "content": [
-      "The National Executive Committee of the Urhobo Progress Union America is thrilled to announce that the 32nd Annual National Convention and Cultural Gala will be staged in the heart of Texas at the prestigious Hilton Anatole Dallas over Labor Day Weekend 2026.",
-      "Delegates from over twenty chapters across the United States and Canada, accompanied by traditional monarchs, dignitaries, and cultural performers from Nigeria, will converge for four days of intensive assembly deliberations, youth symposiums, and cultural banquets.",
-      "Hotel reservation links and official delegate packages are now open through the UPUA portal. Early bird registration is strongly recommended as hotel room blocks are strictly limited."
-    ]
-  },
-  {
-    "id": "stem-ai-initiative-launch",
-    "slug": "empowering-next-gen-youth-through-stem-and-ai-bootcamps",
-    "title": "Empowering Next-Gen Youth Through STEM & Artificial Intelligence Bootcamps",
-    "category": "Programs",
-    "date": "2025-11-10",
-    "displayDate": "November 10, 2025",
-    "readTime": "5 min read",
-    "author": "UPUAYA Youth Directorate",
+    "author": "UPUAYA Youth & Tech Committee",
     "image": "/update-stem.jpg",
     "featured": false,
-    "tags": [
-      "STEM",
-      "AI",
-      "Youth Empowerment",
-      "Education"
-    ],
+    "excerpt": "Over 1,200 secondary and tertiary students across Urhoboland participated in intensive coding, machine learning, and digital innovation bootcamps sponsored by UPU America.",
+    "tags": ["STEM", "AI", "Youth Empowerment", "Education"],
     "content": [
-      "In our continuing commitment to education and technological progress, the UPUAYA Youth Wing has successfully rolled out its hybrid STEM & Artificial Intelligence bootcamp series.",
-      "Over 1,200 participants from across Delta State and North America attended intensive virtual coding workshops, learning fundamentals of machine learning models, modern web development, and cloud data architecture.",
-      "Mentored by senior software architects and engineering leaders at global tech corporations, participants built practical solutions to address regional infrastructure, agriculture, and educational hurdles."
+      "Bridging the global digital divide, UPU America and the UPUAYA Youth Wing completed a landmark STEM & Artificial Intelligence training program for youth in Delta State.",
+      "Participants engaged in hands-on workshops covering web application development, cloud computing, and real-world AI applications designed to solve local challenges in agriculture, healthcare, and education.",
+      "Top student projects were awarded scholarships and remote technical mentorship from senior diaspora software engineers."
+    ]
+  },
+  {
+    "id": "donation-okama-idps",
+    "slug": "upu-america-donation-to-the-okama-idps",
+    "title": "UPU America donation to the Okama IDPs",
+    "category": "News",
+    "date": "2024-06-28",
+    "displayDate": "June 28, 2024",
+    "readTime": "3 min read",
+    "author": "UPUA Welfare Directorate",
+    "image": "/update-news.jpg",
+    "featured": false,
+    "excerpt": "Emergency humanitarian relief packages, food staples, clean water supplies, and bedding delivered to internally displaced families following regional disruptions.",
+    "tags": ["Emergency Relief", "Humanitarian", "IDP Support", "Welfare"],
+    "content": [
+      "Demonstrating steadfast brotherhood in times of adversity, UPUA mobilized emergency relief supplies for internally displaced persons (IDPs) in the Okuama community.",
+      "Chapter donations across North America funded bulk purchases of rice, grain, medical first-aid kits, blankets, and temporary shelter equipment delivered directly by accredited ground coordinators.",
+      "National leadership reaffirmed that UPUA will continue to advocate for peaceful rehabilitation and resettlement for all affected families."
     ]
   }
 ]

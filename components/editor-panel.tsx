@@ -595,6 +595,12 @@ export default function EditorPanel() {
       if (json.success) {
         const dest = json.savedVia === "github" ? " (committed to GitHub)" : "";
         showToast("success", `Saved changes for ${name}${dest}`);
+        // Broadcast live-update event so all public page components refresh instantly
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(
+            new CustomEvent("upua_cms_update", { detail: { type, name, data } })
+          );
+        }
       } else {
         if (json.code === "MISSING_GITHUB_TOKEN") {
           setActiveTab("deploy");
