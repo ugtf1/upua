@@ -137,8 +137,8 @@ export default function LandingUpdatesSection() {
         <div className="updates-grid">
           {/* Featured Large Card (Left) */}
           <article className="update-feature-card">
-            <Link href="/blog" style={{ textDecoration: "none", color: "inherit", display: "flex", flexDirection: "column", height: "100%" }}>
-              <div className="update-feature-media">
+            <div className="update-feature-media">
+              <Link href={featured.slug ? `/blog/${featured.slug}` : "/blog"} style={{ display: "block", position: "relative", width: "100%", height: "100%" }}>
                 <Image
                   src={featured.image || "/update-convention.jpg"}
                   alt={featured.title}
@@ -146,23 +146,27 @@ export default function LandingUpdatesSection() {
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   className="update-img"
                 />
+              </Link>
+            </div>
+            <div className="update-feature-info">
+              <div className="update-meta">
+                <time className="update-date">{featured.displayDate || featured.date || "August 28, 2026"}</time>
+                <span className="update-tag">{featured.category?.toUpperCase() || "NEWS"}</span>
               </div>
-              <div className="update-feature-info">
-                <div className="update-meta">
-                  <time className="update-date">{featured.displayDate || featured.date || "August 28, 2026"}</time>
-                  <span className="update-tag">{featured.category?.toUpperCase() || "NEWS"}</span>
-                </div>
-                <h3 className="update-feature-title">{featured.title}</h3>
-              </div>
-            </Link>
+              <h3 className="update-feature-title">
+                <Link href={featured.slug ? `/blog/${featured.slug}` : "/blog"} style={{ textDecoration: "none", color: "inherit" }}>
+                  {featured.title}
+                </Link>
+              </h3>
+            </div>
           </article>
 
           {/* 3 Horizontal Stacked Cards (Right) */}
           <div className="updates-stack">
             {finalStacked.map((item, idx) => (
               <article className="update-stack-card" key={item.id || idx}>
-                <Link href="/blog" style={{ textDecoration: "none", color: "inherit", display: "flex", width: "100%", gap: "16px", alignItems: "center" }}>
-                  <div className="update-stack-media">
+                <div className="update-stack-media">
+                  <Link href={item.slug ? `/blog/${item.slug}` : "/blog"} style={{ display: "block", position: "relative", width: "100%", height: "100%" }}>
                     <Image
                       src={item.image || "/update-outreach.jpg"}
                       alt={item.title}
@@ -170,17 +174,21 @@ export default function LandingUpdatesSection() {
                       sizes="(max-width: 768px) 120px, 160px"
                       className="update-img"
                     />
+                  </Link>
+                </div>
+                <div className="update-stack-info">
+                  <div className="update-meta">
+                    <time className="update-date">{item.displayDate || item.date || "June 28, 2024"}</time>
+                    <span className={`update-tag ${item.category?.toLowerCase().includes("program") ? "program-tag" : ""}`}>
+                      {item.category?.toUpperCase() || "NEWS"}
+                    </span>
                   </div>
-                  <div className="update-stack-info">
-                    <div className="update-meta">
-                      <time className="update-date">{item.displayDate || item.date || "June 28, 2024"}</time>
-                      <span className={`update-tag ${item.category?.toLowerCase().includes("program") ? "program-tag" : ""}`}>
-                        {item.category?.toUpperCase() || "NEWS"}
-                      </span>
-                    </div>
-                    <h4 className="update-stack-title">{item.title}</h4>
-                  </div>
-                </Link>
+                  <h4 className="update-stack-title">
+                    <Link href={item.slug ? `/blog/${item.slug}` : "/blog"} style={{ textDecoration: "none", color: "inherit" }}>
+                      {item.title}
+                    </Link>
+                  </h4>
+                </div>
               </article>
             ))}
           </div>
