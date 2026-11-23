@@ -246,7 +246,7 @@ export default function AboutPage() {
             </div>
             <div className="about-stat-card">
               <strong>23+</strong>
-              <span>Accredited Chapters</span>
+              <span>Accredited Chapters:</span>
             </div>
             <div className="about-stat-card">
               <strong>24</strong>
