@@ -1,10 +1,32 @@
 import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 import { DataService } from "@/lib/data-service";
+
+const useDatabase =
+  !!process.env.DATABASE_URL && !process.env.DATABASE_URL.startsWith("file:");
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
+
+    if (useDatabase && prisma) {
+      if (id) {
+        const chapter = await prisma.chapter.findUnique({
+          where: { id },
+          include: { members: true, payments: true },
+        });
+        if (!chapter) {
+          return NextResponse.json({ success: false, error: "Chapter not found" }, { status: 404 });
+        }
+        return NextResponse.json({ success: true, data: chapter });
+      }
+
+      const chapters = await prisma.chapter.findMany({
+        orderBy: { name: "asc" },
+      });
+      return NextResponse.json({ success: true, data: chapters });
+    }
 
     if (id) {
       const chapter = DataService.getChapterById(id);
@@ -30,8 +52,26 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: "Chapter name and code are required" }, { status: 400 });
     }
 
+    const chapterId = `c-${code.toLowerCase().replace(/[^a-z0-9]/g, "")}`;
+
+    if (useDatabase && prisma) {
+      const newChapter = await prisma.chapter.create({
+        data: {
+          id: chapterId,
+          name,
+          code: code.toUpperCase(),
+          region: region || "General",
+          president: president || "Pending Appointment",
+          contactEmail: contactEmail || `${code.toLowerCase()}@upuamerica.org`,
+          memberCount: Number(memberCount) || 0,
+          website: website || null,
+        },
+      });
+      return NextResponse.json({ success: true, data: newChapter }, { status: 201 });
+    }
+
     const newChapter = DataService.addChapter({
-      id: `c-${code.toLowerCase()}`,
+      id: chapterId,
       name,
       code: code.toUpperCase(),
       region: region || "General",
@@ -56,6 +96,22 @@ export async function PUT(request: Request) {
       return NextResponse.json({ success: false, error: "Chapter ID is required" }, { status: 400 });
     }
 
+    if (useDatabase && prisma) {
+      const updated = await prisma.chapter.update({
+        where: { id },
+        data: {
+          ...(updates.name && { name: updates.name }),
+          ...(updates.code && { code: updates.code.toUpperCase() }),
+          ...(updates.region && { region: updates.region }),
+          ...(updates.president && { president: updates.president }),
+          ...(updates.contactEmail && { contactEmail: updates.contactEmail }),
+          ...(updates.memberCount !== undefined && { memberCount: Number(updates.memberCount) }),
+          ...(updates.website !== undefined && { website: updates.website }),
+        },
+      });
+      return NextResponse.json({ success: true, data: updated });
+    }
+
     const updated = DataService.updateChapter(id, updates);
     if (!updated) {
       return NextResponse.json({ success: false, error: "Chapter not found" }, { status: 404 });
@@ -74,6 +130,11 @@ export async function DELETE(request: Request) {
 
     if (!id) {
       return NextResponse.json({ success: false, error: "Chapter ID is required" }, { status: 400 });
+    }
+
+    if (useDatabase && prisma) {
+      await prisma.chapter.delete({ where: { id } });
+      return NextResponse.json({ success: true, message: "Chapter deleted successfully" });
     }
 
     DataService.deleteChapter(id);

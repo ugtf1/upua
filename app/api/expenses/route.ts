@@ -1,8 +1,21 @@
 import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 import { DataService } from "@/lib/data-service";
+
+const useDatabase =
+  !!process.env.DATABASE_URL && !process.env.DATABASE_URL.startsWith("file:");
 
 export async function GET() {
   try {
+    if (useDatabase && prisma) {
+      const expenses = await prisma.expense.findMany({
+        orderBy: { date: "desc" },
+      });
+      if (expenses.length > 0) {
+        return NextResponse.json({ success: true, data: expenses });
+      }
+    }
+
     const expenses = DataService.getExpenses();
     return NextResponse.json({ success: true, data: expenses });
   } catch (error) {
@@ -18,6 +31,21 @@ export async function POST(request: Request) {
     const parsedAmount = Number(amount);
     if (!category || isNaN(parsedAmount) || parsedAmount <= 0) {
       return NextResponse.json({ success: false, error: "Valid category and positive amount are required" }, { status: 400 });
+    }
+
+    if (useDatabase && prisma) {
+      const newExpense = await prisma.expense.create({
+        data: {
+          category,
+          amount: parsedAmount,
+          date: date || new Date().toISOString().split("T")[0],
+          description: description || "Operational expense",
+          approvedBy: approvedBy || "Executive Committee",
+          vendor: vendor || "Authorized Contractor",
+          status: status || "Approved",
+        },
+      });
+      return NextResponse.json({ success: true, data: newExpense }, { status: 201 });
     }
 
     const newExpense = DataService.addExpense({
@@ -45,6 +73,14 @@ export async function PUT(request: Request) {
       return NextResponse.json({ success: false, error: "Expense ID is required" }, { status: 400 });
     }
 
+    if (useDatabase && prisma) {
+      const updated = await prisma.expense.update({
+        where: { id },
+        data: updates,
+      });
+      return NextResponse.json({ success: true, data: updated });
+    }
+
     const updated = DataService.updateExpense(id, updates);
     if (!updated) {
       return NextResponse.json({ success: false, error: "Expense record not found" }, { status: 404 });
@@ -63,6 +99,11 @@ export async function DELETE(request: Request) {
 
     if (!id) {
       return NextResponse.json({ success: false, error: "Expense ID is required" }, { status: 400 });
+    }
+
+    if (useDatabase && prisma) {
+      await prisma.expense.delete({ where: { id } });
+      return NextResponse.json({ success: true, message: "Expense record deleted successfully" });
     }
 
     DataService.deleteExpense(id);
