@@ -15,6 +15,8 @@ import {
   getTokenStore,
   QB_REVOKE_URL,
   getValidAccessToken,
+  getQBClientId,
+  getQBClientSecret,
 } from "@/lib/quickbooks";
 
 const ALLOWED_REPORTS = [
@@ -45,7 +47,7 @@ export async function GET(req: NextRequest) {
     const token = await getValidAccessToken();
     if (token) {
       const creds = Buffer.from(
-        `${process.env.QB_CLIENT_ID}:${process.env.QB_CLIENT_SECRET}`
+        `${getQBClientId()}:${getQBClientSecret()}`
       ).toString("base64");
       await fetch(QB_REVOKE_URL, {
         method: "POST",

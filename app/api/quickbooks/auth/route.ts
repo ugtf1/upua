@@ -3,15 +3,15 @@
  * Initiates QuickBooks OAuth 2.0 flow — redirects admin to Intuit consent screen.
  */
 import { NextResponse } from "next/server";
-import { QB_AUTH_URL } from "@/lib/quickbooks";
+import { QB_AUTH_URL, getQBClientId, getQBRedirectUri } from "@/lib/quickbooks";
 
 export async function GET() {
-  const clientId = process.env.QB_CLIENT_ID;
-  const redirectUri = process.env.QB_REDIRECT_URI;
+  const clientId = getQBClientId();
+  const redirectUri = getQBRedirectUri();
 
   if (!clientId || !redirectUri) {
     return NextResponse.json(
-      { error: "QuickBooks credentials not configured. Set QB_CLIENT_ID and QB_REDIRECT_URI in environment variables." },
+      { error: "QuickBooks credentials not configured. Set QB_CLIENT_ID (or QUICKBOOKS_CLIENT_ID) and QB_REDIRECT_URI in environment variables." },
       { status: 500 }
     );
   }

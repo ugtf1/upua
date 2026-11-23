@@ -14,10 +14,27 @@
  *   QB_REALM_ID          — QuickBooks company ID
  */
 
-const QB_ENV = process.env.QB_ENVIRONMENT ?? "sandbox";
+export function getQBClientId(): string {
+  return process.env.QB_CLIENT_ID || process.env.QUICKBOOKS_CLIENT_ID || "";
+}
+
+export function getQBClientSecret(): string {
+  return process.env.QB_CLIENT_SECRET || process.env.QUICKBOOKS_CLIENT_SECRET || "";
+}
+
+export function getQBRedirectUri(): string {
+  if (process.env.QB_REDIRECT_URI) return process.env.QB_REDIRECT_URI;
+  if (process.env.QUICKBOOKS_REDIRECT_URI) return process.env.QUICKBOOKS_REDIRECT_URI;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
+  return siteUrl ? `${siteUrl}/api/quickbooks/callback` : "";
+}
+
+export function getQBEnvironment(): string {
+  return process.env.QB_ENVIRONMENT || process.env.QUICKBOOKS_ENVIRONMENT || "sandbox";
+}
 
 export const QB_BASE_URL =
-  QB_ENV === "production"
+  getQBEnvironment() === "production"
     ? "https://quickbooks.api.intuit.com"
     : "https://sandbox-quickbooks.api.intuit.com";
 
@@ -64,7 +81,7 @@ export function isConnected(): boolean {
 export async function refreshAccessToken(): Promise<boolean> {
   if (!_tokenStore?.refreshToken) return false;
   const creds = Buffer.from(
-    `${process.env.QB_CLIENT_ID}:${process.env.QB_CLIENT_SECRET}`
+    `${getQBClientId()}:${getQBClientSecret()}`
   ).toString("base64");
   try {
     const res = await fetch(QB_TOKEN_URL, {

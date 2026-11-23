@@ -5,7 +5,13 @@
  * then redirects back to the admin portal's Reports tab.
  */
 import { NextRequest, NextResponse } from "next/server";
-import { QB_TOKEN_URL, saveTokens } from "@/lib/quickbooks";
+import {
+  QB_TOKEN_URL,
+  saveTokens,
+  getQBClientId,
+  getQBClientSecret,
+  getQBRedirectUri,
+} from "@/lib/quickbooks";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
@@ -13,9 +19,11 @@ export async function GET(req: NextRequest) {
   const realmId = searchParams.get("realmId");
   const error = searchParams.get("error");
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
+
   if (error) {
     return NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/portal?tab=reports&qb_error=${encodeURIComponent(error)}`
+      `${siteUrl}/portal?tab=reports&qb_error=${encodeURIComponent(error)}`
     );
   }
 
@@ -23,9 +31,9 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Missing code or realmId from Intuit." }, { status: 400 });
   }
 
-  const clientId = process.env.QB_CLIENT_ID!;
-  const clientSecret = process.env.QB_CLIENT_SECRET!;
-  const redirectUri = process.env.QB_REDIRECT_URI!;
+  const clientId = getQBClientId();
+  const clientSecret = getQBClientSecret();
+  const redirectUri = getQBRedirectUri();
 
   // Exchange authorization code for tokens
   const creds = Buffer.from(`${clientId}:${clientSecret}`).toString("base64");
