@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { seedMembers } from "@/lib/seed-data";
+import { DataService } from "@/lib/data-service";
 
 const useDatabase =
   !!process.env.DATABASE_URL && !process.env.DATABASE_URL.startsWith("file:");
@@ -11,36 +11,57 @@ export async function GET(request: Request) {
     const chapterId = searchParams.get("chapterId") || undefined;
 
     if (useDatabase && prisma) {
-      const dbMembers = await prisma.member.findMany({
-        where: chapterId ? { chapterId } : undefined,
-        include: { chapter: true },
-        orderBy: { name: "asc" },
-      });
+      try {
+        const dbMembers = await prisma.member.findMany({
+          where: chapterId ? { chapterId } : undefined,
+          include: { chapter: true },
+          orderBy: { name: "asc" },
+        });
 
-      if (dbMembers.length > 0) {
-        const formatted = dbMembers.map((m: any, idx: number) => ({
-          id: m.id,
-          memberCode: `UPUA-${String(idx + 1).padStart(3, "0")}`,
-          name: m.name,
-          email: m.email,
-          phone: m.phone || "+1 (555) 000-0000",
-          department: m.chapter?.name || "General",
-          role: m.role || "Member",
-          status: m.status || "Active",
-          joinDate: m.joinedDate || m.createdAt.toISOString().split("T")[0],
-          duesOwed: m.duesStatus === "Outstanding" ? 100 : 0,
-          duesPaid: m.duesStatus === "Paid" ? 500 : 0,
-          avatar: m.name.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase(),
-          address: m.chapter?.region || "USA",
-        }));
-        return NextResponse.json({ members: formatted });
+        if (dbMembers.length > 0) {
+          const formatted = dbMembers.map((m: any, idx: number) => ({
+            id: m.id,
+            memberCode: `UPUA-${String(idx + 1).padStart(3, "0")}`,
+            name: m.name,
+            email: m.email,
+            phone: m.phone || "+1 (555) 000-0000",
+            department: m.chapter?.name || "General",
+            role: m.role || "Member",
+            status: m.status || "Active",
+            joinDate: m.joinedDate || m.createdAt.toISOString().split("T")[0],
+            duesOwed: m.duesStatus === "Outstanding" ? 100 : 0,
+            duesPaid: m.duesStatus === "Paid" ? 500 : 0,
+            avatar: m.name.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase(),
+            address: m.chapter?.region || "USA",
+          }));
+          return NextResponse.json({ members: formatted });
+        }
+      } catch (dbErr) {
+        console.warn("[UPUA] DB members query failed, using live DataService fallback:", dbErr);
       }
     }
 
-    return NextResponse.json({ members: seedMembers });
+    const liveMembers = DataService.getMembers(chapterId);
+    const formatted = liveMembers.map((m: any, idx: number) => ({
+      id: m.id,
+      memberCode: `UPUA-${String(idx + 1).padStart(3, "0")}`,
+      name: m.name,
+      email: m.email,
+      phone: m.phone || "+1 (555) 000-0000",
+      department: m.chapterName || "General",
+      role: m.role || "Chapter President",
+      status: m.status || "Active",
+      joinDate: m.joinedDate || "2023-01-01",
+      duesOwed: m.duesStatus === "Outstanding" ? 100 : 0,
+      duesPaid: m.duesStatus === "Paid" ? 500 : 0,
+      avatar: m.name.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase(),
+      address: m.chapterName || "USA",
+    }));
+    return NextResponse.json({ members: formatted });
   } catch (error) {
     console.error("[UPUA] Failed to fetch members:", error);
-    return NextResponse.json({ members: seedMembers });
+    const liveMembers = DataService.getMembers();
+    return NextResponse.json({ members: liveMembers });
   }
 }
 

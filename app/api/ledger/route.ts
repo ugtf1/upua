@@ -1,6 +1,20 @@
 import { NextResponse } from "next/server";
-import { seedTransactions } from "@/lib/seed-data";
+import { DataService } from "@/lib/data-service";
 
 export async function GET() {
-  return NextResponse.json({ transactions: seedTransactions, ledger: seedTransactions });
+  const livePayments = DataService.getPayments();
+  const ledger = livePayments.map((p) => ({
+    id: p.id,
+    date: p.date,
+    description: p.description,
+    category: p.category,
+    amount: p.amount,
+    type: "credit",
+    status: "cleared",
+    account: "Main Checking",
+    reference: p.confirmationNo || p.id,
+    chapter: p.chapterName,
+  }));
+
+  return NextResponse.json({ transactions: ledger, ledger });
 }

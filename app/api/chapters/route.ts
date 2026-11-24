@@ -11,38 +11,43 @@ export async function GET(request: Request) {
     const id = searchParams.get("id");
 
     if (useDatabase && prisma) {
-      if (id) {
-        const chapter = await prisma.chapter.findUnique({
-          where: { id },
-          include: { members: true, payments: true },
-        });
-        if (!chapter) {
-          return NextResponse.json({ success: false, error: "Chapter not found" }, { status: 404 });
+      try {
+        if (id) {
+          const chapter = await prisma.chapter.findUnique({
+            where: { id },
+            include: { members: true, payments: true },
+          });
+          if (chapter) {
+            return NextResponse.json({ success: true, data: chapter });
+          }
+        } else {
+          const chapters = await prisma.chapter.findMany({
+            orderBy: { name: "asc" },
+          });
+          if (chapters && chapters.length > 0) {
+            const formatted = chapters.map((ch: any) => {
+              const totalDuesPaid =
+                (ch.dues2023Paid || 0) +
+                (ch.dues2024Paid || 0) +
+                (ch.dues2025Paid || 0) +
+                (ch.dues2026Paid || 0);
+              return {
+                ...ch,
+                paymentsBreakdown: {
+                  monthlyDues: totalDuesPaid,
+                  donations: 0,
+                  tickets: ch.rafflePaid || 0,
+                  merchandise: 0,
+                  total: totalDuesPaid + (ch.rafflePaid || 0),
+                },
+              };
+            });
+            return NextResponse.json({ success: true, data: formatted });
+          }
         }
-        return NextResponse.json({ success: true, data: chapter });
+      } catch (dbErr) {
+        console.warn("[UPUA] DB chapters query failed, using live DataService fallback:", dbErr);
       }
-
-      const chapters = await prisma.chapter.findMany({
-        orderBy: { name: "asc" },
-      });
-      const formatted = chapters.map((ch: any) => {
-        const totalDuesPaid =
-          (ch.dues2023Paid || 0) +
-          (ch.dues2024Paid || 0) +
-          (ch.dues2025Paid || 0) +
-          (ch.dues2026Paid || 0);
-        return {
-          ...ch,
-          paymentsBreakdown: {
-            monthlyDues: totalDuesPaid,
-            donations: 0,
-            tickets: ch.rafflePaid || 0,
-            merchandise: 0,
-            total: totalDuesPaid + (ch.rafflePaid || 0),
-          },
-        };
-      });
-      return NextResponse.json({ success: true, data: formatted });
     }
 
     if (id) {
@@ -56,7 +61,9 @@ export async function GET(request: Request) {
     const chapters = DataService.getChapters();
     return NextResponse.json({ success: true, data: chapters });
   } catch (error) {
-    return NextResponse.json({ success: false, error: "Failed to fetch chapters" }, { status: 500 });
+    // Ultimate fallback: always return live chapters
+    const chapters = DataService.getChapters();
+    return NextResponse.json({ success: true, data: chapters });
   }
 }
 
