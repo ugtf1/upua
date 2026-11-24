@@ -118,6 +118,8 @@ export default function PortalWorkspace() {
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [selectedMeeting, setSelectedMeeting] = useState<MeetingRecord | null>(null);
   const [ledgerSubTab, setLedgerSubTab] = useState<"income" | "expenses">("income");
+  const [chapterViewMode, setChapterViewMode] = useState<"audit" | "insurance" | "directory">("audit");
+  const [ledgerYearFilter, setLedgerYearFilter] = useState<string>("all");
 
   // Balances Page State
   const [balanceSelectedChapterId, setBalanceSelectedChapterId] = useState<string>("");
@@ -733,11 +735,16 @@ ${meeting.transcript}
   // Filtered Payments
   const filteredPayments = payments.filter((p) => {
     const matchCategory = categoryFilter === "all" || p.category === categoryFilter;
+    const matchYear = ledgerYearFilter === "all" || (p.date && p.date.startsWith(ledgerYearFilter));
+    const term = searchTerm.toLowerCase();
     const matchSearch =
-      p.memberName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.chapterName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.description.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchCategory && matchSearch;
+      !term ||
+      (p.memberName && p.memberName.toLowerCase().includes(term)) ||
+      (p.chapterName && p.chapterName.toLowerCase().includes(term)) ||
+      (p.description && p.description.toLowerCase().includes(term)) ||
+      ((p as any).confirmationNo && String((p as any).confirmationNo).toLowerCase().includes(term)) ||
+      (p.paymentMethod && p.paymentMethod.toLowerCase().includes(term));
+    return matchCategory && matchYear && matchSearch;
   });
 
   // Filtered Expenses
@@ -1854,103 +1861,383 @@ ${meeting.transcript}
           )}
 
           {/* TAB 2: CHAPTERS & BREAKDOWN */}
-          {activeTab === "chapters" && (
-            <div key="chapters" className="portal-tab-pane">
-              <div className="orgflo-card">
-              <div className="orgflo-card-header">
-                <div>
-                  <h2 style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: "1.45rem", fontWeight: 800, color: "var(--primary)" }}>
-                    Chapter Directories & Financial Breakdown
-                  </h2>
-                  <p style={{ margin: "2px 0 0", fontSize: "0.84rem", color: "var(--text-muted)" }}>
-                    Granular breakdown of monthly dues, donations, ticket sales, and merchandise across all accredited councils.
-                  </p>
-                </div>
-                {user.role === "admin" && (
-                  <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                    <button
-                      type="button"
-                      className="btn-orgflo-white"
-                      style={{ background: "#0e3d26", color: "#ffffff" }}
-                      onClick={() => setIsNewChapterOpen(true)}
-                    >
-                      <Plus size={16} /> Add New Chapter
-                    </button>
-                    {/* <button
-                      type="button"
-                      className="btn-orgflo-white"
-                      style={{ border: "1.5px solid #dce8df", color: "#0e3d26" }}
-                      onClick={() => {
-                        setCsvImportType("chapters");
-                        setCsvImportModalOpen(true);
-                      }}
-                      title="Bulk import chapters from CSV"
-                    >
-                      <FileSpreadsheet size={16} /> Import Chapters CSV
-                    </button> */}
-                  </div>
-                )}
-              </div>
+          {activeTab === "chapters" && (() => {
+            const total2023Exp = chapters.reduce((s, c) => s + (c.dues2023Exp || 0), 0);
+            const total2023Paid = chapters.reduce((s, c) => s + (c.dues2023Paid || 0), 0);
+            const total2024Exp = chapters.reduce((s, c) => s + (c.dues2024Exp || 0), 0);
+            const total2024Paid = chapters.reduce((s, c) => s + (c.dues2024Paid || 0), 0);
+            const total2025Exp = chapters.reduce((s, c) => s + (c.dues2025Exp || 0), 0);
+            const total2025Paid = chapters.reduce((s, c) => s + (c.dues2025Paid || 0), 0);
+            const total2026Exp = chapters.reduce((s, c) => s + (c.dues2026Exp || 0), 0);
+            const total2026Paid = chapters.reduce((s, c) => s + (c.dues2026Paid || 0), 0);
+            const totalDuesBal = chapters.reduce((s, c) => s + (c.duesBalance || 0), 0);
+            const totalIns2023 = chapters.reduce((s, c) => s + (c.insurance2023Paid || 0), 0);
+            const totalIns2024 = chapters.reduce((s, c) => s + (c.insurance2024Paid || 0), 0);
+            const totalIns2025 = chapters.reduce((s, c) => s + (c.insurance2025Paid || 0), 0);
+            const totalIns = chapters.reduce((s, c) => s + (c.insuranceTotal || 0), 0);
+            const totalColonial = chapters.reduce((s, c) => s + (c.insuranceColonial || 0), 0);
+            const totalRafflePaid = chapters.reduce((s, c) => s + (c.rafflePaid || 0), 0);
+            const totalRaffleBal = chapters.reduce((s, c) => s + (c.raffleBalance || 0), 0);
+            const totalDuesRemitted = total2023Paid + total2024Paid + total2025Paid + total2026Paid;
 
-              <div className="orgflo-table-wrap">
-                <table className="orgflo-table orgflo-table-collapse">
-                  <thead>
-                    <tr>
-                      <th>Chapter Name</th>
-                      <th>Region</th>
-                      <th>President</th>
-                      <th>Members</th>
-                      <th>Monthly Dues</th>
-                      <th>Donations</th>
-                      <th>Tickets</th>
-                      <th>Merchandise</th>
-                      {user.role === "admin" && <th style={{ textAlign: "right" }}>Actions</th>}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {chapters.map((ch) => (
-                      <tr key={ch.id}>
-                        <td data-label="Chapter Name" style={{ fontWeight: 700, color: "#0e3d26" }}>
-                          {ch.name}
-                          <small style={{ display: "block", color: "#526359", fontWeight: 400 }}>{ch.contactEmail}</small>
-                        </td>
-                        <td data-label="Region" style={{ color: "#526359" }}>{ch.region}</td>
-                        <td data-label="President" style={{ color: "#14211a", fontWeight: 500 }}>{ch.president}</td>
-                        <td data-label="Members">
-                          <span className="badge badge-active">{ch.memberCount} members</span>
-                        </td>
-                        <td data-label="Monthly Dues" style={{ color: "#0e3d26", fontWeight: 700 }}>
-                          ${ch.paymentsBreakdown.monthlyDues.toLocaleString()}
-                        </td>
-                        <td data-label="Donations" style={{ color: "#137459", fontWeight: 700 }}>
-                          ${ch.paymentsBreakdown.donations.toLocaleString()}
-                        </td>
-                        <td data-label="Tickets" style={{ color: "#003e53", fontWeight: 700 }}>
-                          ${ch.paymentsBreakdown.tickets.toLocaleString()}
-                        </td>
-                        <td data-label="Merchandise" style={{ color: "#b08000", fontWeight: 700 }}>
-                          ${ch.paymentsBreakdown.merchandise.toLocaleString()}
-                        </td>
-                        {user.role === "admin" && (
-                          <td data-label="Actions" style={{ textAlign: "right" }}>
-                            <button
-                              type="button"
-                              onClick={() => handleDeleteChapter(ch.id)}
-                              style={{ background: "transparent", border: 0, color: "#c5221f", cursor: "pointer", padding: "6px" }}
-                              title="Delete Chapter"
-                            >
-                              <Trash2 size={16} />
-                            </button>
-                          </td>
-                        )}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+            return (
+              <div key="chapters" className="portal-tab-pane">
+                {/* Audit Metrics Banner */}
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px", marginBottom: "22px" }}>
+                  <div className="orgflo-card" style={{ padding: "18px 20px" }}>
+                    <div style={{ fontSize: "0.78rem", color: "#526359", fontWeight: 700, textTransform: "uppercase" }}>Accredited Councils</div>
+                    <div style={{ fontSize: "1.75rem", fontWeight: 900, color: "#0e3d26", fontFamily: "var(--font-heading)", marginTop: "4px" }}>
+                      {chapters.length} <span style={{ fontSize: "0.9rem", fontWeight: 600, color: "#526359" }}>Chapters</span>
+                    </div>
+                    <div style={{ fontSize: "0.8rem", color: "#137459", marginTop: "4px" }}>Across USA & Canada</div>
+                  </div>
+
+                  <div className="orgflo-card" style={{ padding: "18px 20px" }}>
+                    <div style={{ fontSize: "0.78rem", color: "#526359", fontWeight: 700, textTransform: "uppercase" }}>Multi-Year Dues Remitted</div>
+                    <div style={{ fontSize: "1.75rem", fontWeight: 900, color: "#137459", fontFamily: "var(--font-heading)", marginTop: "4px" }}>
+                      ${totalDuesRemitted.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                    </div>
+                    <div style={{ fontSize: "0.8rem", color: "#526359", marginTop: "4px" }}>2023 – 2026 Q3 Cumulative</div>
+                  </div>
+
+                  <div className="orgflo-card" style={{ padding: "18px 20px" }}>
+                    <div style={{ fontSize: "0.78rem", color: "#526359", fontWeight: 700, textTransform: "uppercase" }}>Net Dues Balance</div>
+                    <div style={{ fontSize: "1.75rem", fontWeight: 900, color: totalDuesBal < 0 ? "#c5221f" : "#137459", fontFamily: "var(--font-heading)", marginTop: "4px" }}>
+                      {totalDuesBal < 0 ? `-$${Math.abs(totalDuesBal).toLocaleString("en-US", { minimumFractionDigits: 2 })}` : `+$${totalDuesBal.toLocaleString("en-US", { minimumFractionDigits: 2 })}`}
+                    </div>
+                    <div style={{ fontSize: "0.8rem", color: totalDuesBal < 0 ? "#c5221f" : "#137459", marginTop: "4px" }}>
+                      {totalDuesBal < 0 ? "National Dues Deficit" : "Surplus / In Credit"}
+                    </div>
+                  </div>
+
+                  <div className="orgflo-card" style={{ padding: "18px 20px" }}>
+                    <div style={{ fontSize: "0.78rem", color: "#526359", fontWeight: 700, textTransform: "uppercase" }}>Insurance Premiums Total</div>
+                    <div style={{ fontSize: "1.75rem", fontWeight: 900, color: "#003e53", fontFamily: "var(--font-heading)", marginTop: "4px" }}>
+                      ${totalIns.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                    </div>
+                    <div style={{ fontSize: "0.8rem", color: "#526359", marginTop: "4px" }}>Colonial Life: ${totalColonial.toLocaleString()}</div>
+                  </div>
+
+                  <div className="orgflo-card" style={{ padding: "18px 20px" }}>
+                    <div style={{ fontSize: "0.78rem", color: "#526359", fontWeight: 700, textTransform: "uppercase" }}>Raffle Tickets Paid</div>
+                    <div style={{ fontSize: "1.75rem", fontWeight: 900, color: "#b08000", fontFamily: "var(--font-heading)", marginTop: "4px" }}>
+                      ${totalRafflePaid.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                    </div>
+                    <div style={{ fontSize: "0.8rem", color: "#526359", marginTop: "4px" }}>Balance: ${totalRaffleBal.toLocaleString()}</div>
+                  </div>
+                </div>
+
+                {/* Main Card with View Switcher */}
+                <div className="orgflo-card">
+                  <div className="orgflo-card-header" style={{ flexWrap: "wrap", gap: "16px" }}>
+                    <div>
+                      <h2 style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: "1.45rem", fontWeight: 800, color: "var(--primary)" }}>
+                        Chapter Directories & Financial Breakdown
+                      </h2>
+                      <p style={{ margin: "2px 0 0", fontSize: "0.84rem", color: "var(--text-muted)" }}>
+                        Official audit of annual membership dues, insurance premiums, and raffle tickets per accredited chapter.
+                      </p>
+                    </div>
+
+                    {/* View Switcher Buttons */}
+                    <div style={{ display: "flex", gap: "8px", background: "#f4f8f5", padding: "4px", borderRadius: "10px", flexWrap: "wrap" }}>
+                      <button
+                        type="button"
+                        onClick={() => setChapterViewMode("audit")}
+                        style={{
+                          padding: "8px 16px",
+                          borderRadius: "8px",
+                          border: "none",
+                          fontWeight: 700,
+                          fontSize: "0.84rem",
+                          cursor: "pointer",
+                          background: chapterViewMode === "audit" ? "#ffffff" : "transparent",
+                          color: chapterViewMode === "audit" ? "#0e3d26" : "#526359",
+                          boxShadow: chapterViewMode === "audit" ? "0 2px 6px rgba(0,0,0,0.06)" : "none",
+                        }}
+                      >
+                        Multi-Year Dues Audit (2023–2026)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setChapterViewMode("insurance")}
+                        style={{
+                          padding: "8px 16px",
+                          borderRadius: "8px",
+                          border: "none",
+                          fontWeight: 700,
+                          fontSize: "0.84rem",
+                          cursor: "pointer",
+                          background: chapterViewMode === "insurance" ? "#ffffff" : "transparent",
+                          color: chapterViewMode === "insurance" ? "#0e3d26" : "#526359",
+                          boxShadow: chapterViewMode === "insurance" ? "0 2px 6px rgba(0,0,0,0.06)" : "none",
+                        }}
+                      >
+                        Insurance & Raffle Breakdown
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setChapterViewMode("directory")}
+                        style={{
+                          padding: "8px 16px",
+                          borderRadius: "8px",
+                          border: "none",
+                          fontWeight: 700,
+                          fontSize: "0.84rem",
+                          cursor: "pointer",
+                          background: chapterViewMode === "directory" ? "#ffffff" : "transparent",
+                          color: chapterViewMode === "directory" ? "#0e3d26" : "#526359",
+                          boxShadow: chapterViewMode === "directory" ? "0 2px 6px rgba(0,0,0,0.06)" : "none",
+                        }}
+                      >
+                        Executive Directory
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* VIEW 1: MULTI-YEAR DUES AUDIT TABLE */}
+                  {chapterViewMode === "audit" && (
+                    <div className="orgflo-table-wrap">
+                      <table className="orgflo-table orgflo-table-collapse">
+                        <thead>
+                          <tr>
+                            <th>Chapter & President</th>
+                            <th>Region</th>
+                            <th style={{ textAlign: "right" }}>2023 Dues (Paid/Exp)</th>
+                            <th style={{ textAlign: "right" }}>2024 Dues (Paid/Exp)</th>
+                            <th style={{ textAlign: "right" }}>2025 Dues (Paid/Exp)</th>
+                            <th style={{ textAlign: "right" }}>2026 Dues (Q1-3)</th>
+                            <th style={{ textAlign: "right" }}>Dues Balance</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {chapters.map((ch) => {
+                            const isDeficit = (ch.duesBalance || 0) < 0;
+                            const isSurplus = (ch.duesBalance || 0) > 0;
+                            return (
+                              <tr key={ch.id}>
+                                <td data-label="Chapter">
+                                  <div style={{ fontWeight: 800, color: "#0e3d26" }}>{ch.name}</div>
+                                  <div style={{ fontSize: "0.82rem", color: "#14211a", fontWeight: 600 }}>{ch.president}</div>
+                                  {ch.contactPhone && (
+                                    <div style={{ fontSize: "0.78rem", color: "#526359" }}>{ch.contactPhone}</div>
+                                  )}
+                                </td>
+                                <td data-label="Region" style={{ color: "#526359", fontSize: "0.85rem" }}>{ch.region}</td>
+
+                                {/* 2023 */}
+                                <td data-label="2023 Dues" style={{ textAlign: "right" }}>
+                                  <div style={{ fontWeight: 700, color: ch.dues2023Paid > 0 ? "#137459" : "#80868b" }}>
+                                    ${(ch.dues2023Paid || 0).toLocaleString()}
+                                  </div>
+                                  <div style={{ fontSize: "0.75rem", color: "#526359" }}>
+                                    Exp: ${(ch.dues2023Exp || 0).toLocaleString()} ({ch.members2023 || 0} mem)
+                                  </div>
+                                </td>
+
+                                {/* 2024 */}
+                                <td data-label="2024 Dues" style={{ textAlign: "right" }}>
+                                  <div style={{ fontWeight: 700, color: ch.dues2024Paid > 0 ? "#137459" : "#80868b" }}>
+                                    ${(ch.dues2024Paid || 0).toLocaleString()}
+                                  </div>
+                                  <div style={{ fontSize: "0.75rem", color: "#526359" }}>
+                                    Exp: ${(ch.dues2024Exp || 0).toLocaleString()} ({ch.members2024 || 0} mem)
+                                  </div>
+                                </td>
+
+                                {/* 2025 */}
+                                <td data-label="2025 Dues" style={{ textAlign: "right" }}>
+                                  <div style={{ fontWeight: 700, color: ch.dues2025Paid > 0 ? "#137459" : "#80868b" }}>
+                                    ${(ch.dues2025Paid || 0).toLocaleString()}
+                                  </div>
+                                  <div style={{ fontSize: "0.75rem", color: "#526359" }}>
+                                    Exp: ${(ch.dues2025Exp || 0).toLocaleString()} ({ch.members2025 || 0} mem)
+                                  </div>
+                                </td>
+
+                                {/* 2026 */}
+                                <td data-label="2026 Dues" style={{ textAlign: "right" }}>
+                                  <div style={{ fontWeight: 700, color: ch.dues2026Paid > 0 ? "#137459" : "#80868b" }}>
+                                    ${(ch.dues2026Paid || 0).toLocaleString()}
+                                  </div>
+                                  <div style={{ fontSize: "0.75rem", color: "#526359" }}>
+                                    Exp: ${(ch.dues2026Exp || 0).toLocaleString()} ({ch.members2026 || ch.memberCount || 0} mem)
+                                  </div>
+                                </td>
+
+                                {/* Dues Balance */}
+                                <td data-label="Dues Balance" style={{ textAlign: "right" }}>
+                                  <span
+                                    style={{
+                                      display: "inline-block",
+                                      padding: "4px 10px",
+                                      borderRadius: "6px",
+                                      fontWeight: 800,
+                                      fontSize: "0.85rem",
+                                      background: isDeficit ? "#fce8e6" : isSurplus ? "#e6f4ea" : "#e8f0fe",
+                                      color: isDeficit ? "#c5221f" : isSurplus ? "#137459" : "#1a73e8",
+                                    }}
+                                  >
+                                    {isDeficit
+                                      ? `-$${Math.abs(ch.duesBalance).toLocaleString()}`
+                                      : isSurplus
+                                      ? `+$${ch.duesBalance.toLocaleString()} Credit`
+                                      : "$0.00 Settled"}
+                                  </span>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                        <tfoot>
+                          <tr style={{ background: "#f0f8f3", fontWeight: 900 }}>
+                            <td data-label="Summary" colSpan={2} style={{ color: "#0e3d26", fontFamily: "var(--font-heading)" }}>
+                              AUDIT TOTAL (SUM)
+                            </td>
+                            <td data-label="2023 Total" style={{ textAlign: "right", color: "#137459" }}>
+                              ${total2023Paid.toLocaleString()}
+                              <div style={{ fontSize: "0.74rem", color: "#526359", fontWeight: 600 }}>Exp: ${total2023Exp.toLocaleString()}</div>
+                            </td>
+                            <td data-label="2024 Total" style={{ textAlign: "right", color: "#137459" }}>
+                              ${total2024Paid.toLocaleString()}
+                              <div style={{ fontSize: "0.74rem", color: "#526359", fontWeight: 600 }}>Exp: ${total2024Exp.toLocaleString()}</div>
+                            </td>
+                            <td data-label="2025 Total" style={{ textAlign: "right", color: "#137459" }}>
+                              ${total2025Paid.toLocaleString()}
+                              <div style={{ fontSize: "0.74rem", color: "#526359", fontWeight: 600 }}>Exp: ${total2025Exp.toLocaleString()}</div>
+                            </td>
+                            <td data-label="2026 Total" style={{ textAlign: "right", color: "#137459" }}>
+                              ${total2026Paid.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                              <div style={{ fontSize: "0.74rem", color: "#526359", fontWeight: 600 }}>Exp: ${total2026Exp.toLocaleString()}</div>
+                            </td>
+                            <td data-label="Net Balance Total" style={{ textAlign: "right", color: totalDuesBal < 0 ? "#c5221f" : "#137459", fontSize: "0.95rem" }}>
+                              {totalDuesBal < 0 ? `-$${Math.abs(totalDuesBal).toLocaleString("en-US", { minimumFractionDigits: 2 })}` : `+$${totalDuesBal.toLocaleString()}`}
+                            </td>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>
+                  )}
+
+                  {/* VIEW 2: INSURANCE & RAFFLE TABLE */}
+                  {chapterViewMode === "insurance" && (
+                    <div className="orgflo-table-wrap">
+                      <table className="orgflo-table orgflo-table-collapse">
+                        <thead>
+                          <tr>
+                            <th>Chapter Name</th>
+                            <th>Region</th>
+                            <th style={{ textAlign: "right" }}>2023 Insurance</th>
+                            <th style={{ textAlign: "right" }}>2024 Insurance</th>
+                            <th style={{ textAlign: "right" }}>2025 Insurance</th>
+                            <th style={{ textAlign: "right" }}>Insurance Total</th>
+                            <th style={{ textAlign: "center" }}>Raffle Status</th>
+                            <th style={{ textAlign: "right" }}>Raffle Paid</th>
+                            <th style={{ textAlign: "right" }}>Raffle Balance</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {chapters.map((ch) => (
+                            <tr key={ch.id}>
+                              <td data-label="Chapter" style={{ fontWeight: 800, color: "#0e3d26" }}>
+                                {ch.name}
+                                <small style={{ display: "block", color: "#526359", fontWeight: 500 }}>{ch.president}</small>
+                              </td>
+                              <td data-label="Region" style={{ color: "#526359" }}>{ch.region}</td>
+                              <td data-label="2023 Ins." style={{ textAlign: "right" }}>
+                                {ch.insurance2023Paid ? `$${ch.insurance2023Paid.toLocaleString()}` : "—"}
+                              </td>
+                              <td data-label="2024 Ins." style={{ textAlign: "right" }}>
+                                {ch.insurance2024Paid ? `$${ch.insurance2024Paid.toLocaleString()}` : "—"}
+                              </td>
+                              <td data-label="2025 Ins." style={{ textAlign: "right" }}>
+                                {ch.insurance2025Paid ? `$${ch.insurance2025Paid.toLocaleString()}` : "—"}
+                              </td>
+                              <td data-label="Insurance Total" style={{ textAlign: "right", fontWeight: 800, color: "#003e53" }}>
+                                {ch.insuranceTotal ? `$${ch.insuranceTotal.toLocaleString()}` : "—"}
+                              </td>
+                              <td data-label="Raffle Status" style={{ textAlign: "center" }}>
+                                <span
+                                  className={`badge ${
+                                    ch.raffleStatus === "Sent" ? "badge-active" : ch.raffleStatus === "Skipped" ? "badge-overdue" : ""
+                                  }`}
+                                  style={{ fontSize: "0.75rem" }}
+                                >
+                                  {ch.raffleStatus || "—"}
+                                </span>
+                              </td>
+                              <td data-label="Raffle Paid" style={{ textAlign: "right", fontWeight: 700, color: ch.rafflePaid > 0 ? "#b08000" : "#80868b" }}>
+                                {ch.rafflePaid ? `$${ch.rafflePaid.toLocaleString()}` : "—"}
+                              </td>
+                              <td data-label="Raffle Balance" style={{ textAlign: "right", fontWeight: 800, color: ch.raffleBalance > 0 ? "#c5221f" : "#137459" }}>
+                                {ch.raffleBalance ? `$${ch.raffleBalance.toLocaleString()}` : "$0"}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                        <tfoot>
+                          <tr style={{ background: "#f0f8f3", fontWeight: 900 }}>
+                            <td data-label="Summary" colSpan={2} style={{ color: "#0e3d26", fontFamily: "var(--font-heading)" }}>
+                              INSURANCE & RAFFLE TOTALS
+                            </td>
+                            <td data-label="Total 2023 Ins" style={{ textAlign: "right" }}>${totalIns2023.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                            <td data-label="Total 2024 Ins" style={{ textAlign: "right" }}>${totalIns2024.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                            <td data-label="Total 2025 Ins" style={{ textAlign: "right" }}>${totalIns2025.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                            <td data-label="Grand Ins Total" style={{ textAlign: "right", color: "#003e53", fontSize: "0.95rem" }}>
+                              ${totalIns.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                            </td>
+                            <td data-label="" />
+                            <td data-label="Total Raffle Paid" style={{ textAlign: "right", color: "#b08000" }}>${totalRafflePaid.toLocaleString()}</td>
+                            <td data-label="Total Raffle Balance" style={{ textAlign: "right", color: "#c5221f" }}>${totalRaffleBal.toLocaleString()}</td>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>
+                  )}
+
+                  {/* VIEW 3: EXECUTIVE DIRECTORY TABLE */}
+                  {chapterViewMode === "directory" && (
+                    <div className="orgflo-table-wrap">
+                      <table className="orgflo-table orgflo-table-collapse">
+                        <thead>
+                          <tr>
+                            <th>Chapter Name</th>
+                            <th>Region</th>
+                            <th>President & Leadership</th>
+                            <th>Contact Phone</th>
+                            <th>Email</th>
+                            <th>Active Members</th>
+                            <th style={{ textAlign: "right" }}>Dues Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {chapters.map((ch) => (
+                            <tr key={ch.id}>
+                              <td data-label="Chapter Name" style={{ fontWeight: 800, color: "#0e3d26" }}>{ch.name}</td>
+                              <td data-label="Region" style={{ color: "#526359" }}>{ch.region}</td>
+                              <td data-label="President" style={{ color: "#14211a", fontWeight: 600 }}>{ch.president}</td>
+                              <td data-label="Phone" style={{ color: "#526359" }}>{ch.contactPhone || "—"}</td>
+                              <td data-label="Email">
+                                <a href={`mailto:${ch.contactEmail}`} style={{ color: "#1a73e8", textDecoration: "none" }}>{ch.contactEmail}</a>
+                              </td>
+                              <td data-label="Members">
+                                <span className="badge badge-active">{ch.memberCount || ch.members2026 || 0} members</span>
+                              </td>
+                              <td data-label="Dues Status" style={{ textAlign: "right" }}>
+                                <span className={`badge ${(ch.duesBalance || 0) < 0 ? "badge-overdue" : "badge-active"}`}>
+                                  {(ch.duesBalance || 0) < 0 ? "Balance Owed" : "Settled / Credit"}
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-            </div>
-          )}
+            );
+          })()}
 
           {/* TAB 3: TRANSACTIONS & LEDGER */}
           {activeTab === "ledger" && (
@@ -2068,84 +2355,192 @@ ${meeting.transcript}
                     </div>
 
                     {ledgerSubTab === "income" && (
-                      <select
-                        value={categoryFilter}
-                        onChange={(e) => setCategoryFilter(e.target.value)}
-                        style={{
-                          padding: "8px 14px",
-                          borderRadius: "10px",
-                          border: "1.5px solid #dce8df",
-                          fontSize: "0.88rem",
-                          background: "#ffffff",
-                          fontWeight: 600,
-                          color: "#0e3d26",
-                        }}
-                      >
-                        <option value="all">All Categories</option>
-                        <option value="monthly_dues">Monthly Dues</option>
-                        <option value="donation">Donations</option>
-                        <option value="ticket">Tickets</option>
-                        <option value="merchandise">Merchandise</option>
-                      </select>
+                      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                        <select
+                          value={ledgerYearFilter}
+                          onChange={(e) => setLedgerYearFilter(e.target.value)}
+                          style={{
+                            padding: "8px 12px",
+                            borderRadius: "10px",
+                            border: "1.5px solid #dce8df",
+                            fontSize: "0.86rem",
+                            background: "#ffffff",
+                            fontWeight: 700,
+                            color: "#0e3d26",
+                          }}
+                        >
+                          <option value="all">All Years (2023–2025)</option>
+                          <option value="2025">2025 Transactions</option>
+                          <option value="2024">2024 Transactions</option>
+                          <option value="2023">2023 Transactions</option>
+                        </select>
+
+                        <select
+                          value={categoryFilter}
+                          onChange={(e) => setCategoryFilter(e.target.value)}
+                          style={{
+                            padding: "8px 12px",
+                            borderRadius: "10px",
+                            border: "1.5px solid #dce8df",
+                            fontSize: "0.86rem",
+                            background: "#ffffff",
+                            fontWeight: 600,
+                            color: "#0e3d26",
+                          }}
+                        >
+                          <option value="all">All Categories</option>
+                          <option value="monthly_dues">Chapter / Monthly Dues</option>
+                          <option value="donation">Donations & Adverts</option>
+                          <option value="ticket">Tickets & Gala</option>
+                          <option value="merchandise">Merchandise</option>
+                        </select>
+                      </div>
                     )}
                   </div>
                 </div>
               </div>
 
               {/* Transactions Table: Income */}
-              {ledgerSubTab === "income" && (
-                <div className="orgflo-card">
-                  <div className="orgflo-table-wrap">
-                    <table className="orgflo-table orgflo-table-collapse">
-                      <thead>
-                        <tr>
-                          <th>Date</th>
-                          <th>Donor / Member</th>
-                          <th>Chapter</th>
-                          <th>Category</th>
-                          <th>Description</th>
-                          <th>Payment Gateway</th>
-                          <th style={{ textAlign: "right" }}>Amount</th>
-                          {user.role === "admin" && <th style={{ textAlign: "right" }}>Actions</th>}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {filteredPayments.map((p) => (
-                          <tr key={p.id}>
-                            <td data-label="Date" style={{ color: "#526359", whiteSpace: "nowrap" }}>{p.date}</td>
-                            <td data-label="Donor / Member" style={{ fontWeight: 700, color: "#14211a" }}>{p.memberName}</td>
-                            <td data-label="Chapter" style={{ color: "#526359" }}>{p.chapterName}</td>
-                            <td data-label="Category">
-                              <span className="badge badge-active">{p.category.replace("_", " ")}</span>
-                            </td>
-                            <td data-label="Description" style={{ color: "#526359" }}>{p.description}</td>
-                            <td data-label="Gateway">
-                              <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "#137459", display: "inline-flex", alignItems: "center", gap: "4px" }}>
-                                <CreditCard size={13} /> Stripe Active
-                              </span>
-                            </td>
-                            <td data-label="Amount" style={{ textAlign: "right", fontWeight: 800, color: "#137333", fontSize: "0.95rem" }}>
-                              +${p.amount.toLocaleString()}
-                            </td>
-                            {user.role === "admin" && (
-                              <td data-label="Actions" style={{ textAlign: "right" }}>
-                                <button
-                                  type="button"
-                                  onClick={() => handleDeletePayment(p.id)}
-                                  style={{ background: "transparent", border: 0, color: "#c5221f", cursor: "pointer", padding: "6px" }}
-                                  title="Delete Transaction"
-                                >
-                                  <Trash2 size={16} />
-                                </button>
-                              </td>
-                            )}
+              {ledgerSubTab === "income" && (() => {
+                const filteredTotal = filteredPayments.reduce((sum, p) => sum + p.amount, 0);
+                return (
+                  <div className="orgflo-card">
+                    <div style={{ padding: "14px 20px", background: "#f8faf9", borderBottom: "1px solid #eef2f0", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
+                      <div style={{ fontSize: "0.88rem", fontWeight: 700, color: "#0e3d26" }}>
+                        Showing {filteredPayments.length} of {payments.length} Recorded Transactions
+                      </div>
+                      <div style={{ fontSize: "0.95rem", fontWeight: 900, color: "#137459", fontFamily: "var(--font-heading)" }}>
+                        Subtotal: ${filteredTotal.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                      </div>
+                    </div>
+
+                    <div className="orgflo-table-wrap">
+                      <table className="orgflo-table orgflo-table-collapse">
+                        <thead>
+                          <tr>
+                            <th>Date</th>
+                            <th>Customer / Payer</th>
+                            <th>Chapter</th>
+                            <th>Payment Method</th>
+                            <th>Memo & Confirmation #</th>
+                            <th style={{ textAlign: "right" }}>Amount</th>
+                            {user.role === "admin" && <th style={{ textAlign: "right" }}>Actions</th>}
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody>
+                          {filteredPayments.map((p) => {
+                            const isRefund = p.amount < 0;
+                            const methodLower = (p.paymentMethod || "").toLowerCase();
+                            let badgeBg = "#e6f4ea";
+                            let badgeColor = "#137459";
+                            let badgeLabel = "Zelle";
+
+                            if (methodLower.includes("counter_credit") || methodLower.includes("counter credit")) {
+                              badgeBg = "#e8f0fe";
+                              badgeColor = "#1a73e8";
+                              badgeLabel = "Counter Credit";
+                            } else if (methodLower.includes("wire")) {
+                              badgeBg = "#fef3e2";
+                              badgeColor = "#b08000";
+                              badgeLabel = "Wire Transfer";
+                            } else if (methodLower.includes("cash_app") || methodLower.includes("cash app")) {
+                              badgeBg = "#e0f2fe";
+                              badgeColor = "#0284c7";
+                              badgeLabel = "Cash App";
+                            } else if (methodLower.includes("mobile")) {
+                              badgeBg = "#ede9fe";
+                              badgeColor = "#7c3aed";
+                              badgeLabel = "Mobile Transfer";
+                            } else if (methodLower.includes("check")) {
+                              badgeBg = "#fce8e6";
+                              badgeColor = "#c5221f";
+                              badgeLabel = "Check / Refund";
+                            } else if (methodLower.includes("cash")) {
+                              badgeBg = "#ecfdf5";
+                              badgeColor = "#059669";
+                              badgeLabel = "Cash (Convention)";
+                            }
+
+                            return (
+                              <tr key={p.id}>
+                                <td data-label="Date" style={{ color: "#526359", whiteSpace: "nowrap", fontWeight: 600 }}>
+                                  {p.date}
+                                </td>
+                                <td data-label="Customer / Payer" style={{ fontWeight: 800, color: "#14211a" }}>
+                                  {p.memberName}
+                                </td>
+                                <td data-label="Chapter" style={{ color: "#0e3d26", fontWeight: 600 }}>
+                                  {p.chapterName}
+                                </td>
+                                <td data-label="Method">
+                                  <span
+                                    style={{
+                                      display: "inline-block",
+                                      padding: "3px 9px",
+                                      borderRadius: "6px",
+                                      fontSize: "0.76rem",
+                                      fontWeight: 800,
+                                      background: badgeBg,
+                                      color: badgeColor,
+                                      letterSpacing: "0.02em",
+                                    }}
+                                  >
+                                    {badgeLabel}
+                                  </span>
+                                </td>
+                                <td data-label="Memo" style={{ color: "#3c4043", fontSize: "0.84rem", maxWidth: "420px" }}>
+                                  <div>{p.description}</div>
+                                  {(p as any).confirmationNo && (
+                                    <span style={{ display: "inline-block", marginTop: "3px", fontSize: "0.72rem", background: "#f1f3f4", color: "#3c4043", padding: "1px 6px", borderRadius: "4px", fontFamily: "monospace", fontWeight: 700 }}>
+                                      Conf: {(p as any).confirmationNo}
+                                    </span>
+                                  )}
+                                </td>
+                                <td
+                                  data-label="Amount"
+                                  style={{
+                                    textAlign: "right",
+                                    fontWeight: 900,
+                                    color: isRefund ? "#c5221f" : "#137459",
+                                    fontSize: "0.96rem",
+                                    fontFamily: "var(--font-heading)",
+                                    whiteSpace: "nowrap",
+                                  }}
+                                >
+                                  {isRefund ? `-$${Math.abs(p.amount).toLocaleString("en-US", { minimumFractionDigits: 2 })}` : `+$${p.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}`}
+                                </td>
+                                {user.role === "admin" && (
+                                  <td data-label="Actions" style={{ textAlign: "right" }}>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDeletePayment(p.id)}
+                                      style={{ background: "transparent", border: 0, color: "#c5221f", cursor: "pointer", padding: "6px" }}
+                                      title="Delete Transaction"
+                                    >
+                                      <Trash2 size={16} />
+                                    </button>
+                                  </td>
+                                )}
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                        <tfoot>
+                          <tr style={{ background: "#f0f8f3", fontWeight: 900 }}>
+                            <td data-label="Summary" colSpan={5} style={{ color: "#0e3d26", fontFamily: "var(--font-heading)" }}>
+                              TOTAL RECORDED RECEIPTS (AUDIT SUM)
+                            </td>
+                            <td data-label="Grand Total" style={{ textAlign: "right", color: "#137459", fontSize: "1.05rem", fontFamily: "var(--font-heading)" }}>
+                              ${filteredTotal.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                            </td>
+                            {user.role === "admin" && <td />}
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>
                   </div>
-                </div>
-              )}
+                );
+              })()}
 
               {/* Transactions Table: Expenses */}
               {ledgerSubTab === "expenses" && (
@@ -2728,22 +3123,29 @@ ${meeting.transcript}
               Member → chapter selector dropdown, then cards + full table
           ============================================================ */}
           {activeTab === "balances" && (() => {
-            // Build balance data from chapters using actual ChapterData fields
+            // Build balance data from chapters using live Chapter audit fields
             const balanceData = chapters.map((ch) => {
-              const pb = ch.paymentsBreakdown;
-              // Expected annual amounts per member · UPUA standard rates
-              const expectedDues = ch.memberCount * 150;       // $150/member/yr dues
-              const expectedInsurance = ch.memberCount * 50;   // $50/member/yr insurance
-              const expectedDonations = ch.memberCount * 100;  // $100/member/yr donation pledge
-              const expectedTickets = ch.memberCount * 200;    // $200/member convention ticket
+              const duesBalOwed = (ch.duesBalance || 0) < 0 ? Math.abs(ch.duesBalance || 0) : 0;
+              const duesCredit = (ch.duesBalance || 0) > 0 ? (ch.duesBalance || 0) : 0;
+              const insuranceBal = ch.insuranceTotal || 0;
+              const ticketBal = ch.raffleBalance || 0;
+              const totalOwed = duesBalOwed + insuranceBal + ticketBal;
+
               return {
                 id: ch.id,
                 name: ch.name,
                 region: ch.region,
-                duesBal: Math.max(0, expectedDues - pb.monthlyDues),
-                insuranceBal: Math.max(0, expectedInsurance - Math.round(pb.monthlyDues * 0.28)),
-                donationBal: Math.max(0, expectedDonations - pb.donations),
-                ticketBal: Math.max(0, expectedTickets - pb.tickets),
+                president: ch.president,
+                contactPhone: ch.contactPhone,
+                duesBal: duesBalOwed,
+                duesCredit,
+                rawDuesBalance: ch.duesBalance || 0,
+                insuranceBal,
+                donationBal: 0,
+                ticketBal,
+                totalOwed,
+                raffleStatus: ch.raffleStatus || "—",
+                memberCount: ch.members2026 || ch.memberCount || 0,
               };
             });
 
@@ -2755,9 +3157,9 @@ ${meeting.transcript}
 
             const cardCategories = [
               { key: "duesBal", label: "Dues Balance", icon: <CreditCard size={22} color="#1a73e8" />, color: "#1a73e8", lightBg: "#e8f0fe" },
-              { key: "insuranceBal", label: "Insurance Balance", icon: <Shield size={22} color="#c5221f" />, color: "#c5221f", lightBg: "#fce8e6" },
-              { key: "donationBal", label: "Donation Balance", icon: <Heart size={22} color="#137459" />, color: "#137459", lightBg: "#e6f4ea" },
-              { key: "ticketBal", label: "Convention Ticket Bal.", icon: <Ticket size={22} color="#e37400" />, color: "#e37400", lightBg: "#fef3e2" },
+              { key: "insuranceBal", label: "Insurance Total", icon: <Shield size={22} color="#c5221f" />, color: "#c5221f", lightBg: "#fce8e6" },
+              { key: "ticketBal", label: "Raffle Ticket Bal.", icon: <Ticket size={22} color="#e37400" />, color: "#e37400", lightBg: "#fef3e2" },
+              { key: "totalOwed", label: "Total Obligation", icon: <DollarSign size={22} color="#137459" />, color: "#137459", lightBg: "#e6f4ea" },
             ] as const;
 
             return (
@@ -2766,13 +3168,13 @@ ${meeting.transcript}
                 <div className="dash-welcome-banner" style={{ marginBottom: "28px" }}>
                   <div style={{ zIndex: 1 }}>
                     <div style={{ fontSize: "0.78rem", color: "#a7d6b6", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "6px" }}>
-                      CHAPTER FINANCIAL STATUS
+                      CHAPTER FINANCIAL STATUS & AUDIT
                     </div>
                     <h2 style={{ fontFamily: "var(--font-heading)", fontSize: "1.7rem", fontWeight: 800, margin: "0 0 6px" }}>
                       Chapter Balances & Payments
                     </h2>
                     <p style={{ color: "#c3ded0", fontSize: "0.95rem", margin: 0 }}>
-                      View outstanding dues, insurance, donations, and convention ticket balances per chapter.
+                      Live audit balances of dues, insurance premiums, and raffle tickets across all accredited chapters.
                       {(user.role === "chapter" || user.role === "member") && " Click a card to make a payment."}
                     </p>
                   </div>
@@ -2789,7 +3191,7 @@ ${meeting.transcript}
                       value={balanceSelectedChapterId}
                       onChange={(e) => setBalanceSelectedChapterId(e.target.value)}
                       className="donation-input"
-                      style={{ display: "inline-block", width: "auto", minWidth: "220px", padding: "8px 14px" }}
+                      style={{ display: "inline-block", width: "auto", minWidth: "260px", padding: "8px 14px", fontWeight: 700, color: "#0e3d26" }}
                     >
                       {balanceData.map((b) => (
                         <option key={b.id} value={b.id}>{b.name} — {b.region}</option>
@@ -2802,17 +3204,21 @@ ${meeting.transcript}
                 {chapterForCards && (
                   <div style={{ marginBottom: "32px" }}>
                     <div style={{ fontWeight: 800, fontSize: "1.05rem", color: "#0e3d26", marginBottom: "16px", fontFamily: "var(--font-heading)" }}>
-                      {chapterForCards.name} — Outstanding Balances
+                      {chapterForCards.name} — Financial Audit Overview
                     </div>
                     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "18px" }}>
                       {cardCategories.map((cat) => {
                         const amount = chapterForCards[cat.key as keyof typeof chapterForCards] as number;
                         const isClickable = user.role === "chapter" || user.role === "member";
+                        const isDues = cat.key === "duesBal";
+                        const hasCredit = isDues && chapterForCards.duesCredit > 0;
+                        const displayAmount = hasCredit ? chapterForCards.duesCredit : amount;
+
                         return (
                           <div
                             key={cat.key}
                             onClick={() => {
-                              if (isClickable) {
+                              if (isClickable && amount > 0) {
                                 setBalancePayModal({
                                   open: true,
                                   chapterName: chapterForCards.name,
@@ -2828,35 +3234,37 @@ ${meeting.transcript}
                               padding: "24px 22px",
                               boxShadow: "0 2px 12px rgba(0,0,0,0.07)",
                               border: `2px solid ${isClickable ? cat.lightBg : "#f0f2f1"}`,
-                              cursor: isClickable ? "pointer" : "default",
+                              cursor: isClickable && amount > 0 ? "pointer" : "default",
                               transition: "all 0.2s ease",
                               position: "relative",
                               overflow: "hidden",
                             }}
-                            onMouseEnter={(e) => { if (isClickable) (e.currentTarget as HTMLDivElement).style.transform = "translateY(-3px)"; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 8px 28px rgba(0,0,0,0.13)"; }}
-                            onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)"; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 2px 12px rgba(0,0,0,0.07)"; }}
                           >
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
                               <div style={{ width: "42px", height: "42px", borderRadius: "10px", background: cat.lightBg, display: "flex", alignItems: "center", justifyContent: "center" }}>
                                 {cat.icon}
                               </div>
-                              {isClickable && (
+                              {isClickable && amount > 0 && (
                                 <span style={{ background: cat.lightBg, color: cat.color, fontSize: "0.72rem", fontWeight: 800, padding: "4px 10px", borderRadius: "9999px", letterSpacing: "0.04em" }}>
                                   PAY NOW
                                 </span>
                               )}
-                              {user.role === "admin" && (
-                                <span style={{ background: "#f0f2f1", color: "#5f6368", fontSize: "0.72rem", fontWeight: 700, padding: "4px 10px", borderRadius: "9999px" }}>
-                                  VIEW ONLY
+                              {hasCredit && (
+                                <span style={{ background: "#e6f4ea", color: "#137459", fontSize: "0.72rem", fontWeight: 800, padding: "4px 10px", borderRadius: "9999px" }}>
+                                  IN CREDIT
                                 </span>
                               )}
                             </div>
-                            <div style={{ fontSize: "1.9rem", fontWeight: 900, color: amount > 0 ? "#c5221f" : "#137459", fontFamily: "var(--font-heading)", lineHeight: 1.1, marginBottom: "6px" }}>
-                              ${amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                            <div style={{ fontSize: "1.9rem", fontWeight: 900, color: hasCredit ? "#137459" : amount > 0 ? "#c5221f" : "#137459", fontFamily: "var(--font-heading)", lineHeight: 1.1, marginBottom: "6px" }}>
+                              {hasCredit ? `+$${displayAmount.toLocaleString("en-US", { minimumFractionDigits: 2 })}` : `$${displayAmount.toLocaleString("en-US", { minimumFractionDigits: 2 })}`}
                             </div>
                             <div style={{ fontSize: "0.88rem", fontWeight: 700, color: "#3c4043" }}>{cat.label}</div>
                             <div style={{ fontSize: "0.78rem", color: "#80868b", marginTop: "4px" }}>
-                              {amount > 0 ? "Outstanding balance" : "Fully settled"}
+                              {hasCredit
+                                ? "Overpaid / Credit Balance"
+                                : amount > 0
+                                ? "Outstanding obligation"
+                                : "Fully settled / Paid"}
                             </div>
                             {/* Decorative stripe */}
                             <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "4px", background: cat.color, borderRadius: "0 0 14px 14px" }} />
@@ -2870,55 +3278,67 @@ ${meeting.transcript}
                 {/* All Chapters Balance Table */}
                 <div className="orgflo-card">
                   <div className="orgflo-card-header">
-                    <h3 style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "1.05rem", color: "#0e3d26", margin: 0 }}>
-                      All Chapter Outstanding Balances
-                    </h3>
-                    <span className="badge badge-active">National Overview</span>
+                    <div>
+                      <h3 style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "1.05rem", color: "#0e3d26", margin: 0 }}>
+                        All Chapter Audit Balances & Obligations
+                      </h3>
+                      <p style={{ margin: "2px 0 0", fontSize: "0.82rem", color: "#526359" }}>
+                        Official live audit figures across all accredited UPUA councils.
+                      </p>
+                    </div>
+                    <span className="badge badge-active">Live Audit Status</span>
                   </div>
                   <div className="orgflo-table-wrap">
                     <table className="orgflo-table orgflo-table-collapse">
                       <thead>
                         <tr>
-                          <th>Chapter</th>
+                          <th>Chapter & Leadership</th>
                           <th>Region</th>
-                          <th style={{ color: "#1a73e8" }}>Dues Bal.</th>
-                          <th style={{ color: "#c5221f" }}>Insurance Bal.</th>
-                          <th style={{ color: "#137459" }}>Donation Bal.</th>
-                          <th style={{ color: "#e37400" }}>Ticket Bal.</th>
-                          <th>Total Owed</th>
-                          <th>Status</th>
+                          <th style={{ textAlign: "center" }}>2026 Members</th>
+                          <th style={{ color: "#1a73e8", textAlign: "right" }}>Dues Balance</th>
+                          <th style={{ color: "#c5221f", textAlign: "right" }}>Insurance Total</th>
+                          <th style={{ color: "#e37400", textAlign: "right" }}>Raffle Balance</th>
+                          <th style={{ textAlign: "right" }}>Total Owed</th>
+                          <th style={{ textAlign: "center" }}>Status</th>
                         </tr>
                       </thead>
                       <tbody>
                         {balanceData.map((b) => {
-                          const total = b.duesBal + b.insuranceBal + b.donationBal + b.ticketBal;
+                          const hasCredit = b.duesCredit > 0;
                           return (
                             <tr key={b.id} style={{ fontWeight: b.id === chapterForCards?.id ? 700 : 400 }}>
                               <td data-label="Chapter">
-                                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                  <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: total > 0 ? "#c5221f" : "#137459", flexShrink: 0 }} />
-                                  {b.name}
+                                <div style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
+                                  <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: b.totalOwed > 0 ? "#c5221f" : "#137459", flexShrink: 0, marginTop: "6px" }} />
+                                  <div>
+                                    <div style={{ fontWeight: 800, color: "#0e3d26" }}>{b.name}</div>
+                                    <div style={{ fontSize: "0.8rem", color: "#526359" }}>{b.president}</div>
+                                  </div>
                                 </div>
                               </td>
-                              <td data-label="Region" style={{ color: "#5f6368", fontSize: "0.88rem" }}>{b.region}</td>
-                              <td data-label="Dues Bal." style={{ color: b.duesBal > 0 ? "#c5221f" : "#137459", fontWeight: 700 }}>
-                                {b.duesBal > 0 ? `$${b.duesBal.toLocaleString("en-US", { minimumFractionDigits: 2 })}` : "—"}
+                              <td data-label="Region" style={{ color: "#5f6368", fontSize: "0.86rem" }}>{b.region}</td>
+                              <td data-label="Members" style={{ textAlign: "center" }}>
+                                <span className="badge badge-active">{b.memberCount} mem</span>
                               </td>
-                              <td data-label="Insurance Bal." style={{ color: b.insuranceBal > 0 ? "#c5221f" : "#137459", fontWeight: 700 }}>
+                              <td data-label="Dues Bal." style={{ textAlign: "right", color: hasCredit ? "#137459" : b.duesBal > 0 ? "#c5221f" : "#137459", fontWeight: 700 }}>
+                                {hasCredit
+                                  ? `+$${b.duesCredit.toLocaleString("en-US", { minimumFractionDigits: 2 })} Cr`
+                                  : b.duesBal > 0
+                                  ? `-$${b.duesBal.toLocaleString("en-US", { minimumFractionDigits: 2 })}`
+                                  : "$0.00"}
+                              </td>
+                              <td data-label="Insurance Bal." style={{ textAlign: "right", color: b.insuranceBal > 0 ? "#003e53" : "#80868b", fontWeight: 700 }}>
                                 {b.insuranceBal > 0 ? `$${b.insuranceBal.toLocaleString("en-US", { minimumFractionDigits: 2 })}` : "—"}
                               </td>
-                              <td data-label="Donation Bal." style={{ color: b.donationBal > 0 ? "#c5221f" : "#137459", fontWeight: 700 }}>
-                                {b.donationBal > 0 ? `$${b.donationBal.toLocaleString("en-US", { minimumFractionDigits: 2 })}` : "—"}
-                              </td>
-                              <td data-label="Ticket Bal." style={{ color: b.ticketBal > 0 ? "#c5221f" : "#137459", fontWeight: 700 }}>
+                              <td data-label="Raffle Bal." style={{ textAlign: "right", color: b.ticketBal > 0 ? "#c5221f" : "#80868b", fontWeight: 700 }}>
                                 {b.ticketBal > 0 ? `$${b.ticketBal.toLocaleString("en-US", { minimumFractionDigits: 2 })}` : "—"}
                               </td>
-                              <td data-label="Total Owed" style={{ fontWeight: 900, fontSize: "1rem", color: total > 0 ? "#c5221f" : "#137459" }}>
-                                {total > 0 ? `$${total.toLocaleString("en-US", { minimumFractionDigits: 2 })}` : "$0.00"}
+                              <td data-label="Total Owed" style={{ textAlign: "right", fontWeight: 900, fontSize: "0.96rem", color: b.totalOwed > 0 ? "#c5221f" : "#137459" }}>
+                                {b.totalOwed > 0 ? `$${b.totalOwed.toLocaleString("en-US", { minimumFractionDigits: 2 })}` : "$0.00"}
                               </td>
-                              <td data-label="Status">
-                                <span className={`badge ${total > 0 ? "badge-overdue" : "badge-active"}`}>
-                                  {total > 0 ? "Outstanding" : "Settled"}
+                              <td data-label="Status" style={{ textAlign: "center" }}>
+                                <span className={`badge ${b.totalOwed > 0 ? "badge-overdue" : "badge-active"}`}>
+                                  {b.totalOwed > 0 ? "Outstanding" : "Settled"}
                                 </span>
                               </td>
                             </tr>
@@ -2927,12 +3347,21 @@ ${meeting.transcript}
                       </tbody>
                       <tfoot>
                         <tr style={{ background: "#f0f8f3", fontWeight: 900 }}>
-                          <td data-label="Summary" colSpan={2} style={{ color: "#0e3d26", fontFamily: "var(--font-heading)" }}>NATIONAL TOTAL</td>
-                          <td data-label="Total Dues Bal." style={{ color: "#1a73e8" }}>${balanceData.reduce((s, b) => s + b.duesBal, 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
-                          <td data-label="Total Insurance Bal." style={{ color: "#c5221f" }}>${balanceData.reduce((s, b) => s + b.insuranceBal, 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
-                          <td data-label="Total Donation Bal." style={{ color: "#137459" }}>${balanceData.reduce((s, b) => s + b.donationBal, 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
-                          <td data-label="Total Ticket Bal." style={{ color: "#e37400" }}>${balanceData.reduce((s, b) => s + b.ticketBal, 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
-                          <td data-label="Grand Total Owed" style={{ color: "#c5221f", fontSize: "1.05rem" }}>${balanceData.reduce((s, b) => s + b.duesBal + b.insuranceBal + b.donationBal + b.ticketBal, 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                          <td data-label="Summary" colSpan={3} style={{ color: "#0e3d26", fontFamily: "var(--font-heading)" }}>
+                            NATIONAL AUDIT TOTAL
+                          </td>
+                          <td data-label="Total Dues Bal." style={{ textAlign: "right", color: "#c5221f" }}>
+                            -${Math.abs(balanceData.reduce((s, b) => s + b.rawDuesBalance, 0)).toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                          </td>
+                          <td data-label="Total Insurance" style={{ textAlign: "right", color: "#003e53" }}>
+                            ${balanceData.reduce((s, b) => s + b.insuranceBal, 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                          </td>
+                          <td data-label="Total Raffle" style={{ textAlign: "right", color: "#c5221f" }}>
+                            ${balanceData.reduce((s, b) => s + b.ticketBal, 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                          </td>
+                          <td data-label="Grand Total Owed" style={{ textAlign: "right", color: "#c5221f", fontSize: "1.05rem" }}>
+                            ${balanceData.reduce((s, b) => s + b.totalOwed, 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                          </td>
                           <td data-label="" />
                         </tr>
                       </tfoot>

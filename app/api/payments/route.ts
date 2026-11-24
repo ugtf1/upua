@@ -26,11 +26,17 @@ export async function GET(request: Request) {
       const payments = await prisma.payment.findMany({
         where,
         include: { chapter: true, member: true },
-        orderBy: { createdAt: "desc" },
+        orderBy: [{ date: "desc" }, { createdAt: "desc" }],
       });
 
       if (payments.length > 0) {
-        return NextResponse.json({ success: true, data: payments });
+        return NextResponse.json({
+          success: true,
+          data: payments.map((p: any) => ({
+            ...p,
+            chapterName: p.chapter?.name || "General Chapter",
+          })),
+        });
       }
     }
 

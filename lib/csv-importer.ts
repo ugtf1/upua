@@ -411,7 +411,7 @@ export async function processChaptersImport(
   dryRun: boolean
 ): Promise<ImportResult> {
   const errors: RowError[] = [];
-  const validRecords: Omit<ChapterData, "paymentsBreakdown">[] = [];
+  const validRecords: (Partial<ChapterData> & Pick<ChapterData, "id" | "name" | "code" | "region" | "president" | "contactEmail" | "memberCount">)[] = [];
 
   rows.forEach((row, idx) => {
     const rowNum = idx + 2;

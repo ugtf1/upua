@@ -25,7 +25,24 @@ export async function GET(request: Request) {
       const chapters = await prisma.chapter.findMany({
         orderBy: { name: "asc" },
       });
-      return NextResponse.json({ success: true, data: chapters });
+      const formatted = chapters.map((ch: any) => {
+        const totalDuesPaid =
+          (ch.dues2023Paid || 0) +
+          (ch.dues2024Paid || 0) +
+          (ch.dues2025Paid || 0) +
+          (ch.dues2026Paid || 0);
+        return {
+          ...ch,
+          paymentsBreakdown: {
+            monthlyDues: totalDuesPaid,
+            donations: 0,
+            tickets: ch.rafflePaid || 0,
+            merchandise: 0,
+            total: totalDuesPaid + (ch.rafflePaid || 0),
+          },
+        };
+      });
+      return NextResponse.json({ success: true, data: formatted });
     }
 
     if (id) {

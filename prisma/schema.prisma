@@ -25,18 +25,53 @@ model User {
 }
 
 model Chapter {
-  id           String    @id
-  name         String
-  code         String    @unique
-  region       String
-  president    String
-  contactEmail String
-  memberCount  Int       @default(0)
-  website      String?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  members      Member[]
-  payments     Payment[]
+  id                    String    @id
+  name                  String
+  code                  String    @unique
+  region                String
+  president             String
+  contactPhone          String?
+  contactEmail          String
+  memberCount           Int       @default(0)
+  website               String?
+
+  // Multi-Year Dues & Member Counts from official audit
+  members2023           Float     @default(0)
+  dues2023Exp           Float     @default(0)
+  dues2023Paid          Float     @default(0)
+
+  members2024           Float     @default(0)
+  dues2024Exp           Float     @default(0)
+  dues2024Paid          Float     @default(0)
+
+  members2025           Float     @default(0)
+  dues2025Exp           Float     @default(0)
+  dues2025Paid          Float     @default(0)
+
+  members2026           Float     @default(0)
+  dues2026Exp           Float     @default(0)
+  dues2026Paid          Float     @default(0)
+
+  // Net Dues Balance
+  duesBalance           Float     @default(0)
+
+  // Insurance Premiums
+  insurance2023Paid     Float     @default(0)
+  insurance2024Paid     Float     @default(0)
+  insurance2025Paid     Float     @default(0)
+  insuranceTotal        Float     @default(0)
+  insuranceColonial     Float     @default(0)
+
+  // Raffle Tickets
+  raffleStatus          String?   @default("Sent")
+  raffleSent            Float     @default(0)
+  rafflePaid            Float     @default(0)
+  raffleBalance         Float     @default(0)
+
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  members               Member[]
+  payments              Payment[]
 }
 
 model Member {
@@ -66,7 +101,8 @@ model Payment {
   amount                Float
   date                  String   // ISO YYYY-MM-DD
   description           String
-  paymentMethod         String   @default("stripe") // "stripe" | "card" | "bank_transfer"
+  paymentMethod         String   @default("zelle") // "zelle" | "counter_credit" | "wire" | "check" | "cash_app" | "cash" | "stripe"
+  confirmationNo        String?
   stripePaymentIntentId String?
   status                String   @default("completed") // "completed" | "pending" | "failed"
   createdAt             DateTime @default(now())
