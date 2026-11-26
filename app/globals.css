@@ -4419,6 +4419,30 @@ a {
   vertical-align: middle;
 }
 
+/* Compact Table Fit — prevents horizontal scrolling and fits clean on screen */
+.orgflo-table-compact {
+  width: 100%;
+  table-layout: auto;
+}
+
+.orgflo-table-compact thead th {
+  padding: 10px 12px !important;
+  font-size: 0.73rem !important;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.orgflo-table-compact tbody td {
+  padding: 9px 12px !important;
+  font-size: 0.82rem !important;
+  line-height: 1.35;
+}
+
+.orgflo-table-compact tfoot td {
+  padding: 10px 12px !important;
+  font-size: 0.84rem !important;
+}
+
 /* Responsive Media Queries matching OrgFlo */
 @media (max-width: 900px) {
   .app-sidebar {

@@ -1998,16 +1998,16 @@ ${meeting.transcript}
                   {/* VIEW 1: MULTI-YEAR DUES AUDIT TABLE */}
                   {chapterViewMode === "audit" && (
                     <div className="orgflo-table-wrap">
-                      <table className="orgflo-table orgflo-table-collapse">
+                      <table className="orgflo-table orgflo-table-compact orgflo-table-collapse">
                         <thead>
                           <tr>
-                            <th>Chapter & President</th>
-                            <th>Region</th>
-                            <th style={{ textAlign: "right" }}>2023 Dues (Paid/Exp)</th>
-                            <th style={{ textAlign: "right" }}>2024 Dues (Paid/Exp)</th>
-                            <th style={{ textAlign: "right" }}>2025 Dues (Paid/Exp)</th>
-                            <th style={{ textAlign: "right" }}>2026 Dues (Q1-3)</th>
-                            <th style={{ textAlign: "right" }}>Dues Balance</th>
+                            <th style={{ width: "26%" }}>Chapter & Leadership</th>
+                            <th style={{ width: "11%" }}>Region</th>
+                            <th style={{ textAlign: "right", width: "13%" }}>2023 Dues</th>
+                            <th style={{ textAlign: "right", width: "13%" }}>2024 Dues</th>
+                            <th style={{ textAlign: "right", width: "13%" }}>2025 Dues</th>
+                            <th style={{ textAlign: "right", width: "11%" }}>2026 Dues</th>
+                            <th style={{ textAlign: "right", width: "13%" }}>Net Balance</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -2017,63 +2017,60 @@ ${meeting.transcript}
                             return (
                               <tr key={ch.id}>
                                 <td data-label="Chapter">
-                                  <div style={{ fontWeight: 800, color: "#0e3d26" }}>{ch.name}</div>
-                                  <div style={{ fontSize: "0.82rem", color: "#14211a", fontWeight: 600 }}>{ch.president}</div>
-                                  {ch.contactPhone && (
-                                    <div style={{ fontSize: "0.78rem", color: "#526359" }}>{ch.contactPhone}</div>
-                                  )}
+                                  <div style={{ fontWeight: 800, color: "#0e3d26", fontSize: "0.85rem" }}>{ch.name}</div>
+                                  <div style={{ fontSize: "0.76rem", color: "#526359", fontWeight: 600 }}>{ch.president}</div>
                                 </td>
-                                <td data-label="Region" style={{ color: "#526359", fontSize: "0.85rem" }}>{ch.region}</td>
+                                <td data-label="Region" style={{ color: "#526359", fontSize: "0.8rem", whiteSpace: "nowrap" }}>{ch.region}</td>
 
                                 {/* 2023 */}
                                 <td data-label="2023 Dues" style={{ textAlign: "right" }}>
-                                  <div style={{ fontWeight: 700, color: ch.dues2023Paid > 0 ? "#137459" : "#80868b" }}>
+                                  <div style={{ fontWeight: 700, color: ch.dues2023Paid > 0 ? "#137459" : "#80868b", fontSize: "0.84rem" }}>
                                     ${(ch.dues2023Paid || 0).toLocaleString()}
                                   </div>
-                                  <div style={{ fontSize: "0.75rem", color: "#526359" }}>
-                                    Exp: ${(ch.dues2023Exp || 0).toLocaleString()} ({ch.members2023 || 0} mem)
+                                  <div style={{ fontSize: "0.71rem", color: "#80868b" }}>
+                                    Exp: ${(ch.dues2023Exp || 0).toLocaleString()} ({ch.members2023 || 0}m)
                                   </div>
                                 </td>
 
                                 {/* 2024 */}
                                 <td data-label="2024 Dues" style={{ textAlign: "right" }}>
-                                  <div style={{ fontWeight: 700, color: ch.dues2024Paid > 0 ? "#137459" : "#80868b" }}>
+                                  <div style={{ fontWeight: 700, color: ch.dues2024Paid > 0 ? "#137459" : "#80868b", fontSize: "0.84rem" }}>
                                     ${(ch.dues2024Paid || 0).toLocaleString()}
                                   </div>
-                                  <div style={{ fontSize: "0.75rem", color: "#526359" }}>
-                                    Exp: ${(ch.dues2024Exp || 0).toLocaleString()} ({ch.members2024 || 0} mem)
+                                  <div style={{ fontSize: "0.71rem", color: "#80868b" }}>
+                                    Exp: ${(ch.dues2024Exp || 0).toLocaleString()} ({ch.members2024 || 0}m)
                                   </div>
                                 </td>
 
                                 {/* 2025 */}
                                 <td data-label="2025 Dues" style={{ textAlign: "right" }}>
-                                  <div style={{ fontWeight: 700, color: ch.dues2025Paid > 0 ? "#137459" : "#80868b" }}>
+                                  <div style={{ fontWeight: 700, color: ch.dues2025Paid > 0 ? "#137459" : "#80868b", fontSize: "0.84rem" }}>
                                     ${(ch.dues2025Paid || 0).toLocaleString()}
                                   </div>
-                                  <div style={{ fontSize: "0.75rem", color: "#526359" }}>
-                                    Exp: ${(ch.dues2025Exp || 0).toLocaleString()} ({ch.members2025 || 0} mem)
+                                  <div style={{ fontSize: "0.71rem", color: "#80868b" }}>
+                                    Exp: ${(ch.dues2025Exp || 0).toLocaleString()} ({ch.members2025 || 0}m)
                                   </div>
                                 </td>
 
                                 {/* 2026 */}
                                 <td data-label="2026 Dues" style={{ textAlign: "right" }}>
-                                  <div style={{ fontWeight: 700, color: ch.dues2026Paid > 0 ? "#137459" : "#80868b" }}>
+                                  <div style={{ fontWeight: 700, color: ch.dues2026Paid > 0 ? "#137459" : "#80868b", fontSize: "0.84rem" }}>
                                     ${(ch.dues2026Paid || 0).toLocaleString()}
                                   </div>
-                                  <div style={{ fontSize: "0.75rem", color: "#526359" }}>
-                                    Exp: ${(ch.dues2026Exp || 0).toLocaleString()} ({ch.members2026 || ch.memberCount || 0} mem)
+                                  <div style={{ fontSize: "0.71rem", color: "#80868b" }}>
+                                    Exp: ${(ch.dues2026Exp || 0).toLocaleString()}
                                   </div>
                                 </td>
 
                                 {/* Dues Balance */}
-                                <td data-label="Dues Balance" style={{ textAlign: "right" }}>
+                                <td data-label="Dues Balance" style={{ textAlign: "right", whiteSpace: "nowrap" }}>
                                   <span
                                     style={{
                                       display: "inline-block",
-                                      padding: "4px 10px",
+                                      padding: "3px 8px",
                                       borderRadius: "6px",
                                       fontWeight: 800,
-                                      fontSize: "0.85rem",
+                                      fontSize: "0.8rem",
                                       background: isDeficit ? "#fce8e6" : isSurplus ? "#e6f4ea" : "#e8f0fe",
                                       color: isDeficit ? "#c5221f" : isSurplus ? "#137459" : "#1a73e8",
                                     }}
@@ -2081,8 +2078,8 @@ ${meeting.transcript}
                                     {isDeficit
                                       ? `-$${Math.abs(ch.duesBalance).toLocaleString()}`
                                       : isSurplus
-                                      ? `+$${ch.duesBalance.toLocaleString()} Credit`
-                                      : "$0.00 Settled"}
+                                      ? `+$${ch.duesBalance.toLocaleString()} Cr`
+                                      : "$0.00"}
                                   </span>
                                 </td>
                               </tr>
@@ -2096,21 +2093,21 @@ ${meeting.transcript}
                             </td>
                             <td data-label="2023 Total" style={{ textAlign: "right", color: "#137459" }}>
                               ${total2023Paid.toLocaleString()}
-                              <div style={{ fontSize: "0.74rem", color: "#526359", fontWeight: 600 }}>Exp: ${total2023Exp.toLocaleString()}</div>
+                              <div style={{ fontSize: "0.71rem", color: "#526359", fontWeight: 600 }}>Exp: ${total2023Exp.toLocaleString()}</div>
                             </td>
                             <td data-label="2024 Total" style={{ textAlign: "right", color: "#137459" }}>
                               ${total2024Paid.toLocaleString()}
-                              <div style={{ fontSize: "0.74rem", color: "#526359", fontWeight: 600 }}>Exp: ${total2024Exp.toLocaleString()}</div>
+                              <div style={{ fontSize: "0.71rem", color: "#526359", fontWeight: 600 }}>Exp: ${total2024Exp.toLocaleString()}</div>
                             </td>
                             <td data-label="2025 Total" style={{ textAlign: "right", color: "#137459" }}>
                               ${total2025Paid.toLocaleString()}
-                              <div style={{ fontSize: "0.74rem", color: "#526359", fontWeight: 600 }}>Exp: ${total2025Exp.toLocaleString()}</div>
+                              <div style={{ fontSize: "0.71rem", color: "#526359", fontWeight: 600 }}>Exp: ${total2025Exp.toLocaleString()}</div>
                             </td>
                             <td data-label="2026 Total" style={{ textAlign: "right", color: "#137459" }}>
                               ${total2026Paid.toLocaleString("en-US", { minimumFractionDigits: 2 })}
-                              <div style={{ fontSize: "0.74rem", color: "#526359", fontWeight: 600 }}>Exp: ${total2026Exp.toLocaleString()}</div>
+                              <div style={{ fontSize: "0.71rem", color: "#526359", fontWeight: 600 }}>Exp: ${total2026Exp.toLocaleString()}</div>
                             </td>
-                            <td data-label="Net Balance Total" style={{ textAlign: "right", color: totalDuesBal < 0 ? "#c5221f" : "#137459", fontSize: "0.95rem" }}>
+                            <td data-label="Net Balance Total" style={{ textAlign: "right", color: totalDuesBal < 0 ? "#c5221f" : "#137459", fontSize: "0.9rem" }}>
                               {totalDuesBal < 0 ? `-$${Math.abs(totalDuesBal).toLocaleString("en-US", { minimumFractionDigits: 2 })}` : `+$${totalDuesBal.toLocaleString()}`}
                             </td>
                           </tr>
@@ -2122,38 +2119,38 @@ ${meeting.transcript}
                   {/* VIEW 2: INSURANCE & RAFFLE TABLE */}
                   {chapterViewMode === "insurance" && (
                     <div className="orgflo-table-wrap">
-                      <table className="orgflo-table orgflo-table-collapse">
+                      <table className="orgflo-table orgflo-table-compact orgflo-table-collapse">
                         <thead>
                           <tr>
-                            <th>Chapter Name</th>
-                            <th>Region</th>
-                            <th style={{ textAlign: "right" }}>2023 Insurance</th>
-                            <th style={{ textAlign: "right" }}>2024 Insurance</th>
-                            <th style={{ textAlign: "right" }}>2025 Insurance</th>
-                            <th style={{ textAlign: "right" }}>Insurance Total</th>
-                            <th style={{ textAlign: "center" }}>Raffle Status</th>
-                            <th style={{ textAlign: "right" }}>Raffle Paid</th>
-                            <th style={{ textAlign: "right" }}>Raffle Balance</th>
+                            <th style={{ width: "24%" }}>Chapter Name</th>
+                            <th style={{ width: "10%" }}>Region</th>
+                            <th style={{ textAlign: "right", width: "10%" }}>2023 Ins.</th>
+                            <th style={{ textAlign: "right", width: "10%" }}>2024 Ins.</th>
+                            <th style={{ textAlign: "right", width: "10%" }}>2025 Ins.</th>
+                            <th style={{ textAlign: "right", width: "12%" }}>Total Ins.</th>
+                            <th style={{ textAlign: "center", width: "8%" }}>Status</th>
+                            <th style={{ textAlign: "right", width: "8%" }}>Raffle Paid</th>
+                            <th style={{ textAlign: "right", width: "8%" }}>Raffle Bal.</th>
                           </tr>
                         </thead>
                         <tbody>
                           {chapters.map((ch) => (
                             <tr key={ch.id}>
-                              <td data-label="Chapter" style={{ fontWeight: 800, color: "#0e3d26" }}>
+                              <td data-label="Chapter" style={{ fontWeight: 800, color: "#0e3d26", fontSize: "0.85rem" }}>
                                 {ch.name}
-                                <small style={{ display: "block", color: "#526359", fontWeight: 500 }}>{ch.president}</small>
+                                <small style={{ display: "block", color: "#526359", fontWeight: 500, fontSize: "0.75rem" }}>{ch.president}</small>
                               </td>
-                              <td data-label="Region" style={{ color: "#526359" }}>{ch.region}</td>
-                              <td data-label="2023 Ins." style={{ textAlign: "right" }}>
+                              <td data-label="Region" style={{ color: "#526359", fontSize: "0.8rem", whiteSpace: "nowrap" }}>{ch.region}</td>
+                              <td data-label="2023 Ins." style={{ textAlign: "right", fontSize: "0.82rem" }}>
                                 {ch.insurance2023Paid ? `$${ch.insurance2023Paid.toLocaleString()}` : "—"}
                               </td>
-                              <td data-label="2024 Ins." style={{ textAlign: "right" }}>
+                              <td data-label="2024 Ins." style={{ textAlign: "right", fontSize: "0.82rem" }}>
                                 {ch.insurance2024Paid ? `$${ch.insurance2024Paid.toLocaleString()}` : "—"}
                               </td>
-                              <td data-label="2025 Ins." style={{ textAlign: "right" }}>
+                              <td data-label="2025 Ins." style={{ textAlign: "right", fontSize: "0.82rem" }}>
                                 {ch.insurance2025Paid ? `$${ch.insurance2025Paid.toLocaleString()}` : "—"}
                               </td>
-                              <td data-label="Insurance Total" style={{ textAlign: "right", fontWeight: 800, color: "#003e53" }}>
+                              <td data-label="Insurance Total" style={{ textAlign: "right", fontWeight: 800, color: "#003e53", fontSize: "0.85rem" }}>
                                 {ch.insuranceTotal ? `$${ch.insuranceTotal.toLocaleString()}` : "—"}
                               </td>
                               <td data-label="Raffle Status" style={{ textAlign: "center" }}>
@@ -2161,15 +2158,15 @@ ${meeting.transcript}
                                   className={`badge ${
                                     ch.raffleStatus === "Sent" ? "badge-active" : ch.raffleStatus === "Skipped" ? "badge-overdue" : ""
                                   }`}
-                                  style={{ fontSize: "0.75rem" }}
+                                  style={{ fontSize: "0.72rem", padding: "2px 6px" }}
                                 >
                                   {ch.raffleStatus || "—"}
                                 </span>
                               </td>
-                              <td data-label="Raffle Paid" style={{ textAlign: "right", fontWeight: 700, color: ch.rafflePaid > 0 ? "#b08000" : "#80868b" }}>
+                              <td data-label="Raffle Paid" style={{ textAlign: "right", fontWeight: 700, color: ch.rafflePaid > 0 ? "#b08000" : "#80868b", fontSize: "0.82rem" }}>
                                 {ch.rafflePaid ? `$${ch.rafflePaid.toLocaleString()}` : "—"}
                               </td>
-                              <td data-label="Raffle Balance" style={{ textAlign: "right", fontWeight: 800, color: ch.raffleBalance > 0 ? "#c5221f" : "#137459" }}>
+                              <td data-label="Raffle Balance" style={{ textAlign: "right", fontWeight: 800, color: ch.raffleBalance > 0 ? "#c5221f" : "#137459", fontSize: "0.82rem" }}>
                                 {ch.raffleBalance ? `$${ch.raffleBalance.toLocaleString()}` : "$0"}
                               </td>
                             </tr>
@@ -2183,7 +2180,7 @@ ${meeting.transcript}
                             <td data-label="Total 2023 Ins" style={{ textAlign: "right" }}>${totalIns2023.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
                             <td data-label="Total 2024 Ins" style={{ textAlign: "right" }}>${totalIns2024.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
                             <td data-label="Total 2025 Ins" style={{ textAlign: "right" }}>${totalIns2025.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
-                            <td data-label="Grand Ins Total" style={{ textAlign: "right", color: "#003e53", fontSize: "0.95rem" }}>
+                            <td data-label="Grand Ins Total" style={{ textAlign: "right", color: "#003e53", fontSize: "0.92rem" }}>
                               ${totalIns.toLocaleString("en-US", { minimumFractionDigits: 2 })}
                             </td>
                             <td data-label="" />
@@ -2195,36 +2192,32 @@ ${meeting.transcript}
                     </div>
                   )}
 
-                  {/* VIEW 3: EXECUTIVE DIRECTORY TABLE */}
+                  {/* VIEW 3: EXECUTIVE DIRECTORY TABLE (Email column removed to fit cleanly on screen) */}
                   {chapterViewMode === "directory" && (
                     <div className="orgflo-table-wrap">
-                      <table className="orgflo-table orgflo-table-collapse">
+                      <table className="orgflo-table orgflo-table-compact orgflo-table-collapse">
                         <thead>
                           <tr>
-                            <th>Chapter Name</th>
-                            <th>Region</th>
-                            <th>President & Leadership</th>
-                            <th>Contact Phone</th>
-                            <th>Email</th>
-                            <th>Active Members</th>
-                            <th style={{ textAlign: "right" }}>Dues Status</th>
+                            <th style={{ width: "28%" }}>Chapter Name</th>
+                            <th style={{ width: "12%" }}>Region</th>
+                            <th style={{ width: "26%" }}>President & Leadership</th>
+                            <th style={{ width: "16%" }}>Contact Phone</th>
+                            <th style={{ width: "10%" }}>Active Members</th>
+                            <th style={{ textAlign: "right", width: "8%" }}>Dues Status</th>
                           </tr>
                         </thead>
                         <tbody>
                           {chapters.map((ch) => (
                             <tr key={ch.id}>
-                              <td data-label="Chapter Name" style={{ fontWeight: 800, color: "#0e3d26" }}>{ch.name}</td>
-                              <td data-label="Region" style={{ color: "#526359" }}>{ch.region}</td>
-                              <td data-label="President" style={{ color: "#14211a", fontWeight: 600 }}>{ch.president}</td>
-                              <td data-label="Phone" style={{ color: "#526359" }}>{ch.contactPhone || "—"}</td>
-                              <td data-label="Email">
-                                <a href={`mailto:${ch.contactEmail}`} style={{ color: "#1a73e8", textDecoration: "none" }}>{ch.contactEmail}</a>
-                              </td>
+                              <td data-label="Chapter Name" style={{ fontWeight: 800, color: "#0e3d26", fontSize: "0.86rem" }}>{ch.name}</td>
+                              <td data-label="Region" style={{ color: "#526359", fontSize: "0.82rem" }}>{ch.region}</td>
+                              <td data-label="President" style={{ color: "#14211a", fontWeight: 600, fontSize: "0.84rem" }}>{ch.president}</td>
+                              <td data-label="Phone" style={{ color: "#526359", fontSize: "0.82rem", whiteSpace: "nowrap" }}>{ch.contactPhone || "—"}</td>
                               <td data-label="Members">
-                                <span className="badge badge-active">{ch.memberCount || ch.members2026 || 0} members</span>
+                                <span className="badge badge-active" style={{ fontSize: "0.75rem", padding: "3px 8px" }}>{ch.memberCount || ch.members2026 || 0} mem</span>
                               </td>
                               <td data-label="Dues Status" style={{ textAlign: "right" }}>
-                                <span className={`badge ${(ch.duesBalance || 0) < 0 ? "badge-overdue" : "badge-active"}`}>
+                                <span className={`badge ${(ch.duesBalance || 0) < 0 ? "badge-overdue" : "badge-active"}`} style={{ fontSize: "0.75rem", padding: "3px 8px" }}>
                                   {(ch.duesBalance || 0) < 0 ? "Balance Owed" : "Settled / Credit"}
                                 </span>
                               </td>
@@ -2415,16 +2408,15 @@ ${meeting.transcript}
                     </div>
 
                     <div className="orgflo-table-wrap">
-                      <table className="orgflo-table orgflo-table-collapse">
+                      <table className="orgflo-table orgflo-table-compact orgflo-table-collapse">
                         <thead>
                           <tr>
-                            <th>Date</th>
-                            <th>Customer / Payer</th>
-                            <th>Chapter</th>
-                            <th>Payment Method</th>
-                            <th>Memo & Confirmation #</th>
-                            <th style={{ textAlign: "right" }}>Amount</th>
-                            {user.role === "admin" && <th style={{ textAlign: "right" }}>Actions</th>}
+                            <th style={{ width: "11%" }}>Date</th>
+                            <th style={{ width: "26%" }}>Customer & Chapter</th>
+                            <th style={{ width: "13%" }}>Payment Method</th>
+                            <th style={{ width: "32%" }}>Memo & Confirmation #</th>
+                            <th style={{ textAlign: "right", width: "14%" }}>Amount</th>
+                            {user.role === "admin" && <th style={{ textAlign: "right", width: "4%" }}></th>}
                           </tr>
                         </thead>
                         <tbody>
@@ -2463,35 +2455,38 @@ ${meeting.transcript}
 
                             return (
                               <tr key={p.id}>
-                                <td data-label="Date" style={{ color: "#526359", whiteSpace: "nowrap", fontWeight: 600 }}>
+                                <td data-label="Date" style={{ color: "#526359", whiteSpace: "nowrap", fontWeight: 600, fontSize: "0.82rem" }}>
                                   {p.date}
                                 </td>
-                                <td data-label="Customer / Payer" style={{ fontWeight: 800, color: "#14211a" }}>
-                                  {p.memberName}
-                                </td>
-                                <td data-label="Chapter" style={{ color: "#0e3d26", fontWeight: 600 }}>
-                                  {p.chapterName}
+                                <td data-label="Customer & Chapter">
+                                  <div style={{ fontWeight: 800, color: "#14211a", fontSize: "0.85rem" }}>
+                                    {p.memberName}
+                                  </div>
+                                  <div style={{ fontSize: "0.75rem", color: "#137459", fontWeight: 600 }}>
+                                    {p.chapterName}
+                                  </div>
                                 </td>
                                 <td data-label="Method">
                                   <span
                                     style={{
                                       display: "inline-block",
-                                      padding: "3px 9px",
-                                      borderRadius: "6px",
-                                      fontSize: "0.76rem",
+                                      padding: "2px 7px",
+                                      borderRadius: "5px",
+                                      fontSize: "0.74rem",
                                       fontWeight: 800,
                                       background: badgeBg,
                                       color: badgeColor,
-                                      letterSpacing: "0.02em",
+                                      letterSpacing: "0.01em",
+                                      whiteSpace: "nowrap",
                                     }}
                                   >
                                     {badgeLabel}
                                   </span>
                                 </td>
-                                <td data-label="Memo" style={{ color: "#3c4043", fontSize: "0.84rem", maxWidth: "420px" }}>
+                                <td data-label="Memo" style={{ color: "#3c4043", fontSize: "0.8rem", maxWidth: "260px", wordBreak: "break-word" }}>
                                   <div>{p.description}</div>
                                   {(p as any).confirmationNo && (
-                                    <span style={{ display: "inline-block", marginTop: "3px", fontSize: "0.72rem", background: "#f1f3f4", color: "#3c4043", padding: "1px 6px", borderRadius: "4px", fontFamily: "monospace", fontWeight: 700 }}>
+                                    <span style={{ display: "inline-block", marginTop: "2px", fontSize: "0.7rem", background: "#f1f3f4", color: "#3c4043", padding: "1px 5px", borderRadius: "3px", fontFamily: "monospace", fontWeight: 700 }}>
                                       Conf: {(p as any).confirmationNo}
                                     </span>
                                   )}
@@ -2502,7 +2497,7 @@ ${meeting.transcript}
                                     textAlign: "right",
                                     fontWeight: 900,
                                     color: isRefund ? "#c5221f" : "#137459",
-                                    fontSize: "0.96rem",
+                                    fontSize: "0.92rem",
                                     fontFamily: "var(--font-heading)",
                                     whiteSpace: "nowrap",
                                   }}
@@ -2514,10 +2509,10 @@ ${meeting.transcript}
                                     <button
                                       type="button"
                                       onClick={() => handleDeletePayment(p.id)}
-                                      style={{ background: "transparent", border: 0, color: "#c5221f", cursor: "pointer", padding: "6px" }}
+                                      style={{ background: "transparent", border: 0, color: "#c5221f", cursor: "pointer", padding: "4px" }}
                                       title="Delete Transaction"
                                     >
-                                      <Trash2 size={16} />
+                                      <Trash2 size={15} />
                                     </button>
                                   </td>
                                 )}
@@ -2527,10 +2522,10 @@ ${meeting.transcript}
                         </tbody>
                         <tfoot>
                           <tr style={{ background: "#f0f8f3", fontWeight: 900 }}>
-                            <td data-label="Summary" colSpan={5} style={{ color: "#0e3d26", fontFamily: "var(--font-heading)" }}>
+                            <td data-label="Summary" colSpan={4} style={{ color: "#0e3d26", fontFamily: "var(--font-heading)" }}>
                               TOTAL RECORDED RECEIPTS (AUDIT SUM)
                             </td>
-                            <td data-label="Grand Total" style={{ textAlign: "right", color: "#137459", fontSize: "1.05rem", fontFamily: "var(--font-heading)" }}>
+                            <td data-label="Grand Total" style={{ textAlign: "right", color: "#137459", fontSize: "0.98rem", fontFamily: "var(--font-heading)" }}>
                               ${filteredTotal.toLocaleString("en-US", { minimumFractionDigits: 2 })}
                             </td>
                             {user.role === "admin" && <td />}
@@ -2546,27 +2541,27 @@ ${meeting.transcript}
               {ledgerSubTab === "expenses" && (
                 <div className="orgflo-card">
                   <div className="orgflo-table-wrap">
-                    <table className="orgflo-table orgflo-table-collapse">
+                    <table className="orgflo-table orgflo-table-compact orgflo-table-collapse">
                       <thead>
                         <tr>
-                          <th>Date</th>
-                          <th>Category</th>
-                          <th>Description</th>
-                          <th>Vendor / Payee</th>
-                          <th>Approved By</th>
-                          <th style={{ textAlign: "right" }}>Amount</th>
-                          {user.role === "admin" && <th style={{ textAlign: "right" }}>Actions</th>}
+                          <th style={{ width: "12%" }}>Date</th>
+                          <th style={{ width: "18%" }}>Category</th>
+                          <th style={{ width: "32%" }}>Description</th>
+                          <th style={{ width: "18%" }}>Vendor / Payee</th>
+                          <th style={{ width: "10%" }}>Approved By</th>
+                          <th style={{ textAlign: "right", width: "10%" }}>Amount</th>
+                          {user.role === "admin" && <th style={{ textAlign: "right" }}></th>}
                         </tr>
                       </thead>
                       <tbody>
                         {filteredExpenses.map((exp) => (
                           <tr key={exp.id}>
-                            <td data-label="Date" style={{ color: "#526359", whiteSpace: "nowrap" }}>{exp.date}</td>
-                            <td data-label="Category" style={{ fontWeight: 700, color: "#003e53" }}>{exp.category}</td>
-                            <td data-label="Description" style={{ color: "#526359" }}>{exp.description}</td>
-                            <td data-label="Vendor" style={{ color: "#526359" }}>{exp.vendor}</td>
-                            <td data-label="Approved By" style={{ color: "#14211a", fontWeight: 600 }}>{exp.approvedBy}</td>
-                            <td data-label="Amount" style={{ textAlign: "right", fontWeight: 800, color: "#c5221f", fontSize: "0.95rem" }}>
+                            <td data-label="Date" style={{ color: "#526359", whiteSpace: "nowrap", fontSize: "0.82rem" }}>{exp.date}</td>
+                            <td data-label="Category" style={{ fontWeight: 700, color: "#003e53", fontSize: "0.83rem" }}>{exp.category}</td>
+                            <td data-label="Description" style={{ color: "#526359", fontSize: "0.82rem", maxWidth: "260px", wordBreak: "break-word" }}>{exp.description}</td>
+                            <td data-label="Vendor" style={{ color: "#526359", fontSize: "0.82rem" }}>{exp.vendor}</td>
+                            <td data-label="Approved By" style={{ color: "#14211a", fontWeight: 600, fontSize: "0.82rem" }}>{exp.approvedBy}</td>
+                            <td data-label="Amount" style={{ textAlign: "right", fontWeight: 800, color: "#c5221f", fontSize: "0.92rem", whiteSpace: "nowrap" }}>
                               -${exp.amount.toLocaleString()}
                             </td>
                             {user.role === "admin" && (
@@ -2574,10 +2569,10 @@ ${meeting.transcript}
                                 <button
                                   type="button"
                                   onClick={() => handleDeleteExpense(exp.id)}
-                                  style={{ background: "transparent", border: 0, color: "#c5221f", cursor: "pointer", padding: "6px" }}
+                                  style={{ background: "transparent", border: 0, color: "#c5221f", cursor: "pointer", padding: "4px" }}
                                   title="Delete Expense"
                                 >
-                                  <Trash2 size={16} />
+                                  <Trash2 size={15} />
                                 </button>
                               </td>
                             )}
@@ -3289,17 +3284,17 @@ ${meeting.transcript}
                     <span className="badge badge-active">Live Audit Status</span>
                   </div>
                   <div className="orgflo-table-wrap">
-                    <table className="orgflo-table orgflo-table-collapse">
+                    <table className="orgflo-table orgflo-table-compact orgflo-table-collapse">
                       <thead>
                         <tr>
-                          <th>Chapter & Leadership</th>
-                          <th>Region</th>
-                          <th style={{ textAlign: "center" }}>2026 Members</th>
-                          <th style={{ color: "#1a73e8", textAlign: "right" }}>Dues Balance</th>
-                          <th style={{ color: "#c5221f", textAlign: "right" }}>Insurance Total</th>
-                          <th style={{ color: "#e37400", textAlign: "right" }}>Raffle Balance</th>
-                          <th style={{ textAlign: "right" }}>Total Owed</th>
-                          <th style={{ textAlign: "center" }}>Status</th>
+                          <th style={{ width: "26%" }}>Chapter & Leadership</th>
+                          <th style={{ width: "10%" }}>Region</th>
+                          <th style={{ textAlign: "center", width: "9%" }}>Members</th>
+                          <th style={{ color: "#1a73e8", textAlign: "right", width: "13%" }}>Dues Bal.</th>
+                          <th style={{ color: "#c5221f", textAlign: "right", width: "13%" }}>Insurance</th>
+                          <th style={{ color: "#e37400", textAlign: "right", width: "11%" }}>Raffle Bal.</th>
+                          <th style={{ textAlign: "right", width: "11%" }}>Total Owed</th>
+                          <th style={{ textAlign: "center", width: "7%" }}>Status</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -3311,34 +3306,34 @@ ${meeting.transcript}
                                 <div style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
                                   <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: b.totalOwed > 0 ? "#c5221f" : "#137459", flexShrink: 0, marginTop: "6px" }} />
                                   <div>
-                                    <div style={{ fontWeight: 800, color: "#0e3d26" }}>{b.name}</div>
-                                    <div style={{ fontSize: "0.8rem", color: "#526359" }}>{b.president}</div>
+                                    <div style={{ fontWeight: 800, color: "#0e3d26", fontSize: "0.85rem" }}>{b.name}</div>
+                                    <div style={{ fontSize: "0.76rem", color: "#526359" }}>{b.president}</div>
                                   </div>
                                 </div>
                               </td>
-                              <td data-label="Region" style={{ color: "#5f6368", fontSize: "0.86rem" }}>{b.region}</td>
+                              <td data-label="Region" style={{ color: "#5f6368", fontSize: "0.82rem", whiteSpace: "nowrap" }}>{b.region}</td>
                               <td data-label="Members" style={{ textAlign: "center" }}>
-                                <span className="badge badge-active">{b.memberCount} mem</span>
+                                <span className="badge badge-active" style={{ fontSize: "0.74rem", padding: "2px 6px" }}>{b.memberCount} mem</span>
                               </td>
-                              <td data-label="Dues Bal." style={{ textAlign: "right", color: hasCredit ? "#137459" : b.duesBal > 0 ? "#c5221f" : "#137459", fontWeight: 700 }}>
+                              <td data-label="Dues Bal." style={{ textAlign: "right", color: hasCredit ? "#137459" : b.duesBal > 0 ? "#c5221f" : "#137459", fontWeight: 700, fontSize: "0.84rem" }}>
                                 {hasCredit
                                   ? `+$${b.duesCredit.toLocaleString("en-US", { minimumFractionDigits: 2 })} Cr`
                                   : b.duesBal > 0
                                   ? `-$${b.duesBal.toLocaleString("en-US", { minimumFractionDigits: 2 })}`
                                   : "$0.00"}
                               </td>
-                              <td data-label="Insurance Bal." style={{ textAlign: "right", color: b.insuranceBal > 0 ? "#003e53" : "#80868b", fontWeight: 700 }}>
+                              <td data-label="Insurance Bal." style={{ textAlign: "right", color: b.insuranceBal > 0 ? "#003e53" : "#80868b", fontWeight: 700, fontSize: "0.84rem" }}>
                                 {b.insuranceBal > 0 ? `$${b.insuranceBal.toLocaleString("en-US", { minimumFractionDigits: 2 })}` : "—"}
                               </td>
-                              <td data-label="Raffle Bal." style={{ textAlign: "right", color: b.ticketBal > 0 ? "#c5221f" : "#80868b", fontWeight: 700 }}>
+                              <td data-label="Raffle Bal." style={{ textAlign: "right", color: b.ticketBal > 0 ? "#c5221f" : "#80868b", fontWeight: 700, fontSize: "0.84rem" }}>
                                 {b.ticketBal > 0 ? `$${b.ticketBal.toLocaleString("en-US", { minimumFractionDigits: 2 })}` : "—"}
                               </td>
-                              <td data-label="Total Owed" style={{ textAlign: "right", fontWeight: 900, fontSize: "0.96rem", color: b.totalOwed > 0 ? "#c5221f" : "#137459" }}>
+                              <td data-label="Total Owed" style={{ textAlign: "right", fontWeight: 900, fontSize: "0.92rem", color: b.totalOwed > 0 ? "#c5221f" : "#137459" }}>
                                 {b.totalOwed > 0 ? `$${b.totalOwed.toLocaleString("en-US", { minimumFractionDigits: 2 })}` : "$0.00"}
                               </td>
                               <td data-label="Status" style={{ textAlign: "center" }}>
-                                <span className={`badge ${b.totalOwed > 0 ? "badge-overdue" : "badge-active"}`}>
-                                  {b.totalOwed > 0 ? "Outstanding" : "Settled"}
+                                <span className={`badge ${b.totalOwed > 0 ? "badge-overdue" : "badge-active"}`} style={{ fontSize: "0.72rem", padding: "2px 6px" }}>
+                                  {b.totalOwed > 0 ? "Owed" : "Settled"}
                                 </span>
                               </td>
                             </tr>
