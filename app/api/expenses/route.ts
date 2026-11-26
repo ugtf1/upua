@@ -73,12 +73,21 @@ export async function PUT(request: Request) {
       return NextResponse.json({ success: false, error: "Expense ID is required" }, { status: 400 });
     }
 
+    if (updates.amount !== undefined) {
+      updates.amount = Number(updates.amount);
+    }
+
     if (useDatabase && prisma) {
-      const updated = await prisma.expense.update({
-        where: { id },
-        data: updates,
-      });
-      return NextResponse.json({ success: true, data: updated });
+      try {
+        const updated = await prisma.expense.update({
+          where: { id },
+          data: updates,
+        });
+        DataService.updateExpense(id, updates);
+        return NextResponse.json({ success: true, data: updated });
+      } catch (dbErr) {
+        console.warn("[UPUA] DB expense update failed, using DataService fallback:", dbErr);
+      }
     }
 
     const updated = DataService.updateExpense(id, updates);
@@ -102,8 +111,13 @@ export async function DELETE(request: Request) {
     }
 
     if (useDatabase && prisma) {
-      await prisma.expense.delete({ where: { id } });
-      return NextResponse.json({ success: true, message: "Expense record deleted successfully" });
+      try {
+        await prisma.expense.delete({ where: { id } });
+        DataService.deleteExpense(id);
+        return NextResponse.json({ success: true, message: "Expense record deleted successfully" });
+      } catch (dbErr) {
+        console.warn("[UPUA] DB expense delete failed, using DataService fallback:", dbErr);
+      }
     }
 
     DataService.deleteExpense(id);

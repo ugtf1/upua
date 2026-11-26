@@ -121,19 +121,41 @@ export async function PUT(request: Request) {
     }
 
     if (useDatabase && prisma) {
-      const updated = await prisma.chapter.update({
-        where: { id },
-        data: {
-          ...(updates.name && { name: updates.name }),
-          ...(updates.code && { code: updates.code.toUpperCase() }),
-          ...(updates.region && { region: updates.region }),
-          ...(updates.president && { president: updates.president }),
-          ...(updates.contactEmail && { contactEmail: updates.contactEmail }),
-          ...(updates.memberCount !== undefined && { memberCount: Number(updates.memberCount) }),
-          ...(updates.website !== undefined && { website: updates.website }),
-        },
-      });
-      return NextResponse.json({ success: true, data: updated });
+      try {
+        const updated = await prisma.chapter.update({
+          where: { id },
+          data: {
+            ...(updates.name && { name: updates.name }),
+            ...(updates.code && { code: updates.code.toUpperCase() }),
+            ...(updates.region && { region: updates.region }),
+            ...(updates.president && { president: updates.president }),
+            ...(updates.contactEmail && { contactEmail: updates.contactEmail }),
+            ...(updates.contactPhone !== undefined && { contactPhone: updates.contactPhone }),
+            ...(updates.memberCount !== undefined && { memberCount: Number(updates.memberCount) }),
+            ...(updates.website !== undefined && { website: updates.website }),
+            ...(updates.dues2023Paid !== undefined && { dues2023Paid: Number(updates.dues2023Paid) }),
+            ...(updates.dues2023Exp !== undefined && { dues2023Exp: Number(updates.dues2023Exp) }),
+            ...(updates.dues2024Paid !== undefined && { dues2024Paid: Number(updates.dues2024Paid) }),
+            ...(updates.dues2024Exp !== undefined && { dues2024Exp: Number(updates.dues2024Exp) }),
+            ...(updates.dues2025Paid !== undefined && { dues2025Paid: Number(updates.dues2025Paid) }),
+            ...(updates.dues2025Exp !== undefined && { dues2025Exp: Number(updates.dues2025Exp) }),
+            ...(updates.dues2026Paid !== undefined && { dues2026Paid: Number(updates.dues2026Paid) }),
+            ...(updates.dues2026Exp !== undefined && { dues2026Exp: Number(updates.dues2026Exp) }),
+            ...(updates.duesBalance !== undefined && { duesBalance: Number(updates.duesBalance) }),
+            ...(updates.insurance2023Paid !== undefined && { insurance2023Paid: Number(updates.insurance2023Paid) }),
+            ...(updates.insurance2024Paid !== undefined && { insurance2024Paid: Number(updates.insurance2024Paid) }),
+            ...(updates.insurance2025Paid !== undefined && { insurance2025Paid: Number(updates.insurance2025Paid) }),
+            ...(updates.insuranceTotal !== undefined && { insuranceTotal: Number(updates.insuranceTotal) }),
+            ...(updates.rafflePaid !== undefined && { rafflePaid: Number(updates.rafflePaid) }),
+            ...(updates.raffleBalance !== undefined && { raffleBalance: Number(updates.raffleBalance) }),
+            ...(updates.raffleStatus !== undefined && { raffleStatus: updates.raffleStatus }),
+          },
+        });
+        DataService.updateChapter(id, updates);
+        return NextResponse.json({ success: true, data: updated });
+      } catch (dbErr) {
+        console.warn("[UPUA] DB chapter update failed, using DataService fallback:", dbErr);
+      }
     }
 
     const updated = DataService.updateChapter(id, updates);
@@ -157,8 +179,13 @@ export async function DELETE(request: Request) {
     }
 
     if (useDatabase && prisma) {
-      await prisma.chapter.delete({ where: { id } });
-      return NextResponse.json({ success: true, message: "Chapter deleted successfully" });
+      try {
+        await prisma.chapter.delete({ where: { id } });
+        DataService.deleteChapter(id);
+        return NextResponse.json({ success: true, message: "Chapter deleted successfully" });
+      } catch (dbErr) {
+        console.warn("[UPUA] DB chapter delete failed, using DataService fallback:", dbErr);
+      }
     }
 
     DataService.deleteChapter(id);

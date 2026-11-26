@@ -172,6 +172,9 @@ export default function PortalWorkspace() {
   const [isNewChapterOpen, setIsNewChapterOpen] = useState(false);
   const [isNewPaymentOpen, setIsNewPaymentOpen] = useState(false);
   const [isNewExpenseOpen, setIsNewExpenseOpen] = useState(false);
+  const [editingPayment, setEditingPayment] = useState<PaymentRecord | null>(null);
+  const [editingExpense, setEditingExpense] = useState<ExpenseRecord | null>(null);
+  const [editingChapter, setEditingChapter] = useState<ChapterData | null>(null);
   const [donationModalOpen, setDonationModalOpen] = useState(false);
   const [duesModalOpen, setDuesModalOpen] = useState(false);
 
@@ -730,6 +733,75 @@ ${meeting.transcript}
     if (!confirm("Delete expense record?")) return;
     await fetch(`/api/expenses?id=${id}`, { method: "DELETE" });
     setExpenses((prev) => prev.filter((e) => e.id !== id));
+  }
+
+  async function handleUpdatePayment(e: React.FormEvent) {
+    e.preventDefault();
+    if (!editingPayment) return;
+    try {
+      const res = await fetch("/api/payments", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editingPayment),
+      }).then((r) => r.json());
+
+      if (res.success) {
+        setPayments((prev) =>
+          prev.map((p) => (p.id === editingPayment.id ? { ...p, ...editingPayment } : p))
+        );
+        setEditingPayment(null);
+      } else {
+        alert(res.error || "Failed to update payment");
+      }
+    } catch (err) {
+      alert("Error updating payment");
+    }
+  }
+
+  async function handleUpdateExpense(e: React.FormEvent) {
+    e.preventDefault();
+    if (!editingExpense) return;
+    try {
+      const res = await fetch("/api/expenses", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editingExpense),
+      }).then((r) => r.json());
+
+      if (res.success) {
+        setExpenses((prev) =>
+          prev.map((e) => (e.id === editingExpense.id ? { ...e, ...editingExpense } : e))
+        );
+        setEditingExpense(null);
+      } else {
+        alert(res.error || "Failed to update expense");
+      }
+    } catch (err) {
+      alert("Error updating expense");
+    }
+  }
+
+  async function handleUpdateChapter(e: React.FormEvent) {
+    e.preventDefault();
+    if (!editingChapter) return;
+    try {
+      const res = await fetch("/api/chapters", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editingChapter),
+      }).then((r) => r.json());
+
+      if (res.success) {
+        setChapters((prev) =>
+          prev.map((c) => (c.id === editingChapter.id ? { ...c, ...editingChapter } : c))
+        );
+        setEditingChapter(null);
+      } else {
+        alert(res.error || "Failed to update chapter");
+      }
+    } catch (err) {
+      alert("Error updating chapter");
+    }
   }
 
   // Filtered Payments
@@ -1939,59 +2011,72 @@ ${meeting.transcript}
                       </p>
                     </div>
 
-                    {/* View Switcher Buttons */}
-                    <div style={{ display: "flex", gap: "8px", background: "#f4f8f5", padding: "4px", borderRadius: "10px", flexWrap: "wrap" }}>
-                      <button
-                        type="button"
-                        onClick={() => setChapterViewMode("audit")}
-                        style={{
-                          padding: "8px 16px",
-                          borderRadius: "8px",
-                          border: "none",
-                          fontWeight: 700,
-                          fontSize: "0.84rem",
-                          cursor: "pointer",
-                          background: chapterViewMode === "audit" ? "#ffffff" : "transparent",
-                          color: chapterViewMode === "audit" ? "#0e3d26" : "#526359",
-                          boxShadow: chapterViewMode === "audit" ? "0 2px 6px rgba(0,0,0,0.06)" : "none",
-                        }}
-                      >
-                        Multi-Year Dues Audit (2023–2026)
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setChapterViewMode("insurance")}
-                        style={{
-                          padding: "8px 16px",
-                          borderRadius: "8px",
-                          border: "none",
-                          fontWeight: 700,
-                          fontSize: "0.84rem",
-                          cursor: "pointer",
-                          background: chapterViewMode === "insurance" ? "#ffffff" : "transparent",
-                          color: chapterViewMode === "insurance" ? "#0e3d26" : "#526359",
-                          boxShadow: chapterViewMode === "insurance" ? "0 2px 6px rgba(0,0,0,0.06)" : "none",
-                        }}
-                      >
-                        Insurance & Raffle Breakdown
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setChapterViewMode("directory")}
-                        style={{
-                          padding: "8px 16px",
-                          borderRadius: "8px",
-                          border: "none",
-                          fontWeight: 700,
-                          fontSize: "0.84rem",
-                          cursor: "pointer",
-                          background: chapterViewMode === "directory" ? "#ffffff" : "transparent",
-                          color: chapterViewMode === "directory" ? "#0e3d26" : "#526359",
-                          boxShadow: chapterViewMode === "directory" ? "0 2px 6px rgba(0,0,0,0.06)" : "none",
-                        }}
-                      >
-                        Executive Directory
-                      </button>
+                    <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
+                      {user.role === "admin" && (
+                        <button
+                          type="button"
+                          className="btn-orgflo-white"
+                          style={{ background: "#0e3d26", color: "#ffffff", padding: "8px 14px", borderRadius: "8px", fontWeight: 700, fontSize: "0.84rem", display: "flex", alignItems: "center", gap: "6px" }}
+                          onClick={() => setIsNewChapterOpen(true)}
+                        >
+                          <Plus size={16} /> Add Chapter
+                        </button>
+                      )}
+
+                      {/* View Switcher Buttons */}
+                      <div style={{ display: "flex", gap: "8px", background: "#f4f8f5", padding: "4px", borderRadius: "10px", flexWrap: "wrap" }}>
+                        <button
+                          type="button"
+                          onClick={() => setChapterViewMode("audit")}
+                          style={{
+                            padding: "8px 16px",
+                            borderRadius: "8px",
+                            border: "none",
+                            fontWeight: 700,
+                            fontSize: "0.84rem",
+                            cursor: "pointer",
+                            background: chapterViewMode === "audit" ? "#ffffff" : "transparent",
+                            color: chapterViewMode === "audit" ? "#0e3d26" : "#526359",
+                            boxShadow: chapterViewMode === "audit" ? "0 2px 6px rgba(0,0,0,0.06)" : "none",
+                          }}
+                        >
+                          Multi-Year Dues Audit (2023–2026)
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setChapterViewMode("insurance")}
+                          style={{
+                            padding: "8px 16px",
+                            borderRadius: "8px",
+                            border: "none",
+                            fontWeight: 700,
+                            fontSize: "0.84rem",
+                            cursor: "pointer",
+                            background: chapterViewMode === "insurance" ? "#ffffff" : "transparent",
+                            color: chapterViewMode === "insurance" ? "#0e3d26" : "#526359",
+                            boxShadow: chapterViewMode === "insurance" ? "0 2px 6px rgba(0,0,0,0.06)" : "none",
+                          }}
+                        >
+                          Insurance & Raffle Breakdown
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setChapterViewMode("directory")}
+                          style={{
+                            padding: "8px 16px",
+                            borderRadius: "8px",
+                            border: "none",
+                            fontWeight: 700,
+                            fontSize: "0.84rem",
+                            cursor: "pointer",
+                            background: chapterViewMode === "directory" ? "#ffffff" : "transparent",
+                            color: chapterViewMode === "directory" ? "#0e3d26" : "#526359",
+                            boxShadow: chapterViewMode === "directory" ? "0 2px 6px rgba(0,0,0,0.06)" : "none",
+                          }}
+                        >
+                          Executive Directory
+                        </button>
+                      </div>
                     </div>
                   </div>
 
@@ -2001,13 +2086,14 @@ ${meeting.transcript}
                       <table className="orgflo-table orgflo-table-compact orgflo-table-collapse">
                         <thead>
                           <tr>
-                            <th style={{ width: "26%" }}>Chapter & Leadership</th>
-                            <th style={{ width: "11%" }}>Region</th>
-                            <th style={{ textAlign: "right", width: "13%" }}>2023 Dues</th>
-                            <th style={{ textAlign: "right", width: "13%" }}>2024 Dues</th>
-                            <th style={{ textAlign: "right", width: "13%" }}>2025 Dues</th>
-                            <th style={{ textAlign: "right", width: "11%" }}>2026 Dues</th>
-                            <th style={{ textAlign: "right", width: "13%" }}>Net Balance</th>
+                            <th style={{ width: "24%" }}>Chapter & Leadership</th>
+                            <th style={{ width: "10%" }}>Region</th>
+                            <th style={{ textAlign: "right", width: "12%" }}>2023 Dues</th>
+                            <th style={{ textAlign: "right", width: "12%" }}>2024 Dues</th>
+                            <th style={{ textAlign: "right", width: "12%" }}>2025 Dues</th>
+                            <th style={{ textAlign: "right", width: "10%" }}>2026 Dues</th>
+                            <th style={{ textAlign: "right", width: "12%" }}>Net Balance</th>
+                            {user.role === "admin" && <th style={{ textAlign: "center", width: "8%" }}>Actions</th>}
                           </tr>
                         </thead>
                         <tbody>
@@ -2082,6 +2168,30 @@ ${meeting.transcript}
                                       : "$0.00"}
                                   </span>
                                 </td>
+
+                                {/* Admin Action Buttons */}
+                                {user.role === "admin" && (
+                                  <td data-label="Actions" style={{ textAlign: "center", whiteSpace: "nowrap" }}>
+                                    <div style={{ display: "flex", justifyContent: "center", gap: "6px" }}>
+                                      <button
+                                        type="button"
+                                        onClick={() => setEditingChapter(ch)}
+                                        style={{ background: "#f0f8f3", border: "1px solid #dce8df", color: "#0e3d26", cursor: "pointer", padding: "4px 8px", borderRadius: "6px", display: "inline-flex", alignItems: "center", gap: "3px", fontSize: "0.72rem", fontWeight: 700 }}
+                                        title="Edit Chapter Audit"
+                                      >
+                                        <Pencil size={13} /> Edit
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleDeleteChapter(ch.id)}
+                                        style={{ background: "#fdf2f2", border: "1px solid #fcdada", color: "#c5221f", cursor: "pointer", padding: "4px 6px", borderRadius: "6px", display: "inline-flex", alignItems: "center" }}
+                                        title="Delete Chapter"
+                                      >
+                                        <Trash2 size={13} />
+                                      </button>
+                                    </div>
+                                  </td>
+                                )}
                               </tr>
                             );
                           })}
@@ -2110,6 +2220,7 @@ ${meeting.transcript}
                             <td data-label="Net Balance Total" style={{ textAlign: "right", color: totalDuesBal < 0 ? "#c5221f" : "#137459", fontSize: "0.9rem" }}>
                               {totalDuesBal < 0 ? `-$${Math.abs(totalDuesBal).toLocaleString("en-US", { minimumFractionDigits: 2 })}` : `+$${totalDuesBal.toLocaleString()}`}
                             </td>
+                            {user.role === "admin" && <td />}
                           </tr>
                         </tfoot>
                       </table>
@@ -2122,15 +2233,16 @@ ${meeting.transcript}
                       <table className="orgflo-table orgflo-table-compact orgflo-table-collapse">
                         <thead>
                           <tr>
-                            <th style={{ width: "24%" }}>Chapter Name</th>
+                            <th style={{ width: "22%" }}>Chapter Name</th>
                             <th style={{ width: "10%" }}>Region</th>
                             <th style={{ textAlign: "right", width: "10%" }}>2023 Ins.</th>
                             <th style={{ textAlign: "right", width: "10%" }}>2024 Ins.</th>
                             <th style={{ textAlign: "right", width: "10%" }}>2025 Ins.</th>
-                            <th style={{ textAlign: "right", width: "12%" }}>Total Ins.</th>
+                            <th style={{ textAlign: "right", width: "11%" }}>Total Ins.</th>
                             <th style={{ textAlign: "center", width: "8%" }}>Status</th>
                             <th style={{ textAlign: "right", width: "8%" }}>Raffle Paid</th>
                             <th style={{ textAlign: "right", width: "8%" }}>Raffle Bal.</th>
+                            {user.role === "admin" && <th style={{ textAlign: "center", width: "8%" }}>Actions</th>}
                           </tr>
                         </thead>
                         <tbody>
@@ -2169,6 +2281,28 @@ ${meeting.transcript}
                               <td data-label="Raffle Balance" style={{ textAlign: "right", fontWeight: 800, color: ch.raffleBalance > 0 ? "#c5221f" : "#137459", fontSize: "0.82rem" }}>
                                 {ch.raffleBalance ? `$${ch.raffleBalance.toLocaleString()}` : "$0"}
                               </td>
+                              {user.role === "admin" && (
+                                <td data-label="Actions" style={{ textAlign: "center", whiteSpace: "nowrap" }}>
+                                  <div style={{ display: "flex", justifyContent: "center", gap: "6px" }}>
+                                    <button
+                                      type="button"
+                                      onClick={() => setEditingChapter(ch)}
+                                      style={{ background: "#f0f8f3", border: "1px solid #dce8df", color: "#0e3d26", cursor: "pointer", padding: "4px 8px", borderRadius: "6px", display: "inline-flex", alignItems: "center", gap: "3px", fontSize: "0.72rem", fontWeight: 700 }}
+                                      title="Edit Chapter Audit"
+                                    >
+                                      <Pencil size={13} /> Edit
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDeleteChapter(ch.id)}
+                                      style={{ background: "#fdf2f2", border: "1px solid #fcdada", color: "#c5221f", cursor: "pointer", padding: "4px 6px", borderRadius: "6px", display: "inline-flex", alignItems: "center" }}
+                                      title="Delete Chapter"
+                                    >
+                                      <Trash2 size={13} />
+                                    </button>
+                                  </div>
+                                </td>
+                              )}
                             </tr>
                           ))}
                         </tbody>
@@ -2186,24 +2320,26 @@ ${meeting.transcript}
                             <td data-label="" />
                             <td data-label="Total Raffle Paid" style={{ textAlign: "right", color: "#b08000" }}>${totalRafflePaid.toLocaleString()}</td>
                             <td data-label="Total Raffle Balance" style={{ textAlign: "right", color: "#c5221f" }}>${totalRaffleBal.toLocaleString()}</td>
+                            {user.role === "admin" && <td />}
                           </tr>
                         </tfoot>
                       </table>
                     </div>
                   )}
 
-                  {/* VIEW 3: EXECUTIVE DIRECTORY TABLE (Email column removed to fit cleanly on screen) */}
+                  {/* VIEW 3: EXECUTIVE DIRECTORY TABLE */}
                   {chapterViewMode === "directory" && (
                     <div className="orgflo-table-wrap">
                       <table className="orgflo-table orgflo-table-compact orgflo-table-collapse">
                         <thead>
                           <tr>
-                            <th style={{ width: "28%" }}>Chapter Name</th>
+                            <th style={{ width: "26%" }}>Chapter Name</th>
                             <th style={{ width: "12%" }}>Region</th>
-                            <th style={{ width: "26%" }}>President & Leadership</th>
+                            <th style={{ width: "24%" }}>President & Leadership</th>
                             <th style={{ width: "16%" }}>Contact Phone</th>
                             <th style={{ width: "10%" }}>Active Members</th>
                             <th style={{ textAlign: "right", width: "8%" }}>Dues Status</th>
+                            {user.role === "admin" && <th style={{ textAlign: "center", width: "8%" }}>Actions</th>}
                           </tr>
                         </thead>
                         <tbody>
@@ -2221,6 +2357,28 @@ ${meeting.transcript}
                                   {(ch.duesBalance || 0) < 0 ? "Balance Owed" : "Settled / Credit"}
                                 </span>
                               </td>
+                              {user.role === "admin" && (
+                                <td data-label="Actions" style={{ textAlign: "center", whiteSpace: "nowrap" }}>
+                                  <div style={{ display: "flex", justifyContent: "center", gap: "6px" }}>
+                                    <button
+                                      type="button"
+                                      onClick={() => setEditingChapter(ch)}
+                                      style={{ background: "#f0f8f3", border: "1px solid #dce8df", color: "#0e3d26", cursor: "pointer", padding: "4px 8px", borderRadius: "6px", display: "inline-flex", alignItems: "center", gap: "3px", fontSize: "0.72rem", fontWeight: 700 }}
+                                      title="Edit Chapter"
+                                    >
+                                      <Pencil size={13} /> Edit
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDeleteChapter(ch.id)}
+                                      style={{ background: "#fdf2f2", border: "1px solid #fcdada", color: "#c5221f", cursor: "pointer", padding: "4px 6px", borderRadius: "6px", display: "inline-flex", alignItems: "center" }}
+                                      title="Delete Chapter"
+                                    >
+                                      <Trash2 size={13} />
+                                    </button>
+                                  </div>
+                                </td>
+                              )}
                             </tr>
                           ))}
                         </tbody>
@@ -2414,9 +2572,9 @@ ${meeting.transcript}
                             <th style={{ width: "11%" }}>Date</th>
                             <th style={{ width: "26%" }}>Customer & Chapter</th>
                             <th style={{ width: "13%" }}>Payment Method</th>
-                            <th style={{ width: "32%" }}>Memo & Confirmation #</th>
-                            <th style={{ textAlign: "right", width: "14%" }}>Amount</th>
-                            {user.role === "admin" && <th style={{ textAlign: "right", width: "4%" }}></th>}
+                            <th style={{ width: "30%" }}>Memo & Confirmation #</th>
+                            <th style={{ textAlign: "right", width: "12%" }}>Amount</th>
+                            {user.role === "admin" && <th style={{ textAlign: "center", width: "8%" }}>Actions</th>}
                           </tr>
                         </thead>
                         <tbody>
@@ -2505,15 +2663,25 @@ ${meeting.transcript}
                                   {isRefund ? `-$${Math.abs(p.amount).toLocaleString("en-US", { minimumFractionDigits: 2 })}` : `+$${p.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}`}
                                 </td>
                                 {user.role === "admin" && (
-                                  <td data-label="Actions" style={{ textAlign: "right" }}>
-                                    <button
-                                      type="button"
-                                      onClick={() => handleDeletePayment(p.id)}
-                                      style={{ background: "transparent", border: 0, color: "#c5221f", cursor: "pointer", padding: "4px" }}
-                                      title="Delete Transaction"
-                                    >
-                                      <Trash2 size={15} />
-                                    </button>
+                                  <td data-label="Actions" style={{ textAlign: "center", whiteSpace: "nowrap" }}>
+                                    <div style={{ display: "flex", justifyContent: "center", gap: "6px" }}>
+                                      <button
+                                        type="button"
+                                        onClick={() => setEditingPayment(p)}
+                                        style={{ background: "#f0f8f3", border: "1px solid #dce8df", color: "#0e3d26", cursor: "pointer", padding: "4px 8px", borderRadius: "6px", display: "inline-flex", alignItems: "center", gap: "3px", fontSize: "0.72rem", fontWeight: 700 }}
+                                        title="Edit Transaction"
+                                      >
+                                        <Pencil size={13} /> Edit
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleDeletePayment(p.id)}
+                                        style={{ background: "#fdf2f2", border: "1px solid #fcdada", color: "#c5221f", cursor: "pointer", padding: "4px 6px", borderRadius: "6px", display: "inline-flex", alignItems: "center" }}
+                                        title="Delete Transaction"
+                                      >
+                                        <Trash2 size={13} />
+                                      </button>
+                                    </div>
                                   </td>
                                 )}
                               </tr>
@@ -2545,12 +2713,12 @@ ${meeting.transcript}
                       <thead>
                         <tr>
                           <th style={{ width: "12%" }}>Date</th>
-                          <th style={{ width: "18%" }}>Category</th>
-                          <th style={{ width: "32%" }}>Description</th>
-                          <th style={{ width: "18%" }}>Vendor / Payee</th>
+                          <th style={{ width: "16%" }}>Category</th>
+                          <th style={{ width: "30%" }}>Description</th>
+                          <th style={{ width: "16%" }}>Vendor / Payee</th>
                           <th style={{ width: "10%" }}>Approved By</th>
-                          <th style={{ textAlign: "right", width: "10%" }}>Amount</th>
-                          {user.role === "admin" && <th style={{ textAlign: "right" }}></th>}
+                          <th style={{ textAlign: "right", width: "8%" }}>Amount</th>
+                          {user.role === "admin" && <th style={{ textAlign: "center", width: "8%" }}>Actions</th>}
                         </tr>
                       </thead>
                       <tbody>
@@ -2565,15 +2733,25 @@ ${meeting.transcript}
                               -${exp.amount.toLocaleString()}
                             </td>
                             {user.role === "admin" && (
-                              <td data-label="Actions" style={{ textAlign: "right" }}>
-                                <button
-                                  type="button"
-                                  onClick={() => handleDeleteExpense(exp.id)}
-                                  style={{ background: "transparent", border: 0, color: "#c5221f", cursor: "pointer", padding: "4px" }}
-                                  title="Delete Expense"
-                                >
-                                  <Trash2 size={15} />
-                                </button>
+                              <td data-label="Actions" style={{ textAlign: "center", whiteSpace: "nowrap" }}>
+                                <div style={{ display: "flex", justifyContent: "center", gap: "6px" }}>
+                                  <button
+                                    type="button"
+                                    onClick={() => setEditingExpense(exp)}
+                                    style={{ background: "#f0f8f3", border: "1px solid #dce8df", color: "#0e3d26", cursor: "pointer", padding: "4px 8px", borderRadius: "6px", display: "inline-flex", alignItems: "center", gap: "3px", fontSize: "0.72rem", fontWeight: 700 }}
+                                    title="Edit Expense"
+                                  >
+                                    <Pencil size={13} /> Edit
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleDeleteExpense(exp.id)}
+                                    style={{ background: "#fdf2f2", border: "1px solid #fcdada", color: "#c5221f", cursor: "pointer", padding: "4px 6px", borderRadius: "6px", display: "inline-flex", alignItems: "center" }}
+                                    title="Delete Expense"
+                                  >
+                                    <Trash2 size={13} />
+                                  </button>
+                                </div>
                               </td>
                             )}
                           </tr>
@@ -3272,7 +3450,7 @@ ${meeting.transcript}
 
                 {/* All Chapters Balance Table */}
                 <div className="orgflo-card">
-                  <div className="orgflo-card-header">
+                  <div className="orgflo-card-header" style={{ flexWrap: "wrap", gap: "14px" }}>
                     <div>
                       <h3 style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "1.05rem", color: "#0e3d26", margin: 0 }}>
                         All Chapter Audit Balances & Obligations
@@ -3281,20 +3459,33 @@ ${meeting.transcript}
                         Official live audit figures across all accredited UPUA councils.
                       </p>
                     </div>
-                    <span className="badge badge-active">Live Audit Status</span>
+                    <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
+                      {user.role === "admin" && (
+                        <button
+                          type="button"
+                          className="btn-orgflo-white"
+                          style={{ background: "#0e3d26", color: "#ffffff", padding: "6px 14px", borderRadius: "8px", fontWeight: 700, fontSize: "0.8rem", display: "flex", alignItems: "center", gap: "6px" }}
+                          onClick={() => setIsNewChapterOpen(true)}
+                        >
+                          <Plus size={15} /> Add Chapter / Balance
+                        </button>
+                      )}
+                      <span className="badge badge-active">Live Audit Status</span>
+                    </div>
                   </div>
                   <div className="orgflo-table-wrap">
                     <table className="orgflo-table orgflo-table-compact orgflo-table-collapse">
                       <thead>
                         <tr>
-                          <th style={{ width: "26%" }}>Chapter & Leadership</th>
+                          <th style={{ width: "24%" }}>Chapter & Leadership</th>
                           <th style={{ width: "10%" }}>Region</th>
                           <th style={{ textAlign: "center", width: "9%" }}>Members</th>
-                          <th style={{ color: "#1a73e8", textAlign: "right", width: "13%" }}>Dues Bal.</th>
-                          <th style={{ color: "#c5221f", textAlign: "right", width: "13%" }}>Insurance</th>
-                          <th style={{ color: "#e37400", textAlign: "right", width: "11%" }}>Raffle Bal.</th>
-                          <th style={{ textAlign: "right", width: "11%" }}>Total Owed</th>
-                          <th style={{ textAlign: "center", width: "7%" }}>Status</th>
+                          <th style={{ color: "#1a73e8", textAlign: "right", width: "12%" }}>Dues Bal.</th>
+                          <th style={{ color: "#c5221f", textAlign: "right", width: "12%" }}>Insurance</th>
+                          <th style={{ color: "#e37400", textAlign: "right", width: "10%" }}>Raffle Bal.</th>
+                          <th style={{ textAlign: "right", width: "10%" }}>Total Owed</th>
+                          <th style={{ textAlign: "center", width: "6%" }}>Status</th>
+                          {user.role === "admin" && <th style={{ textAlign: "center", width: "7%" }}>Actions</th>}
                         </tr>
                       </thead>
                       <tbody>
@@ -3336,6 +3527,31 @@ ${meeting.transcript}
                                   {b.totalOwed > 0 ? "Owed" : "Settled"}
                                 </span>
                               </td>
+                              {user.role === "admin" && (
+                                <td data-label="Actions" style={{ textAlign: "center", whiteSpace: "nowrap" }}>
+                                  <div style={{ display: "flex", justifyContent: "center", gap: "6px" }}>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const ch = chapters.find((c) => c.id === b.id);
+                                        if (ch) setEditingChapter(ch);
+                                      }}
+                                      style={{ background: "#f0f8f3", border: "1px solid #dce8df", color: "#0e3d26", cursor: "pointer", padding: "4px 8px", borderRadius: "6px", display: "inline-flex", alignItems: "center", gap: "3px", fontSize: "0.72rem", fontWeight: 700 }}
+                                      title="Edit Audit Balances"
+                                    >
+                                      <Pencil size={13} /> Edit
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDeleteChapter(b.id)}
+                                      style={{ background: "#fdf2f2", border: "1px solid #fcdada", color: "#c5221f", cursor: "pointer", padding: "4px 6px", borderRadius: "6px", display: "inline-flex", alignItems: "center" }}
+                                      title="Delete Chapter"
+                                    >
+                                      <Trash2 size={13} />
+                                    </button>
+                                  </div>
+                                </td>
+                              )}
                             </tr>
                           );
                         })}
@@ -3358,6 +3574,7 @@ ${meeting.transcript}
                             ${balanceData.reduce((s, b) => s + b.totalOwed, 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}
                           </td>
                           <td data-label="" />
+                          {user.role === "admin" && <td />}
                         </tr>
                       </tfoot>
                     </table>
@@ -4628,6 +4845,462 @@ ${meeting.transcript}
                   Save Expense
                 </button>
                 <button type="button" onClick={() => setIsNewExpenseOpen(false)} style={{ background: "#f0f2f1", border: 0, padding: "10px 18px", borderRadius: "10px", cursor: "pointer", fontWeight: 600 }}>
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ADMIN MODAL: EDIT PAYMENT / TRANSACTION */}
+      {editingPayment && (
+        <div className="upua-modal-backdrop" onClick={() => setEditingPayment(null)}>
+          <div className="upua-modal-box" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "560px", width: "90%", padding: "28px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+              <h2 style={{ color: "#0e3d26", fontSize: "1.35rem", margin: 0, fontFamily: "var(--font-heading)", fontWeight: 800 }}>
+                Edit Recorded Transaction
+              </h2>
+              <button
+                type="button"
+                onClick={() => setEditingPayment(null)}
+                style={{ background: "transparent", border: 0, fontSize: "1.2rem", cursor: "pointer", color: "#526359" }}
+              >
+                ✕
+              </button>
+            </div>
+            <form onSubmit={handleUpdatePayment} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                <div>
+                  <label style={{ fontSize: "0.76rem", fontWeight: 700, color: "#526359" }}>Date</label>
+                  <input
+                    type="date"
+                    required
+                    value={editingPayment.date || ""}
+                    onChange={(e) => setEditingPayment({ ...editingPayment, date: e.target.value })}
+                    className="donation-input"
+                    style={{ marginTop: "4px" }}
+                  />
+                </div>
+                <div>
+                  <label style={{ fontSize: "0.76rem", fontWeight: 700, color: "#526359" }}>Amount (USD)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    required
+                    value={editingPayment.amount}
+                    onChange={(e) => setEditingPayment({ ...editingPayment, amount: Number(e.target.value) })}
+                    className="donation-input"
+                    style={{ marginTop: "4px" }}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label style={{ fontSize: "0.76rem", fontWeight: 700, color: "#526359" }}>Payer / Customer Name</label>
+                <input
+                  type="text"
+                  required
+                  value={editingPayment.memberName}
+                  onChange={(e) => setEditingPayment({ ...editingPayment, memberName: e.target.value })}
+                  className="donation-input"
+                  style={{ marginTop: "4px" }}
+                />
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                <div>
+                  <label style={{ fontSize: "0.76rem", fontWeight: 700, color: "#526359" }}>Associated Chapter</label>
+                  <select
+                    value={editingPayment.chapterId}
+                    onChange={(e) => {
+                      const sel = chapters.find((c) => c.id === e.target.value);
+                      setEditingPayment({
+                        ...editingPayment,
+                        chapterId: e.target.value,
+                        chapterName: sel ? sel.name : editingPayment.chapterName,
+                      });
+                    }}
+                    className="donation-input"
+                    style={{ marginTop: "4px" }}
+                  >
+                    {chapters.map((c) => (
+                      <option key={c.id} value={c.id}>{c.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label style={{ fontSize: "0.76rem", fontWeight: 700, color: "#526359" }}>Payment Method</label>
+                  <select
+                    value={editingPayment.paymentMethod || "Zelle"}
+                    onChange={(e) => setEditingPayment({ ...editingPayment, paymentMethod: e.target.value })}
+                    className="donation-input"
+                    style={{ marginTop: "4px" }}
+                  >
+                    <option value="Zelle">Zelle</option>
+                    <option value="Counter Credit">Counter Credit</option>
+                    <option value="Wire Transfer">Wire Transfer</option>
+                    <option value="Cash App">Cash App</option>
+                    <option value="Mobile Transfer">Mobile Transfer</option>
+                    <option value="Check / Refund">Check / Refund</option>
+                    <option value="Cash">Cash (Convention)</option>
+                    <option value="Stripe">Stripe Online</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label style={{ fontSize: "0.76rem", fontWeight: 700, color: "#526359" }}>Memo & Description</label>
+                <input
+                  type="text"
+                  value={editingPayment.description || ""}
+                  onChange={(e) => setEditingPayment({ ...editingPayment, description: e.target.value })}
+                  className="donation-input"
+                  style={{ marginTop: "4px" }}
+                />
+              </div>
+
+              <div>
+                <label style={{ fontSize: "0.76rem", fontWeight: 700, color: "#526359" }}>Confirmation / Reference #</label>
+                <input
+                  type="text"
+                  value={(editingPayment as any).confirmationNo || ""}
+                  onChange={(e) => setEditingPayment({ ...editingPayment, confirmationNo: e.target.value } as any)}
+                  className="donation-input"
+                  style={{ marginTop: "4px" }}
+                  placeholder="e.g. Zelle conf, check #, wire ref"
+                />
+              </div>
+
+              <div style={{ display: "flex", gap: "10px", marginTop: "12px" }}>
+                <button type="submit" className="btn-orgflo-white" style={{ background: "#0e3d26", color: "#ffffff", flex: 1, justifyContent: "center" }}>
+                  Save Changes
+                </button>
+                <button type="button" onClick={() => setEditingPayment(null)} style={{ background: "#f0f2f1", border: 0, padding: "10px 18px", borderRadius: "10px", cursor: "pointer", fontWeight: 600 }}>
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ADMIN MODAL: EDIT EXPENSE */}
+      {editingExpense && (
+        <div className="upua-modal-backdrop" onClick={() => setEditingExpense(null)}>
+          <div className="upua-modal-box" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "560px", width: "90%", padding: "28px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+              <h2 style={{ color: "#c5221f", fontSize: "1.35rem", margin: 0, fontFamily: "var(--font-heading)", fontWeight: 800 }}>
+                Edit Expense Entry
+              </h2>
+              <button
+                type="button"
+                onClick={() => setEditingExpense(null)}
+                style={{ background: "transparent", border: 0, fontSize: "1.2rem", cursor: "pointer", color: "#526359" }}
+              >
+                ✕
+              </button>
+            </div>
+            <form onSubmit={handleUpdateExpense} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                <div>
+                  <label style={{ fontSize: "0.76rem", fontWeight: 700, color: "#526359" }}>Date</label>
+                  <input
+                    type="date"
+                    required
+                    value={editingExpense.date || ""}
+                    onChange={(e) => setEditingExpense({ ...editingExpense, date: e.target.value })}
+                    className="donation-input"
+                    style={{ marginTop: "4px" }}
+                  />
+                </div>
+                <div>
+                  <label style={{ fontSize: "0.76rem", fontWeight: 700, color: "#526359" }}>Amount (USD)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    required
+                    value={editingExpense.amount}
+                    onChange={(e) => setEditingExpense({ ...editingExpense, amount: Number(e.target.value) })}
+                    className="donation-input"
+                    style={{ marginTop: "4px" }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                <div>
+                  <label style={{ fontSize: "0.76rem", fontWeight: 700, color: "#526359" }}>Category</label>
+                  <select
+                    value={editingExpense.category}
+                    onChange={(e) => setEditingExpense({ ...editingExpense, category: e.target.value })}
+                    className="donation-input"
+                    style={{ marginTop: "4px" }}
+                  >
+                    <option value="Humanitarian Aid">Humanitarian Aid (Okuama IDPs)</option>
+                    <option value="Medical Supplies">Medical Supplies & Outreach</option>
+                    <option value="STEM & AI Lab">STEM & AI Digital Equipment</option>
+                    <option value="Convention Logistics">Convention Logistics</option>
+                    <option value="Administrative">Administrative</option>
+                    <option value="Youth Programs">Youth Programs (UPUAYA)</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={{ fontSize: "0.76rem", fontWeight: 700, color: "#526359" }}>Status</label>
+                  <select
+                    value={editingExpense.status}
+                    onChange={(e) => setEditingExpense({ ...editingExpense, status: e.target.value as any })}
+                    className="donation-input"
+                    style={{ marginTop: "4px" }}
+                  >
+                    <option value="Approved">Approved</option>
+                    <option value="Paid">Paid</option>
+                    <option value="Pending">Pending</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label style={{ fontSize: "0.76rem", fontWeight: 700, color: "#526359" }}>Vendor / Payee</label>
+                <input
+                  type="text"
+                  value={editingExpense.vendor}
+                  onChange={(e) => setEditingExpense({ ...editingExpense, vendor: e.target.value })}
+                  className="donation-input"
+                  style={{ marginTop: "4px" }}
+                />
+              </div>
+
+              <div>
+                <label style={{ fontSize: "0.76rem", fontWeight: 700, color: "#526359" }}>Description</label>
+                <input
+                  type="text"
+                  value={editingExpense.description}
+                  onChange={(e) => setEditingExpense({ ...editingExpense, description: e.target.value })}
+                  className="donation-input"
+                  style={{ marginTop: "4px" }}
+                />
+              </div>
+
+              <div>
+                <label style={{ fontSize: "0.76rem", fontWeight: 700, color: "#526359" }}>Approved By</label>
+                <input
+                  type="text"
+                  value={editingExpense.approvedBy}
+                  onChange={(e) => setEditingExpense({ ...editingExpense, approvedBy: e.target.value })}
+                  className="donation-input"
+                  style={{ marginTop: "4px" }}
+                />
+              </div>
+
+              <div style={{ display: "flex", gap: "10px", marginTop: "12px" }}>
+                <button type="submit" className="btn-orgflo-white" style={{ background: "#c5221f", color: "#ffffff", flex: 1, justifyContent: "center" }}>
+                  Save Expense
+                </button>
+                <button type="button" onClick={() => setEditingExpense(null)} style={{ background: "#f0f2f1", border: 0, padding: "10px 18px", borderRadius: "10px", cursor: "pointer", fontWeight: 600 }}>
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ADMIN MODAL: EDIT CHAPTER */}
+      {editingChapter && (
+        <div className="upua-modal-backdrop" onClick={() => setEditingChapter(null)}>
+          <div className="upua-modal-box" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "620px", width: "92%", padding: "28px", maxHeight: "90vh", overflowY: "auto" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+              <div>
+                <h2 style={{ color: "#0e3d26", fontSize: "1.35rem", margin: 0, fontFamily: "var(--font-heading)", fontWeight: 800 }}>
+                  Edit Chapter Audit: {editingChapter.name}
+                </h2>
+                <div style={{ fontSize: "0.78rem", color: "#526359" }}>Update chapter leadership, multi-year dues, and insurance metrics</div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setEditingChapter(null)}
+                style={{ background: "transparent", border: 0, fontSize: "1.2rem", cursor: "pointer", color: "#526359" }}
+              >
+                ✕
+              </button>
+            </div>
+            <form onSubmit={handleUpdateChapter} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+              <div style={{ background: "#f8faf8", padding: "12px", borderRadius: "10px", border: "1px solid #e1eae3" }}>
+                <div style={{ fontSize: "0.78rem", fontWeight: 800, color: "#0e3d26", textTransform: "uppercase", marginBottom: "8px" }}>Leadership & Profile</div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                  <div>
+                    <label style={{ fontSize: "0.74rem", fontWeight: 700, color: "#526359" }}>Chapter Name</label>
+                    <input
+                      type="text"
+                      required
+                      value={editingChapter.name}
+                      onChange={(e) => setEditingChapter({ ...editingChapter, name: e.target.value })}
+                      className="donation-input"
+                      style={{ marginTop: "4px" }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: "0.74rem", fontWeight: 700, color: "#526359" }}>Region</label>
+                    <input
+                      type="text"
+                      value={editingChapter.region}
+                      onChange={(e) => setEditingChapter({ ...editingChapter, region: e.target.value })}
+                      className="donation-input"
+                      style={{ marginTop: "4px" }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: "0.74rem", fontWeight: 700, color: "#526359" }}>President</label>
+                    <input
+                      type="text"
+                      value={editingChapter.president}
+                      onChange={(e) => setEditingChapter({ ...editingChapter, president: e.target.value })}
+                      className="donation-input"
+                      style={{ marginTop: "4px" }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: "0.74rem", fontWeight: 700, color: "#526359" }}>Phone</label>
+                    <input
+                      type="text"
+                      value={editingChapter.contactPhone || ""}
+                      onChange={(e) => setEditingChapter({ ...editingChapter, contactPhone: e.target.value })}
+                      className="donation-input"
+                      style={{ marginTop: "4px" }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ background: "#f8faf8", padding: "12px", borderRadius: "10px", border: "1px solid #e1eae3" }}>
+                <div style={{ fontSize: "0.78rem", fontWeight: 800, color: "#0e3d26", textTransform: "uppercase", marginBottom: "8px" }}>Multi-Year Dues Audit</div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                  <div>
+                    <label style={{ fontSize: "0.74rem", fontWeight: 700, color: "#526359" }}>2023 Dues Paid ($)</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={editingChapter.dues2023Paid || 0}
+                      onChange={(e) => setEditingChapter({ ...editingChapter, dues2023Paid: Number(e.target.value) })}
+                      className="donation-input"
+                      style={{ marginTop: "4px" }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: "0.74rem", fontWeight: 700, color: "#526359" }}>2024 Dues Paid ($)</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={editingChapter.dues2024Paid || 0}
+                      onChange={(e) => setEditingChapter({ ...editingChapter, dues2024Paid: Number(e.target.value) })}
+                      className="donation-input"
+                      style={{ marginTop: "4px" }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: "0.74rem", fontWeight: 700, color: "#526359" }}>2025 Dues Paid ($)</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={editingChapter.dues2025Paid || 0}
+                      onChange={(e) => setEditingChapter({ ...editingChapter, dues2025Paid: Number(e.target.value) })}
+                      className="donation-input"
+                      style={{ marginTop: "4px" }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: "0.74rem", fontWeight: 700, color: "#526359" }}>2026 Dues Paid ($)</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={editingChapter.dues2026Paid || 0}
+                      onChange={(e) => setEditingChapter({ ...editingChapter, dues2026Paid: Number(e.target.value) })}
+                      className="donation-input"
+                      style={{ marginTop: "4px" }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: "0.74rem", fontWeight: 700, color: "#526359" }}>Net Dues Balance ($)</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={editingChapter.duesBalance || 0}
+                      onChange={(e) => setEditingChapter({ ...editingChapter, duesBalance: Number(e.target.value) })}
+                      className="donation-input"
+                      style={{ marginTop: "4px" }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: "0.74rem", fontWeight: 700, color: "#526359" }}>Member Count</label>
+                    <input
+                      type="number"
+                      value={editingChapter.memberCount || 0}
+                      onChange={(e) => setEditingChapter({ ...editingChapter, memberCount: Number(e.target.value) })}
+                      className="donation-input"
+                      style={{ marginTop: "4px" }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ background: "#f8faf8", padding: "12px", borderRadius: "10px", border: "1px solid #e1eae3" }}>
+                <div style={{ fontSize: "0.78rem", fontWeight: 800, color: "#0e3d26", textTransform: "uppercase", marginBottom: "8px" }}>Insurance & Raffle</div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                  <div>
+                    <label style={{ fontSize: "0.74rem", fontWeight: 700, color: "#526359" }}>Insurance Total ($)</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={editingChapter.insuranceTotal || 0}
+                      onChange={(e) => setEditingChapter({ ...editingChapter, insuranceTotal: Number(e.target.value) })}
+                      className="donation-input"
+                      style={{ marginTop: "4px" }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: "0.74rem", fontWeight: 700, color: "#526359" }}>Raffle Status</label>
+                    <select
+                      value={editingChapter.raffleStatus || "Pending"}
+                      onChange={(e) => setEditingChapter({ ...editingChapter, raffleStatus: e.target.value })}
+                      className="donation-input"
+                      style={{ marginTop: "4px" }}
+                    >
+                      <option value="Sent">Sent</option>
+                      <option value="Pending">Pending</option>
+                      <option value="Skipped">Skipped</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style={{ fontSize: "0.74rem", fontWeight: 700, color: "#526359" }}>Raffle Paid ($)</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={editingChapter.rafflePaid || 0}
+                      onChange={(e) => setEditingChapter({ ...editingChapter, rafflePaid: Number(e.target.value) })}
+                      className="donation-input"
+                      style={{ marginTop: "4px" }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: "0.74rem", fontWeight: 700, color: "#526359" }}>Raffle Balance ($)</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={editingChapter.raffleBalance || 0}
+                      onChange={(e) => setEditingChapter({ ...editingChapter, raffleBalance: Number(e.target.value) })}
+                      className="donation-input"
+                      style={{ marginTop: "4px" }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ display: "flex", gap: "10px", marginTop: "8px" }}>
+                <button type="submit" className="btn-orgflo-white" style={{ background: "#0e3d26", color: "#ffffff", flex: 1, justifyContent: "center" }}>
+                  Save Chapter Changes
+                </button>
+                <button type="button" onClick={() => setEditingChapter(null)} style={{ background: "#f0f2f1", border: 0, padding: "10px 18px", borderRadius: "10px", cursor: "pointer", fontWeight: 600 }}>
                   Cancel
                 </button>
               </div>

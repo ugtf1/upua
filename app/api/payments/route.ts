@@ -131,12 +131,21 @@ export async function PUT(request: Request) {
       return NextResponse.json({ success: false, error: "Payment ID is required" }, { status: 400 });
     }
 
+    if (updates.amount !== undefined) {
+      updates.amount = Number(updates.amount);
+    }
+
     if (useDatabase && prisma) {
-      const updated = await prisma.payment.update({
-        where: { id },
-        data: updates,
-      });
-      return NextResponse.json({ success: true, data: updated });
+      try {
+        const updated = await prisma.payment.update({
+          where: { id },
+          data: updates,
+        });
+        DataService.updatePayment(id, updates);
+        return NextResponse.json({ success: true, data: updated });
+      } catch (dbErr) {
+        console.warn("[UPUA] DB payment update failed, using DataService fallback:", dbErr);
+      }
     }
 
     const updated = DataService.updatePayment(id, updates);
@@ -160,8 +169,13 @@ export async function DELETE(request: Request) {
     }
 
     if (useDatabase && prisma) {
-      await prisma.payment.delete({ where: { id } });
-      return NextResponse.json({ success: true, message: "Payment record deleted successfully" });
+      try {
+        await prisma.payment.delete({ where: { id } });
+        DataService.deletePayment(id);
+        return NextResponse.json({ success: true, message: "Payment record deleted successfully" });
+      } catch (dbErr) {
+        console.warn("[UPUA] DB payment delete failed, using DataService fallback:", dbErr);
+      }
     }
 
     DataService.deletePayment(id);
