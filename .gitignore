@@ -25,9 +25,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# local env files
-.env*.local
-.env
+# Environment files can contain credentials. Keep only the template in Git.
+.env*
+!.env.example
 
 # vercel / netlify
 .vercel

@@ -10,7 +10,7 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 COPY prisma ./prisma/
 
-RUN npm install
+RUN npm ci --no-audit --no-fund
 
 # 2. Rebuild the source code
 FROM base AS builder
