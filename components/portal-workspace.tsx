@@ -4325,206 +4325,22 @@ ${meeting.transcript}
         </main>
       </div>
 
-      {/* SHOP CHECKOUT MODAL */}
+      {/* Payment collection is unavailable until the provider flow is verified. */}
       {shopCheckoutOpen && (
-        <div className="upua-modal-backdrop" style={{ zIndex: 2100 }} onClick={() => setShopCheckoutOpen(false)}>
-          <div className="upua-modal-box" style={{ maxWidth: "520px", width: "100%", overflow: "hidden", maxHeight: "92vh", display: "flex", flexDirection: "column", padding: 0 }} onClick={e => e.stopPropagation()}>
-            <div style={{ background: "linear-gradient(135deg,#0e3d26,#165637)", color: "#fff", padding: "22px 28px", flexShrink: 0 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
-                <span style={{ background: "rgba(255,255,255,0.18)", color: "#fff", fontSize: "0.72rem", fontWeight: 800, padding: "4px 12px", borderRadius: "9999px" }}>SECURE CHECKOUT</span>
-                <button onClick={() => setShopCheckoutOpen(false)} style={{ background: "transparent", border: "none", color: "#fff", cursor: "pointer" }}><X size={20} /></button>
-              </div>
-              <h3 style={{ fontFamily: "var(--font-heading)", fontSize: "1.25rem", fontWeight: 800, margin: "0 0 4px" }}>Complete Your Order</h3>
-              <p style={{ color: "#c3ded0", fontSize: "0.87rem", margin: 0 }}>{shopCart.reduce((s, c) => s + c.qty, 0)} item(s) · ${shopCart.reduce((s, c) => s + c.product.price * c.qty, 0).toFixed(2)}</p>
-            </div>
-            <div style={{ padding: "14px 28px", background: "#f8faf8", borderBottom: "1.5px solid #e8ede9", flexShrink: 0 }}>
-              <div style={{ fontSize: "0.75rem", fontWeight: 800, color: "#5f6368", textTransform: "uppercase", marginBottom: "8px" }}>Order Summary</div>
-              {shopCart.map(c => (
-                <div key={c.product.id} style={{ display: "flex", justifyContent: "space-between", fontSize: "0.87rem", marginBottom: "5px" }}>
-                  <span>{c.product.emoji} {c.product.name} × {c.qty}</span>
-                  <span style={{ fontWeight: 700 }}>${(c.product.price * c.qty).toFixed(2)}</span>
-                </div>
-              ))}
-              <div style={{ borderTop: "1px solid #dde8e2", marginTop: "8px", paddingTop: "8px", display: "flex", justifyContent: "space-between", fontWeight: 900, color: "#0e3d26" }}>
-                <span>Total</span><span>${shopCart.reduce((s, c) => s + c.product.price * c.qty, 0).toFixed(2)}</span>
-              </div>
-            </div>
-            <div style={{ padding: "20px 28px", overflowY: "auto", flex: 1 }}>
-              <form onSubmit={(e) => {
-                e.preventDefault();
-                const form = e.currentTarget;
-                const buyerName = (form.elements.namedItem("buyerName") as HTMLInputElement).value;
-                const buyerEmail = (form.elements.namedItem("buyerEmail") as HTMLInputElement).value;
-                const newOrder = {
-                  id: `ORD-${String(shopOrders.length + 1).padStart(3, "0")}`,
-                  buyerName, buyerEmail,
-                  chapterName: user.chapterName ?? "General Member",
-                  items: [...shopCart],
-                  total: shopCart.reduce((s, c) => s + c.product.price * c.qty, 0),
-                  date: new Date().toISOString().slice(0, 10),
-                  status: "pending" as const,
-                };
-                setShopOrders(prev => [newOrder, ...prev]);
-                setShopCart([]);
-                setShopCheckoutOpen(false);
-                alert(`✅ Order ${newOrder.id} placed!\n\nTotal: $${newOrder.total.toFixed(2)}\nStripe payment will be processed once keys are configured.\n\nThank you!`);
-              }}>
-                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-                    <div>
-                      <label style={{ fontSize: "0.77rem", fontWeight: 700, color: "#3c4043", display: "block", marginBottom: "5px" }}>Full Name *</label>
-                      <input name="buyerName" type="text" required placeholder="Your full name" className="donation-input" style={{ margin: 0 }} defaultValue={user.name} />
-                    </div>
-                    <div>
-                      <label style={{ fontSize: "0.77rem", fontWeight: 700, color: "#3c4043", display: "block", marginBottom: "5px" }}>Email *</label>
-                      <input name="buyerEmail" type="email" required placeholder="email@example.com" className="donation-input" style={{ margin: 0 }} defaultValue={user.email} />
-                    </div>
-                  </div>
-                  <div>
-                    <label style={{ fontSize: "0.77rem", fontWeight: 700, color: "#3c4043", display: "block", marginBottom: "5px" }}>Shipping Address</label>
-                    <input type="text" placeholder="Street, City, State, ZIP" className="donation-input" style={{ margin: 0 }} />
-                  </div>
-                  <div style={{ background: "#f0f8f3", border: "1.5px solid #c8e6c9", borderRadius: "12px", padding: "14px 16px" }}>
-                    <div style={{ fontSize: "0.76rem", fontWeight: 800, color: "#137459", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "10px", display: "flex", alignItems: "center", gap: "6px" }}>
-                      <Shield size={13} /> Stripe Secure Payment
-                    </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "9px" }}>
-                      <input type="text" placeholder="Card Number" className="donation-input" disabled style={{ background: "#f8f9fa", color: "#9aa0a6", margin: 0 }} defaultValue="•••• •••• •••• ···· (Stripe coming soon)" />
-                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "9px" }}>
-                        <input type="text" placeholder="MM/YY" className="donation-input" disabled style={{ background: "#f8f9fa", color: "#9aa0a6", margin: 0 }} />
-                        <input type="text" placeholder="CVV" className="donation-input" disabled style={{ background: "#f8f9fa", color: "#9aa0a6", margin: 0 }} />
-                        <input type="text" placeholder="ZIP" className="donation-input" style={{ margin: 0 }} />
-                      </div>
-                    </div>
-                  </div>
-                  <button type="submit" className="btn-orgflo-gold" style={{ justifyContent: "center", padding: "14px 0", marginTop: "4px" }}>
-                    <CheckSquare size={17} /> Place Order · ${shopCart.reduce((s, c) => s + c.product.price * c.qty, 0).toFixed(2)}
-                  </button>
-                  <p style={{ fontSize: "0.74rem", color: "#9aa0a6", textAlign: "center", margin: 0 }}>🔒 Payments processed securely via Stripe. Admin will confirm your order.</p>
-                </div>
-              </form>
-            </div>
+        <div className="upua-modal-backdrop" onClick={() => setShopCheckoutOpen(false)}>
+          <div className="upua-modal-box" role="dialog" aria-modal="true" aria-label="Store checkout" onClick={(e) => e.stopPropagation()}>
+            <h3>Store checkout unavailable</h3>
+            <p>No order or payment has been submitted.</p>
+            <button type="button" className="btn-orgflo-gold" onClick={() => setShopCheckoutOpen(false)}>Close</button>
           </div>
         </div>
       )}
-
-      {/* ============================================================
-          BALANCE PAYMENT MODAL — opens when a balance card is clicked
-      ============================================================ */}
       {balancePayModal?.open && (
-        <div
-          className="upua-modal-backdrop"
-          style={{ zIndex: 2000 }}
-          onClick={() => setBalancePayModal(null)}
-        >
-          <div
-            className="upua-modal-box"
-            style={{ maxWidth: "480px", width: "100%", overflow: "hidden", padding: 0 }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Modal Header */}
-            <div style={{ background: "linear-gradient(135deg, #0e3d26 0%, #165637 100%)", color: "#ffffff", padding: "28px 32px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-                <span style={{ background: "rgba(255,255,255,0.2)", color: "#ffffff", fontSize: "0.72rem", fontWeight: 800, padding: "4px 12px", borderRadius: "9999px", letterSpacing: "0.06em" }}>
-                  CHAPTER PAYMENT
-                </span>
-                <button type="button" onClick={() => setBalancePayModal(null)} style={{ background: "transparent", border: "none", color: "#ffffff", cursor: "pointer" }}>
-                  <X size={20} />
-                </button>
-              </div>
-              <h3 style={{ fontFamily: "var(--font-heading)", fontSize: "1.4rem", fontWeight: 800, margin: "0 0 6px" }}>
-                {balancePayModal.category}
-              </h3>
-              <p style={{ color: "#c3ded0", fontSize: "0.9rem", margin: 0 }}>
-                {balancePayModal.chapterName} · Outstanding Payment
-              </p>
-            </div>
-
-            {/* Modal Form */}
-            <div style={{ padding: "28px 32px" }}>
-
-              {/* Outstanding Balance Info Bar */}
-              <div style={{ background: "#f0f8f3", border: "1px solid #c8e6c9", borderRadius: "12px", padding: "14px 18px", marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <div>
-                  <div style={{ fontSize: "0.75rem", color: "#137459", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: "2px" }}>
-                    Total Outstanding
-                  </div>
-                  <div style={{ fontSize: "1.6rem", fontWeight: 900, color: "#0e3d26", fontFamily: "var(--font-heading)" }}>
-                    ${balancePayModal.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
-                  </div>
-                </div>
-                <span style={{ background: "#c8e6c9", color: "#137459", fontSize: "0.72rem", fontWeight: 800, padding: "4px 10px", borderRadius: "9999px" }}>
-                  BALANCE DUE
-                </span>
-              </div>
-
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  const paid = balancePayModal.payAmount;
-                  if (!paid || paid <= 0) return;
-                  alert(`Payment of $${paid.toFixed(2)} for ${balancePayModal.category} (${balancePayModal.chapterName}) submitted successfully.\n\nStripe integration coming soon.`);
-                  setBalancePayModal(null);
-                }}
-              >
-                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                  <input type="text" placeholder="Payer Full Name" required className="donation-input" />
-                  <input type="email" placeholder="Email Address" required className="donation-input" />
-
-                  {/* Editable Payment Amount */}
-                  <div>
-                    <label style={{ fontSize: "0.8rem", fontWeight: 700, color: "#3c4043", display: "block", marginBottom: "6px" }}>
-                      Amount to Pay (USD) <span style={{ color: "#c5221f" }}>*</span>
-                    </label>
-                    <div style={{ position: "relative" }}>
-                      <span style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", fontWeight: 800, color: "#0e3d26", fontSize: "1rem" }}>$</span>
-                      <input
-                        type="number"
-                        required
-                        min={1}
-                        max={balancePayModal.amount > 0 ? balancePayModal.amount : undefined}
-                        step="0.01"
-                        placeholder="Enter amount"
-                        value={balancePayModal.payAmount || ""}
-                        onChange={(e) =>
-                          setBalancePayModal({ ...balancePayModal, payAmount: Number(e.target.value) })
-                        }
-                        className="donation-input"
-                        style={{ paddingLeft: "28px", fontWeight: 700, fontSize: "1.1rem" }}
-                      />
-                    </div>
-                    {balancePayModal.amount > 0 && balancePayModal.payAmount > 0 && balancePayModal.payAmount < balancePayModal.amount && (
-                      <div style={{ fontSize: "0.78rem", color: "#e37400", marginTop: "5px", fontWeight: 600 }}>
-                        ⚠ Partial payment — remaining balance will be ${(balancePayModal.amount - balancePayModal.payAmount).toLocaleString("en-US", { minimumFractionDigits: 2 })}
-                      </div>
-                    )}
-                    {balancePayModal.amount > 0 && balancePayModal.payAmount >= balancePayModal.amount && (
-                      <div style={{ fontSize: "0.78rem", color: "#137459", marginTop: "5px", fontWeight: 600 }}>
-                        ✓ Full balance will be cleared
-                      </div>
-                    )}
-                  </div>
-
-                  <input type="text" placeholder="Card Number (Stripe)" className="donation-input" disabled style={{ background: "#f8f9fa", color: "#9aa0a6" }} defaultValue="Stripe Payment — Coming Soon" />
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-                    <input type="text" placeholder="MM / YY" className="donation-input" disabled style={{ background: "#f8f9fa", color: "#9aa0a6" }} />
-                    <input type="text" placeholder="CVV" className="donation-input" disabled style={{ background: "#f8f9fa", color: "#9aa0a6" }} />
-                  </div>
-
-                  <div style={{ display: "flex", gap: "10px", marginTop: "6px" }}>
-                    <button type="submit" className="btn-orgflo-gold" style={{ flex: 1, justifyContent: "center", padding: "14px 0" }}>
-                      <CreditCard size={17} />
-                      {balancePayModal.payAmount > 0
-                        ? `Pay $${balancePayModal.payAmount.toLocaleString("en-US", { minimumFractionDigits: 2 })}`
-                        : "Enter Amount to Pay"}
-                    </button>
-                    <button type="button" onClick={() => setBalancePayModal(null)} style={{ background: "#f0f2f1", border: 0, padding: "14px 20px", borderRadius: "10px", cursor: "pointer", fontWeight: 600, color: "#3c4043" }}>
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              </form>
-            </div>
+        <div className="upua-modal-backdrop" onClick={() => setBalancePayModal(null)}>
+          <div className="upua-modal-box" role="dialog" aria-modal="true" aria-label="Chapter payment" onClick={(e) => e.stopPropagation()}>
+            <h3>Chapter payment unavailable</h3>
+            <p>Use your existing QuickBooks invoice to pay chapter dues. No payment has been submitted here.</p>
+            <button type="button" className="btn-orgflo-gold" onClick={() => setBalancePayModal(null)}>Close</button>
           </div>
         </div>
       )}

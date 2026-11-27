@@ -24,7 +24,6 @@ import {
   ChevronRight,
   Lock,
   Loader2,
-  DollarSign,
   Heart,
   Users,
   UserCheck,
@@ -115,41 +114,13 @@ export default function StorePage() {
   const [cart, setCart] = useState<CartEntry[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
-  const [checkoutStep, setCheckoutStep] = useState<"shipping" | "payment" | "success">("shipping");
 
   // Selected item option map: itemId -> option
   const [itemOptions, setItemOptions] = useState<Record<string, string>>({});
 
-  // Checkout form state
-  const [customerName, setCustomerName] = useState("");
-  const [customerEmail, setCustomerEmail] = useState("");
-  const [customerPhone, setCustomerPhone] = useState("");
-  const [shippingAddress, setShippingAddress] = useState("");
-  const [shippingCity, setShippingCity] = useState("");
-  const [shippingState, setShippingState] = useState("");
-  const [shippingZip, setShippingZip] = useState("");
-  const [shippingCountry, setShippingCountry] = useState("United States");
-  const [orderNotes, setOrderNotes] = useState("");
-
-  // Card details
-  const [cardNumber, setCardNumber] = useState("");
-  const [cardExp, setCardExp] = useState("");
-  const [cardCvc, setCardCvc] = useState("");
-
-  // Processing & Success
+  // Checkout is available only in a local test environment until order verification is implemented.
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderError, setOrderError] = useState("");
-  const [confirmedOrder, setConfirmedOrder] = useState<{
-    orderId: string;
-    total: number;
-    email: string;
-    items: CartEntry[];
-  } | null>(null);
-
-  // Custom Quick Payment tab
-  const [customPayOpen, setCustomPayOpen] = useState(false);
-  const [customAmount, setCustomAmount] = useState("");
-  const [customPurpose, setCustomPurpose] = useState("");
 
   // Attendee / Family Pass Registration Modal State
   const [attendeeModalOpen, setAttendeeModalOpen] = useState(false);
@@ -175,7 +146,7 @@ export default function StorePage() {
     setAttendeesList([
       {
         id: "att-adult-1",
-        name: customerName || "",
+        name: "",
         type: "Adult",
         relationship: "Self / Primary",
         dietary: "Authentic Urhobo Assorted (Oghwo / Banga / Starch)",
@@ -280,12 +251,7 @@ export default function StorePage() {
     setAttendeeModalOpen(false);
 
     if (immediateCheckout) {
-      const primary = attendeesList[0];
-      if (primary && primary.name && !customerName) {
-        setCustomerName(primary.name);
-      }
       setIsCheckoutOpen(true);
-      setCheckoutStep("shipping");
     } else {
       setIsCartOpen(true);
     }
@@ -331,7 +297,6 @@ export default function StorePage() {
 
     if (immediateCheckout) {
       setIsCheckoutOpen(true);
-      setCheckoutStep("shipping");
     } else {
       setIsCartOpen(true);
     }
@@ -371,144 +336,30 @@ export default function StorePage() {
   const handleCheckoutSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setOrderError("");
-
-    if (!customerName || !customerEmail) {
-      setOrderError("Please enter your name and email address.");
+    if (cart.some((entry) => entry.attendees?.length)) {
+      setOrderError("Event registrations are not available in the checkout test.");
       return;
     }
-
-    if (checkoutStep === "shipping") {
-      setCheckoutStep("payment");
-      return;
-    }
-
-    // Payment execution
     setIsProcessing(true);
-
     try {
-      const attendeeDetailsList = cart
-        .filter((c) => c.attendees && c.attendees.length > 0)
-        .flatMap((c) =>
-          c.attendees!.map(
-            (a, idx) =>
-              `${idx + 1}. ${a.name} (${a.type} - ${a.relationship || "Guest"}${a.dietary ? ` | Meal: ${a.dietary}` : ""})`
-          )
-        );
-
-      const itemsDesc = cart
-        .map((c) => {
-          if (c.attendees && c.attendees.length > 0) {
-            return `${c.item.title} [${c.selectedOption}: ${c.attendees.map((a) => a.name).join(", ")}]`;
-          }
-          return `${c.quantity}x ${c.item.title}${c.selectedOption ? ` (${c.selectedOption})` : ""}`;
-        })
-        .join("; ");
-
-      const res = await fetch("/api/stripe/create-payment-intent", {
+      const res = await fetch("/api/stripe/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          amount: orderTotal,
-          currency: "usd",
-          category: "convention-tickets",
-          memberName: customerName,
-          email: customerEmail,
-          phone: customerPhone,
-          description: `UPUA Store: ${itemsDesc}`,
-          metadata: {
-            customerPhone,
-            shippingAddress: `${shippingAddress}, ${shippingCity}, ${shippingState} ${shippingZip}, ${shippingCountry}`,
-            orderNotes,
-            attendeeRoster: attendeeDetailsList.join(" || "),
-            adultCount: cart.reduce((acc, c) => acc + (c.adultCount || 0), 0),
-            childCount: cart.reduce((acc, c) => acc + (c.childCount || 0), 0),
-          },
+          items: cart.map((entry) => ({
+            productId: entry.item.id,
+            quantity: entry.quantity,
+            ...(entry.selectedOption ? { selectedOption: entry.selectedOption } : {}),
+          })),
         }),
       });
-
       const data = await res.json();
-
-      if (!res.ok && !data.success) {
-        throw new Error(data.error || "Payment processing failed");
-      }
-
-      const generatedId = `UPUA-ORD-${Math.floor(100000 + Math.random() * 900000)}`;
-
-      setConfirmedOrder({
-        orderId: generatedId,
-        total: orderTotal,
-        email: customerEmail,
-        items: [...cart],
-      });
-
-      // Clear cart
-      setCart([]);
-      setCheckoutStep("success");
+      if (!res.ok || typeof data.url !== "string") throw new Error(data.error || "Checkout is not available yet.");
+      const destination = new URL(data.url);
+      if (destination.protocol !== "https:" || destination.hostname !== "checkout.stripe.com" || destination.port || destination.username || destination.password) throw new Error("Invalid checkout destination.");
+      window.location.assign(destination.href);
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Payment error occurred";
-      setOrderError(msg);
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  const handleCustomPaySubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setOrderError("");
-    const parsed = parseFloat(customAmount);
-    if (!parsed || parsed <= 0) {
-      setOrderError("Please enter a valid amount.");
-      return;
-    }
-    if (!customerEmail || !customerName) {
-      setOrderError("Please provide your name and email.");
-      return;
-    }
-
-    setIsProcessing(true);
-    try {
-      const res = await fetch("/api/stripe/create-payment-intent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          amount: parsed,
-          currency: "usd",
-          category: "merchandise",
-          memberName: customerName,
-          email: customerEmail,
-          description: `UPUA Custom Store Payment: ${customPurpose || "Direct Item Payment"}`,
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok && !data.success) throw new Error(data.error || "Payment failed");
-
-      setConfirmedOrder({
-        orderId: `UPUA-PAY-${Math.floor(100000 + Math.random() * 900000)}`,
-        total: parsed,
-        email: customerEmail,
-        items: [
-          {
-            item: {
-              id: "custom-item",
-              title: customPurpose || "Custom Store / Convention Item Payment",
-              category: "Convention Packages",
-              price: parsed,
-              image: "/upua-logo.png",
-              description: customPurpose || "Direct custom payment",
-              features: ["Official Receipt Dispatched"],
-              inStock: true,
-            },
-            quantity: 1,
-          },
-        ],
-      });
-
-      setCustomPayOpen(false);
-      setIsCheckoutOpen(true);
-      setCheckoutStep("success");
-    } catch (err: unknown) {
-      setOrderError(err instanceof Error ? err.message : "Error processing payment");
+      setOrderError(err instanceof Error ? err.message : "Checkout is not available yet.");
     } finally {
       setIsProcessing(false);
     }
@@ -543,7 +394,7 @@ export default function StorePage() {
             UPUA Store &amp; <span className="heading-gold-accent">Convention Packages</span>
           </h1>
           <p className="page-hero-sub">
-            Open to the public. Reserve convention vendor tables, purchase souvenir brochure advertisements, cultural regalia, and official memorabilia with secure online card payment.
+            Browse convention packages, cultural regalia, and official memorabilia. Online checkout is not yet available.
           </p>
 
           <div style={{ marginTop: "20px", display: "flex", gap: "12px", flexWrap: "wrap", justifyContent: "center" }}>
@@ -554,14 +405,6 @@ export default function StorePage() {
             >
               <ShoppingCart size={18} />
               <span>View Cart ({totalItemsCount})</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setCustomPayOpen(true)}
-              className="store-hero-custom-btn"
-            >
-              <DollarSign size={18} />
-              <span>Direct Custom Item Payment</span>
             </button>
             <a
               href={DONATELY_CAMPAIGN_URL}
@@ -598,15 +441,15 @@ export default function StorePage() {
           <div className="store-trust-item">
             <ShieldCheck size={20} color="#0f6a4b" />
             <div>
-              <strong>Secure Stripe Processing</strong>
-              <small>256-bit SSL encrypted checkout</small>
+              <strong>Online checkout</strong>
+              <small>Not yet available</small>
             </div>
           </div>
           <div className="store-trust-item">
             <Package size={20} color="#0f6a4b" />
             <div>
-              <strong>Convention &amp; Delivery Guarantees</strong>
-              <small>Instant receipt &amp; secretariat fulfillment</small>
+              <strong>Convention &amp; Merchandise</strong>
+              <small>Browse available items</small>
             </div>
           </div>
           <div className="store-trust-item">
@@ -961,15 +804,14 @@ export default function StorePage() {
                   onClick={() => {
                     setIsCartOpen(false);
                     setIsCheckoutOpen(true);
-                    setCheckoutStep("shipping");
-                  }}
+                                }}
                 >
                   <Lock size={16} />
                   <span>Proceed to Checkout &bull; ${orderTotal.toFixed(2)}</span>
                 </button>
                 <div style={{ textAlign: "center", fontSize: "11.5px", color: "#6b7280", marginTop: "10px", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
                   <ShieldCheck size={14} color="#0f6a4b" />
-                  <span>Instant email receipt &bull; Stripe secured</span>
+                  <span>Online checkout not yet available</span>
                 </div>
 
                 <div className="store-cart-donate-hint">
@@ -988,506 +830,22 @@ export default function StorePage() {
         </div>
       )}
 
-      {/* Checkout Modal Window */}
+      {/* Checkout is a local sandbox prototype; live payments remain disabled. */}
       {isCheckoutOpen && (
         <div className="upua-modal-backdrop" onClick={() => !isProcessing && setIsCheckoutOpen(false)}>
           <div className="store-checkout-modal" onClick={(e) => e.stopPropagation()}>
-            <button
-              type="button"
-              className="upua-modal-close-btn"
-              onClick={() => !isProcessing && setIsCheckoutOpen(false)}
-              aria-label="Close checkout"
-            >
-              <X size={20} />
-            </button>
-
-            {/* Step: Success Screen */}
-            {checkoutStep === "success" && confirmedOrder ? (
-              <div className="store-success-screen">
-                <div className="store-success-icon-wrap">
-                  <CheckCircle2 size={54} color="#0f6a4b" />
-                </div>
-                <h2>Payment Successful!</h2>
-                <p style={{ color: "#475467", fontSize: "14.5px", margin: "4px 0 20px" }}>
-                  Thank you for your order and support of Urhobo Progress Union America.
-                </p>
-
-                <div className="store-receipt-card">
-                  <div className="store-receipt-row">
-                    <span>Order Reference</span>
-                    <strong>{confirmedOrder.orderId}</strong>
-                  </div>
-                  <div className="store-receipt-row">
-                    <span>Amount Paid</span>
-                    <strong style={{ color: "#0f6a4b", fontSize: "16px" }}>
-                      ${confirmedOrder.total.toFixed(2)} USD
-                    </strong>
-                  </div>
-                  <div className="store-receipt-row">
-                    <span>Receipt Sent To</span>
-                    <span>{confirmedOrder.email}</span>
-                  </div>
-                  <div className="store-receipt-row">
-                    <span>Payment Method</span>
-                    <span>Credit / Debit Card (Stripe Verified)</span>
-                  </div>
-
-                  <div style={{ borderTop: "1px solid #e5e7eb", marginTop: "14px", paddingTop: "12px" }}>
-                    <div style={{ fontSize: "12px", fontWeight: 700, color: "#374151", marginBottom: "8px" }}>
-                      Purchased Items:
-                    </div>
-                    {confirmedOrder.items.map((c, i) => (
-                      <div key={i} style={{ display: "flex", justifyContent: "space-between", fontSize: "13px", color: "#4b5563", marginBottom: "4px" }}>
-                        <span>
-                          {c.quantity}x {c.item.title} {c.selectedOption ? `(${c.selectedOption})` : ""}
-                        </span>
-                        <span>${(getItemEffectivePrice(c.item, c.selectedOption, c.customPrice) * c.quantity).toFixed(2)}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  {confirmedOrder.items.some((c) => c.attendees && c.attendees.length > 0) && (
-                    <div style={{ marginTop: "14px", padding: "12px 14px", background: "#fdfbf7", border: "1.5px solid #ebdcc4", borderRadius: "10px", textAlign: "left" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#8a5807", fontWeight: 800, fontSize: "13px", marginBottom: "8px" }}>
-                        <Users size={15} />
-                        <span>Registered Attendees on this Booking:</span>
-                      </div>
-                      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                        {confirmedOrder.items.flatMap((c) => c.attendees || []).map((att, aIdx) => (
-                          <div key={aIdx} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "#ffffff", padding: "6px 10px", borderRadius: "6px", border: "1px solid #ebdcc4" }}>
-                            <div>
-                              <strong style={{ color: "#0e3d26", fontSize: "12.5px" }}>{att.name}</strong>
-                              <span style={{ fontSize: "11px", color: "#667085", marginLeft: "6px" }}>({att.relationship || att.type})</span>
-                            </div>
-                            <span className={`store-att-type-badge ${att.type.toLowerCase()}`}>
-                              {att.type} Pass
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <div style={{ padding: "14px 18px", background: "#f0f7f3", borderRadius: "10px", fontSize: "13px", color: "#0e3d26", textAlign: "left", margin: "20px 0" }}>
-                  <strong>Next Steps for Convention Ads &amp; Gala Passes:</strong>
-                  <p style={{ margin: "4px 0 0", fontSize: "12.5px", color: "#345443" }}>
-                    If you purchased a souvenir brochure ad or cultural gala passes, our National Secretariat team will email you within 24 hours with your confirmation details and registration credentials.
-                  </p>
-                </div>
-
-                <button
-                  type="button"
-                  className="store-checkout-cta"
-                  onClick={() => setIsCheckoutOpen(false)}
-                >
-                  Continue Browsing Store
-                </button>
-              </div>
-            ) : (
-              /* Steps: Shipping & Payment */
-              <form onSubmit={handleCheckoutSubmit} className="store-checkout-form">
-                <div className="store-checkout-header">
-                  <h3>
-                    {checkoutStep === "shipping" ? "1. Customer & Delivery Info" : "2. Secure Payment"}
-                  </h3>
-                  <div className="store-checkout-progress">
-                    <span className={`step-dot ${checkoutStep === "shipping" ? "active" : "done"}`}>1</span>
-                    <span className="step-line" />
-                    <span className={`step-dot ${checkoutStep === "payment" ? "active" : ""}`}>2</span>
-                  </div>
-                </div>
-
-                {orderError && (
-                  <div className="store-error-banner">
-                    {orderError}
-                  </div>
-                )}
-
-                {/* Step 1: Shipping and Contact */}
-                {checkoutStep === "shipping" && (
-                  <div className="store-form-fields">
-                    {cart.some((c) => c.attendees && c.attendees.length > 0) && (
-                      <div style={{ padding: "12px 14px", background: "#f8faf9", border: "1px solid #d1ded6", borderRadius: "10px", marginBottom: "16px" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "12.5px", fontWeight: 700, color: "#0e3d26" }}>
-                          <Users size={15} />
-                          <span>Pass Holders to be Registered ({cart.reduce((sum, c) => sum + (c.attendees?.length || 0), 0)}):</span>
-                        </div>
-                        <div style={{ marginTop: "8px", fontSize: "11.5px", color: "#374151", display: "flex", flexWrap: "wrap", gap: "6px" }}>
-                          {cart.flatMap((c) => c.attendees || []).map((att, aIdx) => (
-                            <span key={aIdx} style={{ background: "#ffffff", padding: "3px 8px", borderRadius: "6px", border: "1px solid #d1ded6", display: "inline-flex", alignItems: "center", gap: "4px" }}>
-                              <span className={`store-att-type-badge ${att.type.toLowerCase()}`}>{att.type}</span>
-                              <strong>{att.name}</strong>
-                              {att.relationship && <span style={{ color: "#6b7280" }}>({att.relationship})</span>}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    <div className="store-form-row">
-                      <div className="store-input-wrap">
-                        <label>Full Name *</label>
-                        <input
-                          type="text"
-                          required
-                          placeholder="e.g. Chief Oghenemaro Davis"
-                          value={customerName}
-                          onChange={(e) => setCustomerName(e.target.value)}
-                        />
-                      </div>
-                      <div className="store-input-wrap">
-                        <label>Email Address (For Receipt) *</label>
-                        <input
-                          type="email"
-                          required
-                          placeholder="name@example.com"
-                          value={customerEmail}
-                          onChange={(e) => setCustomerEmail(e.target.value)}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="store-form-row">
-                      <div className="store-input-wrap">
-                        <label>Phone Number *</label>
-                        <input
-                          type="tel"
-                          required
-                          placeholder="+1 (555) 000-0000"
-                          value={customerPhone}
-                          onChange={(e) => setCustomerPhone(e.target.value)}
-                        />
-                      </div>
-                      <div className="store-input-wrap">
-                        <label>Country *</label>
-                        <select
-                          value={shippingCountry}
-                          onChange={(e) => setShippingCountry(e.target.value)}
-                        >
-                          <option value="United States">United States</option>
-                          <option value="Canada">Canada</option>
-                          <option value="United Kingdom">United Kingdom</option>
-                          <option value="Nigeria">Nigeria</option>
-                          <option value="Other">Other International</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className="store-input-wrap">
-                      <label>Street Address / Delivery Location *</label>
-                      <input
-                        type="text"
-                        required
-                        placeholder="1234 Urhobo Way, Suite 100"
-                        value={shippingAddress}
-                        onChange={(e) => setShippingAddress(e.target.value)}
-                      />
-                    </div>
-
-                    <div className="store-form-row store-three-col">
-                      <div className="store-input-wrap">
-                        <label>City *</label>
-                        <input
-                          type="text"
-                          required
-                          placeholder="Houston"
-                          value={shippingCity}
-                          onChange={(e) => setShippingCity(e.target.value)}
-                        />
-                      </div>
-                      <div className="store-input-wrap">
-                        <label>State / Province *</label>
-                        <input
-                          type="text"
-                          required
-                          placeholder="TX"
-                          value={shippingState}
-                          onChange={(e) => setShippingState(e.target.value)}
-                        />
-                      </div>
-                      <div className="store-input-wrap">
-                        <label>ZIP / Postal *</label>
-                        <input
-                          type="text"
-                          required
-                          placeholder="77002"
-                          value={shippingZip}
-                          onChange={(e) => setShippingZip(e.target.value)}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="store-input-wrap">
-                      <label>Order Notes / Custom Brochure Text (Optional)</label>
-                      <textarea
-                        rows={2}
-                        placeholder="Company name for vendor table, goodwill message title, or specific size notes..."
-                        value={orderNotes}
-                        onChange={(e) => setOrderNotes(e.target.value)}
-                      />
-                    </div>
-
-                    <div className="store-form-actions">
-                      <button
-                        type="button"
-                        className="store-back-btn"
-                        onClick={() => {
-                          setIsCheckoutOpen(false);
-                          setIsCartOpen(true);
-                        }}
-                      >
-                        Back to Cart
-                      </button>
-                      <button type="submit" className="store-continue-btn">
-                        <span>Continue to Payment</span>
-                        <ArrowRight size={16} />
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {/* Step 2: Payment Details */}
-                {checkoutStep === "payment" && (
-                  <div className="store-form-fields">
-                    <div className="store-order-mini-summary">
-                      <div>
-                        <strong>Order Total:</strong>{" "}
-                        <span style={{ color: "#0f6a4b", fontWeight: 800 }}>${orderTotal.toFixed(2)} USD</span>
-                      </div>
-                      <small style={{ color: "#6b7280" }}>
-                        Billed to {customerName} ({customerEmail})
-                      </small>
-                    </div>
-
-                    <div className="store-payment-badge-row">
-                      <CreditCard size={18} color="#0e3d26" />
-                      <strong>Credit / Debit Card (Visa, MasterCard, Amex)</strong>
-                    </div>
-
-                    <div className="store-input-wrap">
-                      <label>Card Number *</label>
-                      <input
-                        type="text"
-                        required
-                        maxLength={19}
-                        placeholder="4242 &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; 4242"
-                        value={cardNumber}
-                        onChange={(e) => setCardNumber(e.target.value)}
-                      />
-                    </div>
-
-                    <div className="store-form-row">
-                      <div className="store-input-wrap">
-                        <label>Expires (MM/YY) *</label>
-                        <input
-                          type="text"
-                          required
-                          maxLength={5}
-                          placeholder="12/28"
-                          value={cardExp}
-                          onChange={(e) => setCardExp(e.target.value)}
-                        />
-                      </div>
-                      <div className="store-input-wrap">
-                        <label>CVC / Security Code *</label>
-                        <input
-                          type="text"
-                          required
-                          maxLength={4}
-                          placeholder="123"
-                          value={cardCvc}
-                          onChange={(e) => setCardCvc(e.target.value)}
-                        />
-                      </div>
-                    </div>
-
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "12px", color: "#526359", margin: "10px 0" }}>
-                      <Lock size={14} color="#0f6a4b" />
-                      <span>Encrypted via Stripe. No card details stored on UPUA servers.</span>
-                    </div>
-
-                    <div className="store-form-actions">
-                      <button
-                        type="button"
-                        className="store-back-btn"
-                        onClick={() => setCheckoutStep("shipping")}
-                        disabled={isProcessing}
-                      >
-                        Back
-                      </button>
-                      <button
-                        type="submit"
-                        className="store-checkout-cta"
-                        disabled={isProcessing}
-                      >
-                        {isProcessing ? (
-                          <>
-                            <Loader2 size={16} className="animate-spin" />
-                            <span>Authorizing Payment...</span>
-                          </>
-                        ) : (
-                          <>
-                            <Lock size={16} />
-                            <span>Authorize &amp; Pay ${orderTotal.toFixed(2)}</span>
-                          </>
-                        )}
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </form>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Direct Custom Item / Fee Payment Modal */}
-      {customPayOpen && (
-        <div className="upua-modal-backdrop" onClick={() => !isProcessing && setCustomPayOpen(false)}>
-          <div className="store-checkout-modal" onClick={(e) => e.stopPropagation()}>
-            <button
-              type="button"
-              className="upua-modal-close-btn"
-              onClick={() => !isProcessing && setCustomPayOpen(false)}
-              aria-label="Close"
-            >
-              <X size={20} />
-            </button>
-
-            <div className="store-checkout-header">
-              <h3>Direct Item / Convention Fee Payment</h3>
-              <p style={{ margin: 0, fontSize: "13px", color: "#667085" }}>
-                Pay directly for custom convention sponsorships, custom exhibitor fees, or specific quoted items.
-              </p>
-            </div>
-
-            <div style={{ marginTop: "12px", padding: "10px 14px", background: "#fef9ee", border: "1px solid #f9dfa5", borderRadius: "8px", fontSize: "12.5px", color: "#8a5807", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "10px", flexWrap: "wrap" }}>
-              <span>Making an official convention donation instead?</span>
-              <a
-                href={DONATELY_CAMPAIGN_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ fontWeight: 800, color: "#8a5807", textDecoration: "underline", display: "inline-flex", alignItems: "center", gap: "4px" }}
-              >
-                Donate on Donately <ExternalLink size={13} />
-              </a>
-            </div>
-
-            {orderError && <div className="store-error-banner">{orderError}</div>}
-
-            <form onSubmit={handleCustomPaySubmit} className="store-form-fields" style={{ marginTop: "16px" }}>
-              <div className="store-input-wrap">
-                <label>Amount to Pay (USD $) *</label>
-                <div style={{ position: "relative" }}>
-                  <span style={{ position: "absolute", left: "14px", top: "12px", fontWeight: 700, color: "#0e3d26" }}>$</span>
-                  <input
-                    type="number"
-                    step="0.01"
-                    min="1"
-                    required
-                    style={{ paddingLeft: "32px" }}
-                    placeholder="200.00"
-                    value={customAmount}
-                    onChange={(e) => setCustomAmount(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div className="store-input-wrap">
-                <label>Payment Purpose / Item Description *</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Vendor Table Sponsorship #4, Youth Banquet Table, Custom Ad"
-                  value={customPurpose}
-                  onChange={(e) => setCustomPurpose(e.target.value)}
-                />
-              </div>
-
-              <div className="store-form-row">
-                <div className="store-input-wrap">
-                  <label>Payer Full Name *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Chief Emmanuel Oghenero"
-                    value={customerName}
-                    onChange={(e) => setCustomerName(e.target.value)}
-                  />
-                </div>
-                <div className="store-input-wrap">
-                  <label>Email Address (For Official Receipt) *</label>
-                  <input
-                    type="email"
-                    required
-                    placeholder="name@example.com"
-                    value={customerEmail}
-                    onChange={(e) => setCustomerEmail(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div className="store-input-wrap">
-                <label>Card Number *</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="4242 &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; 4242"
-                  value={cardNumber}
-                  onChange={(e) => setCardNumber(e.target.value)}
-                />
-              </div>
-
-              <div className="store-form-row">
-                <div className="store-input-wrap">
-                  <label>Expiry (MM/YY) *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="08/27"
-                    value={cardExp}
-                    onChange={(e) => setCardExp(e.target.value)}
-                  />
-                </div>
-                <div className="store-input-wrap">
-                  <label>CVC *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="123"
-                    value={cardCvc}
-                    onChange={(e) => setCardCvc(e.target.value)}
-                  />
-                </div>
-              </div>
-
+            <button type="button" className="upua-modal-close-btn" onClick={() => !isProcessing && setIsCheckoutOpen(false)} aria-label="Close checkout"><X size={20} /></button>
+            <form onSubmit={handleCheckoutSubmit} className="store-checkout-form">
+              <div className="store-checkout-header"><h3>Checkout</h3></div>
+              <p>Online purchases are not available yet. No orders or registrations will be fulfilled.</p>
+              {orderError && <div className="store-error-banner" role="alert">{orderError}</div>}
               <div className="store-form-actions">
-                <button
-                  type="button"
-                  className="store-back-btn"
-                  onClick={() => setCustomPayOpen(false)}
-                  disabled={isProcessing}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="store-checkout-cta"
-                  disabled={isProcessing}
-                >
-                  {isProcessing ? (
-                    <>
-                      <Loader2 size={16} className="animate-spin" />
-                      <span>Processing...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Lock size={16} />
-                      <span>Pay ${customAmount || "0.00"} Now</span>
-                    </>
-                  )}
-                </button>
+                <button type="button" className="store-back-btn" disabled={isProcessing} onClick={() => { setIsCheckoutOpen(false); setIsCartOpen(true); }}>Back to Cart</button>
+                {process.env.NODE_ENV === "development" && (
+                  <button type="submit" className="store-checkout-cta" disabled={isProcessing || cart.length === 0}>
+                    {isProcessing ? <><Loader2 size={16} className="animate-spin" /> Opening test checkout...</> : "Continue to test checkout"}
+                  </button>
+                )}
               </div>
             </form>
           </div>
@@ -1822,7 +1180,7 @@ export default function StorePage() {
                     onClick={() => handleConfirmAttendeeRegistration(true)}
                   >
                     <CreditCard size={16} />
-                    <span>Instant Checkout &bull; ${computedModalTotal}</span>
+                    <span>View checkout &bull; ${computedModalTotal}</span>
                   </button>
                 </div>
 
@@ -1835,7 +1193,7 @@ export default function StorePage() {
                     <ExternalLink size={12} />
                   </Link>
                   <span style={{ color: "#667085" }}>
-                    🔒 Secured 256-Bit SSL Stripe Checkout
+                    Online checkout not yet available
                   </span>
                 </div>
               </div>

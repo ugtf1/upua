@@ -149,3 +149,15 @@ model StoreItem {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+// Development-only store checkout prototype; not used for live payments.
+model SandboxStoreOrder {
+  id              String   @id @default(cuid())
+  stripeSessionId String?  @unique
+  totalCents      Int
+  currency        String   @default("usd")
+  items           Json
+  status          String   @default("pending")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
