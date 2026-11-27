@@ -1,0 +1,58 @@
+name: Validate pull requests
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build production image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Build the same image used for Cloud Run without credentials or pushing it.
+      - name: Build image
+        run: docker build --tag upua-pr-validation .
+
+      - name: Smoke test production image
+        shell: bash
+        run: |
+          set -euo pipefail
+          container_name="upua-pr-smoke-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          cleanup() {
+            docker rm -f "$container_name" >/dev/null 2>&1 || true
+          }
+          trap cleanup EXIT
+
+          # Use no production secrets or database; keep the port local to the runner.
+          docker run --detach --name "$container_name" \
+            --env DATABASE_URL= --publish 127.0.0.1:18080:8080 \
+            upua-pr-validation >/dev/null
+
+          ready=0
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent --output /dev/null --max-time 2 http://127.0.0.1:18080/; then
+              ready=1
+              break
+            fi
+            sleep 2
+          done
+          if [ "$ready" -ne 1 ]; then
+            docker logs "$container_name"
+            echo "Container did not become ready" >&2
+            exit 1
+          fi
+
+          for method in GET POST; do
+            status=$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' \
+              --request "$method" --max-time 10 \
+              http://127.0.0.1:18080/api/admin/seed-live-data)
+            if [ "$status" != 404 ]; then
+              echo "Expected 404 for $method /api/admin/seed-live-data; received $status" >&2
+              exit 1
+            fi
+          done

@@ -68,7 +68,10 @@ jobs:
             const encodedPass = encodeURIComponent(decodeURIComponent(pass));
             console.log(protocol + encodedUser + ':' + encodedPass + '@' + host + pathAndQuery);
           ")
-          echo "url=${CLEAN_URL}" >> $GITHUB_OUTPUT
+          # The transformed URL can differ from the original GitHub secret.
+          # Mask it explicitly before passing it to the deploy action.
+          echo "::add-mask::${CLEAN_URL}"
+          echo "url=${CLEAN_URL}" >> "$GITHUB_OUTPUT"
 
       - name: Build Docker image
         run: |
