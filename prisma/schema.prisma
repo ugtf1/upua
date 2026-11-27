@@ -24,6 +24,22 @@ model User {
   updatedAt    DateTime  @updatedAt
 }
 
+// State is bound to a verified server-side session by a hash; it is consumed once.
+model QuickBooksOAuthState {
+  stateHash   String   @id
+  sessionHash String
+  expiresAt   DateTime
+
+  @@index([expiresAt])
+}
+
+// Token material is encrypted before being stored. The key is kept outside the database.
+model QuickBooksConnection {
+  id        String   @id
+  encrypted String
+  updatedAt DateTime @updatedAt
+}
+
 model Chapter {
   id                    String    @id
   name                  String
